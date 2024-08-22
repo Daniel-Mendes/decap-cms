@@ -1,19 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css } from '@emotion/react';
-import { Toggle, ToggleBackground, colors } from 'decap-cms-ui-default';
-
-function BooleanBackground({ isActive, ...props }) {
-  return (
-    <ToggleBackground
-      css={css`
-        background-color: ${isActive ? colors.active : colors.textFieldBorder};
-      `}
-      {...props}
-    />
-  );
-}
+import { Switch } from 'decap-cms-ui-next';
 
 export default class BooleanControl extends React.Component {
   render() {
@@ -21,13 +9,12 @@ export default class BooleanControl extends React.Component {
       this.props;
     return (
       <div className={classNameWrapper}>
-        <Toggle
-          id={forID}
-          active={value}
-          onChange={onChange}
+        <Switch
+          name={forID}
+          checked={value}
+          onCheckedChange={onChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
-          Background={BooleanBackground}
         />
       </div>
     );
