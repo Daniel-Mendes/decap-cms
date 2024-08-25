@@ -8,7 +8,7 @@ const StyledField = styled(Field)`
   padding: 0 0 0 1rem;
 `;
 
-function ObjectField({ label, onChange, fields, inline, className }) {
+function ObjectField({ label, onChange, fields, filled, className }) {
   const [expanded, setExpanded] = useState(true);
   const [data, setData] = useState();
   const [treeType, setTreeType] = useState();
@@ -22,7 +22,7 @@ function ObjectField({ label, onChange, fields, inline, className }) {
   return (
     <StyledField
       className={className}
-      inline={inline}
+      filled={filled}
       insideStyle={{ paddingTop: 0, paddingBottom: 0, paddingRight: 0 }}
     >
       <Tree
@@ -32,10 +32,10 @@ function ObjectField({ label, onChange, fields, inline, className }) {
         label={`${label}`}
         description={data && !!Object.keys(data).length && data[Object.keys(data)[0]]}
         type={treeType}
-        onHeaderMouseEnter={() => setTreeType('success')}
+        onHeaderMouseEnter={() => setTreeType('primary')}
         onHeaderMouseLeave={() => setTreeType(null)}
       >
-        <FieldContext.Provider value={{ inline: true }}>
+        <FieldContext.Provider value={{ filled: true }}>
           {fields && fields(handleChange)}
         </FieldContext.Provider>
       </Tree>

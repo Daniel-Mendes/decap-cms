@@ -7,6 +7,7 @@ import {
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
 import { v4 as uuid } from 'uuid';
+import { iconComponents } from 'decap-cms-ui-next';
 
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
@@ -126,6 +127,30 @@ function getConfigSchema() {
   return {
     type: 'object',
     properties: {
+      analytics: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', examples: ['plausible'] },
+          config: {
+            type: 'object',
+            properties: {
+              site_id: { type: 'string', deprecated: true },
+              api_key: { type: 'string' },
+              api_endpoint: { type: 'string' },
+              is_public: { type: 'boolean' },
+            },
+            additionalProperties: false,
+            oneOf: [
+              {
+                required: ['site_id', 'is_public'],
+              },
+              { required: ['site_id', 'api_key'] },
+            ],
+          },
+        },
+        required: ['name', 'config'],
+      },
+
       backend: {
         type: 'object',
         properties: {
@@ -139,6 +164,13 @@ function getConfigSchema() {
           open_authoring: { type: 'boolean', examples: [true] },
         },
         required: ['name'],
+      },
+      branding: {
+        type: 'object',
+        properties: {
+          display_url: { type: 'string', examples: ['https://example.com'] },
+          logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+        },
       },
       local_backend: {
         oneOf: [
@@ -158,9 +190,28 @@ function getConfigSchema() {
       },
       locale: { type: 'string', examples: ['en', 'fr', 'de'] },
       i18n: i18nRoot,
-      site_url: { type: 'string', examples: ['https://example.com'] },
-      display_url: { type: 'string', examples: ['https://example.com'] },
-      logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+      site_url: {
+        type: 'string',
+        examples: ['https://example.com'],
+      },
+      display_url: {
+        type: 'string',
+        examples: ['https://example.com'],
+        deprecated: true,
+        deprecatedError: true,
+        errorMessage: {
+          deprecatedError: 'The property display_url is deprecated use a custom resource instead.',
+        },
+      },
+      logo_url: {
+        type: 'string',
+        examples: ['https://example.com/images/logo.svg'],
+        deprecated: true,
+        deprecatedError: true,
+        errorMessage: {
+          deprecatedError: "The property logo_url is deprecated use 'branding.logo_url' instead.",
+        },
+      },
       show_preview_links: { type: 'boolean' },
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
@@ -196,6 +247,7 @@ function getConfigSchema() {
             label: { type: 'string' },
             label_singular: { type: 'string' },
             description: { type: 'string' },
+            icon: { type: 'string', enum: Object.keys(iconComponents) },
             folder: { type: 'string' },
             files: {
               type: 'array',
@@ -285,7 +337,7 @@ function getConfigSchema() {
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
           not: {
-            required: ['sortable_fields', 'sortableFields'],
+            required: ['sortable_fields', 'sortableFields', 'icon'],
           },
           if: { required: ['extension'] },
           then: {
@@ -307,6 +359,18 @@ function getConfigSchema() {
           },
         },
         uniqueItemProperties: ['name'],
+      },
+      resources: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            label: { type: 'string' },
+            url: { type: 'string' },
+            icon: { type: 'string', enum: Object.keys(iconComponents) },
+          },
+        },
       },
       editor: {
         type: 'object',
@@ -360,6 +424,23 @@ export function validateConfig(config) {
   instanceOf(ajv);
   prohibited(ajv);
   ajvErrors(ajv);
+  ajv.addKeyword({
+    keyword: 'deprecatedError',
+    errors: true,
+    validate: (schema, data, parentSchema, dataPath) => {
+      if (data !== undefined) {
+        ajv.errors = ajv.errors || [];
+        ajv.errors.push({
+          keyword: 'deprecatedError',
+          params: { 0: dataPath },
+          message: "The property '{0}' is deprecated and should not be used.",
+          dataPath,
+        });
+        return false;
+      }
+      return true;
+    },
+  });
 
   const valid = ajv.validate(getConfigSchema(), config);
   if (!valid) {

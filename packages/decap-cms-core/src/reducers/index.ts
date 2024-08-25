@@ -1,6 +1,8 @@
 import { List } from 'immutable';
 
+import analytics from './analytics';
 import auth from './auth';
+import branding from './branding';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
 import entries, * as fromEntries from './entries';
@@ -8,6 +10,7 @@ import cursors from './cursors';
 import editorialWorkflow, * as fromEditorialWorkflow from './editorialWorkflow';
 import entryDraft from './entryDraft';
 import collections from './collections';
+import resources from './resources';
 import search from './search';
 import medias from './medias';
 import mediaLibrary from './mediaLibrary';
@@ -20,9 +23,12 @@ import type { Status } from '../constants/publishModes';
 import type { State, Collection } from '../types/redux';
 
 const reducers = {
+  analytics,
   auth,
+  branding,
   config,
   collections,
+  resources,
   search,
   integrations,
   entries,

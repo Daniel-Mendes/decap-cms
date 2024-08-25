@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslate } from 'react-polyglot';
 import { default as TextareaAutoSize } from 'react-textarea-autosize';
 import styled from '@emotion/styled';
 
@@ -35,13 +36,14 @@ function TextareaField({
   value,
   onChange,
   focus,
-  inline,
+  filled,
   error,
   errors,
   minRows = 5,
   ...props
 }) {
   const [inputFocus, setInputFocus] = useState();
+  const t = useTranslate();
 
   return (
     <Field
@@ -50,7 +52,7 @@ function TextareaField({
       status={status}
       description={description}
       focus={focus || inputFocus}
-      inline={inline}
+      filled={filled}
       error={error}
       errors={errors}
       {...props}
@@ -58,7 +60,13 @@ function TextareaField({
       <StyledTextarea
         id={name}
         value={value || ''}
-        placeholder={placeholder}
+        placeholder={
+          placeholder
+            ? placeholder
+            : label
+            ? t('editor.editorControl.field.placeholder', { fieldLabel: label.toLowerCase() })
+            : ''
+        }
         minRows={minRows}
         onChange={onChange}
         onFocus={() => setInputFocus(true)}

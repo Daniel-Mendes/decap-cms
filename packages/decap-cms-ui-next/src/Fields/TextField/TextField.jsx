@@ -1,4 +1,5 @@
 import React, { useState, forwardRef } from 'react';
+import { useTranslate } from 'react-polyglot';
 import styled from '@emotion/styled';
 
 import Field from '../../Field';
@@ -49,6 +50,7 @@ const TextField = forwardRef(
     ref,
   ) => {
     const [inputFocus, setInputFocus] = useState();
+    const t = useTranslate();
 
     return (
       <Field
@@ -74,7 +76,13 @@ const TextField = forwardRef(
           autoFocus={focus}
           id={name}
           name={name}
-          placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}
+          placeholder={
+            placeholder
+              ? placeholder
+              : label
+              ? t('editor.editorControl.field.placeholder', { fieldLabel: label.toLowerCase() })
+              : ''
+          }
           value={value || ''}
           onChange={e => onChange(e)}
           onFocus={() => setInputFocus(true)}

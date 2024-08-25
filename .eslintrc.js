@@ -13,6 +13,7 @@ module.exports = {
     'plugin:cypress/recommended',
     'prettier',
     'plugin:import/recommended',
+    'plugin:storybook/recommended',
   ],
   env: {
     es6: true,
@@ -87,8 +88,12 @@ module.exports = {
           jsx: true,
         },
       },
+      plugins: ['@typescript-eslint', 'babel', '@emotion', 'cypress', 'unicorn'],
       rules: {
         'no-duplicate-imports': [0], // handled by @typescript-eslint
+        'react/prop-types': [0],
+        'react/jsx-uses-react': 'off', // handled by jsx transform
+        'react/react-in-jsx-scope': 'off', // handled by jsx transform
         '@typescript-eslint/ban-types': [0], // TODO enable in future
         '@typescript-eslint/no-non-null-assertion': [0],
         '@typescript-eslint/consistent-type-imports': 'error',

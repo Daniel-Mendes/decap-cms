@@ -12,7 +12,7 @@ function BooleanField({ name, onChange, children, value, ...props }) {
       onClick={() => (value ? onChange(false) : onChange(true))}
     >
       <Switch
-        onChange={() => (value && onChange ? onChange(false) : onChange(true))}
+        onCheckedChange={() => (value && onChange ? onChange(false) : onChange(true))}
         checked={value}
       />
       {children && children}

@@ -4,30 +4,21 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { components, buttons, shadows } from 'decap-cms-ui-default';
+import { components } from 'decap-cms-ui-default';
+import { Button, Card, Icon } from 'decap-cms-ui-next';
 
-const CollectionTopContainer = styled.div`
-  ${components.cardTop};
-  margin-bottom: 22px;
+const CollectionTopContainer = styled(Card)`
+  padding: 1rem;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const CollectionTopHeading = styled.h1`
   ${components.cardTopHeading};
-`;
-
-const CollectionTopNewButton = styled(Link)`
-  ${buttons.button};
-  ${shadows.dropDeep};
-  ${buttons.default};
-  ${buttons.gray};
-
-  padding: 0 30px;
 `;
 
 const CollectionTopDescription = styled.p`
@@ -56,13 +47,22 @@ function CollectionTop({ collection, newEntryUrl, t }) {
   return (
     <CollectionTopContainer>
       <CollectionTopRow>
-        <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
+        <CollectionTopHeading>
+          <Icon
+            size="lg"
+            name={
+              collection.get('icon') ??
+              (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
+            }
+          />
+          {collectionLabel}
+        </CollectionTopHeading>
         {newEntryUrl ? (
-          <CollectionTopNewButton to={newEntryUrl}>
+          <Button as={Link} to={newEntryUrl} icon={'plus'}>
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}
-          </CollectionTopNewButton>
+          </Button>
         ) : null}
       </CollectionTopRow>
       {collectionDescription ? (

@@ -28,10 +28,14 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'react-toastify', 'codemirror'].map(moduleNameToPath),
+        include: ['ol', 'react-toastify', 'codemirror', '@fontsource/inter'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
+    fonts: () => ({
+      test: /\.(woff|woff2|eot|ttf|otf)$/,
+      type: 'asset/resource',
+    }),
     svg: () => ({
       test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
       exclude: [/node_modules/],
@@ -139,7 +143,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
       rules: flatMap(Object.values(rules()), rule => rule()),
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.json'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       fallback: {
         path: require.resolve('path-browserify'),
         stream: require.resolve('stream-browserify'),

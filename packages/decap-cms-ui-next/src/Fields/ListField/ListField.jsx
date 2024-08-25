@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import { useTranslate } from 'react-polyglot';
 import {
   closestCenter,
   DndContext,
@@ -129,14 +130,16 @@ function ListField({
   name,
   label,
   labelSingular,
-  items: defaultItems,
+  items: defaultItems = [],
+  fields,
   className,
-  inline,
+  filled,
   onChange,
 }) {
+  const t = useTranslate();
   const [activeId, setActiveId] = useState(null);
   const [focus, setFocus] = useState(false);
-  const [items, setItems] = useState(defaultItems || []);
+  const [items, setItems] = useState(defaultItems);
   const [expandedItems, setExpandedItems] = useState([]);
 
   const activationConstraint = { distance: 4 };
@@ -240,12 +243,10 @@ function ListField({
     setActiveId(null);
   }
 
-  console.log('listField', items);
-
   return (
-    <Field label={label} labelTarget={name} focus={focus} className={className} inline={inline}>
+    <Field label={label} labelTarget={name} focus={focus} className={className} filled={filled}>
       <ActionWrap>
-        {items && items.length > 1 && (
+        {items.length > 1 && (
           <Button
             size="sm"
             onClick={() => {
@@ -256,7 +257,9 @@ function ListField({
               }
             }}
           >
-            {expandedItems.length ? 'Collapse' : 'Expand'} All
+            {expandedItems.length
+              ? t('editor.editorWidgets.list.collapseAll')
+              : t('editor.editorWidgets.list.expandAll')}
           </Button>
         )}
       </ActionWrap>
@@ -281,7 +284,7 @@ function ListField({
                     labelSingular={labelSingular}
                     index={index}
                     item={item}
-                    items={items}
+                    fields={fields}
                     onDelete={handleDelete}
                     handleChange={handleChange}
                     toggleExpand={toggleExpand}
@@ -316,7 +319,7 @@ function ListField({
       </StyledSortableContainer>
 
       <StyledButton icon="plus" onClick={handleAdd}>
-        Add New {labelSingular}
+        {t('editor.editorWidgets.list.add', { item: labelSingular })}
       </StyledButton>
     </Field>
   );

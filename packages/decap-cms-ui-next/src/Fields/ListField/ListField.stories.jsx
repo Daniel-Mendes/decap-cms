@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import isEqual from 'lodash/isEqual';
 import styled from '@emotion/styled';
 import { useArgs } from '@storybook/preview-api';
 
@@ -21,7 +22,7 @@ export default {
   args: {
     label: 'Links',
     labelSingular: 'Link',
-    inline: false,
+    filled: false,
     items: [],
   },
 };
@@ -29,8 +30,8 @@ export default {
 export function _ListField(args) {
   const [{ items }, updateArgs] = useArgs();
 
-  function handleChange(items) {
-    updateArgs({ items });
+  function handleChange(updatedItems) {
+    updateArgs({ items: updatedItems });
   }
 
   return (
@@ -39,18 +40,18 @@ export function _ListField(args) {
       name="featureLinks"
       onChange={handleChange}
       fields={(setListItemValue, itemIndex) => (
-        <React.Fragment>
+        <>
           <TextField
             name="featureLinkText"
             label="Text"
-            value={items[itemIndex] && items[itemIndex].text}
-            onChange={text => setListItemValue({ text }, itemIndex)}
+            value={items[itemIndex] && items[itemIndex].featureLinkText}
+            onChange={featureLinkText => setListItemValue({ featureLinkText }, itemIndex)}
           />
           <TextField
             name="featureLinkPath"
             label="Path"
-            value={items[itemIndex] && items[itemIndex].path}
-            onChange={path => setListItemValue({ path }, itemIndex)}
+            value={items[itemIndex] && items[itemIndex].featureLinkPath}
+            onChange={featureLinkPath => setListItemValue({ featureLinkPath }, itemIndex)}
           />
           <BooleanField
             name="newWindow"
@@ -58,7 +59,7 @@ export function _ListField(args) {
             value={items[itemIndex] && items[itemIndex].newWindow}
             onChange={newWindow => setListItemValue({ newWindow }, itemIndex)}
           />
-        </React.Fragment>
+        </>
       )}
     />
   );

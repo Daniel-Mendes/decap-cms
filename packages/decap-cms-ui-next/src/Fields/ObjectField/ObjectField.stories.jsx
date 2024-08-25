@@ -26,7 +26,7 @@ export default {
       path: '',
       newWindow: false,
     },
-    inline: false,
+    filled: false,
   },
 };
 

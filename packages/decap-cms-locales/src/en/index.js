@@ -17,10 +17,18 @@ const en = {
   },
   app: {
     header: {
-      content: 'Contents',
+      dashboard: 'Dashboard',
       workflow: 'Workflow',
       media: 'Media',
       quickAdd: 'Quick add',
+      collections: 'Collections',
+      allCollections: 'All Collections',
+      resources: 'Resources',
+      search: 'Search',
+      searchAll: 'Search all',
+      searchIn: 'Search in',
+      documentation: 'Documentation',
+      help: 'Help & Feedback',
     },
     app: {
       errorHeader: 'Error loading the CMS configuration',
@@ -33,13 +41,38 @@ const en = {
       header: 'Not Found',
     },
   },
-  collection: {
-    sidebar: {
-      collections: 'Collections',
-      allCollections: 'All Collections',
-      searchAll: 'Search all',
-      searchIn: 'Search in',
+  dashboard: {
+    title: 'Dashboard',
+    siteAnalytics: {
+      title: 'Site Analytics',
+      action: 'Edit dashboard',
+      loading: 'Loading chart...',
+      noAnalytics: 'No analytics provider has been configured.',
+      chart: {
+        visitors: 'Visitors',
+        pageviews: 'Page views',
+      },
+      periodOptions: {
+        today: 'Today',
+        last24Hours: 'Last 24 hours',
+        thisWeek: 'This week',
+        last7Days: 'Last 7 days',
+        thisMonth: 'This month',
+        last30Days: 'Last 30 days',
+        thisYear: 'This year',
+        allTime: 'All time',
+      },
     },
+    recentActivity: {
+      title: 'Recent Activity',
+      action: 'See all',
+    },
+    workflow: {
+      title: 'Workflow',
+      action: 'See all',
+    },
+  },
+  collection: {
     collectionTop: {
       sortBy: 'Sort by',
       viewAs: 'View as',
@@ -74,6 +107,7 @@ const en = {
     editorControl: {
       field: {
         optional: 'optional',
+        placeholder: 'Type %{fieldLabel} here',
       },
     },
     editorControlPane: {
@@ -211,6 +245,19 @@ const en = {
       list: {
         add: 'Add %{item}',
         addType: 'Add %{item}',
+        collapseAll: 'Collapse All',
+        expandAll: 'Expand All',
+        actions: {
+          moveUp: 'Move up',
+          moveDown: 'Move down',
+          addNewAbove: 'Add new above',
+          addNewBelow: 'Add new below',
+          duplicate: 'Duplicate',
+          delete: 'Delete',
+        },
+      },
+      select: {
+        placeholder: 'Select %{label}...',
       },
     },
   },
@@ -234,7 +281,7 @@ const en = {
       noImagesFound: 'No images found.',
       private: 'Private ',
       images: 'Images',
-      mediaAssets: 'Media assets',
+      mediaAssets: 'Media Library',
       search: 'Search...',
       uploading: 'Uploading...',
       upload: 'Upload',
@@ -262,9 +309,12 @@ const en = {
       },
     },
     settingsDropdown: {
+      darkMode: 'Dark Mode',
       logOut: 'Log Out',
     },
     toast: {
+      actionButton: 'OK',
+      cancelButton: 'Cancel',
       onFailToLoadEntries: 'Failed to load entry: %{details}',
       onFailToLoadDeployPreview: 'Failed to load preview: %{details}',
       onFailToPersist: 'Failed to persist entry: %{details}',
@@ -307,6 +357,7 @@ const en = {
       onPublishingNotReadyEntry:
         'Only items with a "Ready" status can be published. Please drag the card to the "Ready" column to enable publishing.',
       onPublishEntry: 'Are you sure you want to publish this entry?',
+      allEntriesHeader: 'All Entries',
       draftHeader: 'Drafts',
       inReviewHeader: 'In Review',
       readyHeader: 'Ready',

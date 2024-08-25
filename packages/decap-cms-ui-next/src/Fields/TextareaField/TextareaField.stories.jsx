@@ -23,7 +23,7 @@ export default {
     status: 'Required',
     value: '',
     minRows: 5,
-    inline: false,
+    filled: false,
     error: false,
     errors: [
       {

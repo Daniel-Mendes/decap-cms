@@ -55,7 +55,7 @@ export default {
     labelSingular: 'Category',
     value: '',
     values: [],
-    inline: false,
+    filled: false,
     multiple: false,
     error: false,
     errors: [

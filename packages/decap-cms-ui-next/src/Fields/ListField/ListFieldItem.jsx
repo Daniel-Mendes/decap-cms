@@ -1,4 +1,5 @@
 import React, { useState, forwardRef } from 'react';
+import { useTranslate } from 'react-polyglot';
 import styled from '@emotion/styled';
 
 import { Button } from '../../Buttons';
@@ -51,7 +52,6 @@ const ListFieldItem = forwardRef(
       labelSingular,
       index,
       item,
-      items,
       fields,
       onDelete,
       addListItem,
@@ -63,6 +63,8 @@ const ListFieldItem = forwardRef(
     },
     ref,
   ) => {
+    const t = useTranslate();
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [treeType, setTreeType] = useState(null);
 
@@ -82,7 +84,7 @@ const ListFieldItem = forwardRef(
           label={labelSingular}
           description={!!Object.keys(item).length && item[Object.keys(item)[0]]}
           type={treeType}
-          onHeaderMouseEnter={() => setTreeType('success')}
+          onHeaderMouseEnter={() => setTreeType('primary')}
           onHeaderMouseLeave={() => setTreeType(null)}
           actions={() => (
             <ListIconActions>
@@ -104,7 +106,7 @@ const ListFieldItem = forwardRef(
                   }}
                   disabled={index === 0}
                 >
-                  Move up
+                  {t('editor.editorWidgets.list.actions.moveUp')}
                 </MenuItem>
                 <MenuItem
                   icon="arrow-down"
@@ -112,9 +114,9 @@ const ListFieldItem = forwardRef(
                     moveListItem(index, index + 1);
                     handleClose();
                   }}
-                  disabled={index === items.length - 1}
+                  disabled={index === last}
                 >
-                  Move down
+                  {t('editor.editorWidgets.list.actions.moveDown')}
                 </MenuItem>
 
                 <MenuSeparator />
@@ -126,7 +128,7 @@ const ListFieldItem = forwardRef(
                     handleClose();
                   }}
                 >
-                  Add new above
+                  {t('editor.editorWidgets.list.actions.addNewAbove')}
                 </MenuItem>
                 <MenuItem
                   icon="plus-circle"
@@ -135,7 +137,7 @@ const ListFieldItem = forwardRef(
                     handleClose();
                   }}
                 >
-                  Add new below
+                  {t('editor.editorWidgets.list.actions.addNewBelow')}
                 </MenuItem>
 
                 <MenuSeparator />
@@ -149,7 +151,7 @@ const ListFieldItem = forwardRef(
                   onMouseEnter={() => setTreeType('success')}
                   onMouseLeave={() => setTreeType(null)}
                 >
-                  Duplicate
+                  {t('editor.editorWidgets.list.actions.duplicate')}
                 </MenuItem>
                 <MenuItem
                   icon="trash-2"
@@ -161,15 +163,14 @@ const ListFieldItem = forwardRef(
                   onMouseLeave={() => setTreeType(null)}
                   type="danger"
                 >
-                  Delete
+                  {t('editor.editorWidgets.list.actions.delete')}
                 </MenuItem>
               </Menu>
             </ListIconActions>
           )}
         >
-          <FieldContext.Provider value={{ inline: true }}>
-            {/* {items && items(handleChange, index)} */}
-            {items}
+          <FieldContext.Provider value={{ filled: true }}>
+            {fields && fields(handleChange, index)}
           </FieldContext.Provider>
         </Tree>
         {!last && (

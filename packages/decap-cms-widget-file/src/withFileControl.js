@@ -2,20 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
-import {
-  lengths,
-  components,
-  buttons,
-  borders,
-  effects,
-  shadows,
-  IconButton,
-} from 'decap-cms-ui-default';
+import { Button, Thumbnail, Tooltip } from 'decap-cms-ui-next';
 import { basename } from 'decap-cms-lib-util';
 import { arrayMoveImmutable as arrayMove } from 'array-move';
 import {
@@ -32,45 +23,68 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 
 const MAX_DISPLAY_LENGTH = 50;
 
-const ImageWrapper = styled.div`
-  flex-basis: 155px;
-  width: 155px;
-  height: 100px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  border: ${borders.textField};
-  border-radius: ${lengths.borderRadius};
-  overflow: hidden;
-  ${effects.checkerboard};
-  ${shadows.inset};
-  cursor: ${props => (props.sortable ? 'pointer' : 'auto')};
+const Image = styled(Thumbnail)`
+  width: 10rem;
+  height: 10rem;
 `;
 
-const SortableImageButtonsWrapper = styled.div`
+const AddMoreButton = styled(Button)`
+  width: 10rem;
+  height: 10rem;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+
+  & > svg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+`;
+
+const ImageGrid = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+`;
+
+const ImageAction = styled(Button)`
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  line-height: 0;
+`;
+
+const ImageActionsWrapper = styled.div`
+  position: absolute;
+  inset: 0;
+
   display: flex;
   justify-content: center;
-  column-gap: 10px;
-  margin-right: 20px;
-  margin-top: -10px;
-  margin-bottom: 10px;
+  align-items: center;
+  gap: 2rem;
 `;
 
-const StyledImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-`;
-
-function Image(props) {
-  return <StyledImage role="presentation" {...props} />;
-}
-
-function SortableImageButtons({ onRemove, onReplace }) {
+function ImageActions({ t, onRemove, onReplace }) {
   return (
-    <SortableImageButtonsWrapper>
-      <IconButton size="small" type="media" onClick={onReplace}></IconButton>
-      <IconButton size="small" type="close" onClick={onRemove}></IconButton>
-    </SortableImageButtonsWrapper>
+    <ImageActionsWrapper>
+      <Tooltip
+        label={t(`editor.editorWidgets.image.chooseDifferent`)}
+        enterDelay={500}
+        leaveDelay={250}
+      >
+        <ImageAction primary size="lg" icon="repeat" onClick={onReplace} />
+      </Tooltip>
+      <Tooltip label={t(`editor.editorWidgets.image.remove`)} enterDelay={500} leaveDelay={250}>
+        <ImageAction primary type="danger" size="lg" icon="x" onClick={onRemove} />
+      </Tooltip>
+    </ImageActionsWrapper>
   );
 }
 
@@ -84,23 +98,23 @@ function SortableImage(props) {
     transition,
   };
 
-  const { itemValue, getAsset, field, onRemove, onReplace } = props;
+  const { itemValue, getAsset, field, onRemove, onReplace, t } = props;
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <ImageWrapper sortable>
-        <Image src={getAsset(itemValue, field) || ''} />
-      </ImageWrapper>
-      <SortableImageButtons
-        item={itemValue}
-        onRemove={onRemove}
-        onReplace={onReplace}
-      ></SortableImageButtons>
+      <Image
+        previewImgSrc={getAsset(itemValue, field) || ''}
+        previewAspectRatio="1:1"
+        renderActions={() => (
+          <ImageActions item={itemValue} t={t} onRemove={onRemove} onReplace={onReplace} />
+        )}
+      />
     </div>
   );
 }
 
 function SortableMultiImageWrapper({
+  t,
   items,
   getAsset,
   field,
@@ -122,13 +136,7 @@ function SortableMultiImageWrapper({
   }
 
   return (
-    <div
-      // eslint-disable-next-line react/no-unknown-property
-      css={css`
-        display: flex;
-        flex-wrap: wrap;
-      `}
-    >
+    <ImageGrid>
       <DndContext
         modifiers={[restrictToParentElement]}
         collisionDetection={closestCenter}
@@ -138,6 +146,7 @@ function SortableMultiImageWrapper({
         <SortableContext items={items}>
           {items.map((item, index) => (
             <SortableImage
+              t={t}
               key={item.id}
               id={item.id}
               index={index}
@@ -150,7 +159,7 @@ function SortableMultiImageWrapper({
           ))}
         </SortableContext>
       </DndContext>
-    </div>
+    </ImageGrid>
   );
 }
 
@@ -172,17 +181,6 @@ const FileLinks = styled.div`
 
 const FileLinkList = styled.ul`
   list-style-type: none;
-`;
-
-const FileWidgetButton = styled.button`
-  ${buttons.button};
-  ${components.badge};
-  margin-bottom: 12px;
-`;
-
-const FileWidgetButtonRemove = styled.button`
-  ${buttons.button};
-  ${components.badgeDanger};
 `;
 
 function isMultiple(value) {
@@ -410,11 +408,12 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     renderImages = () => {
-      const { getAsset, value, field } = this.props;
+      const { getAsset, value, field, t } = this.props;
       const items = valueListToSortableArray(value);
       if (isMultiple(value)) {
         return (
           <SortableMultiImageWrapper
+            t={t}
             items={items}
             onSortEnd={this.onSortEnd}
             onRemoveOne={this.onRemoveOne}
@@ -430,53 +429,66 @@ export default function withFileControl({ forImage } = {}) {
 
       const src = getAsset(value, field);
       return (
-        <ImageWrapper>
-          <Image src={src || ''} />
-        </ImageWrapper>
+        <Image
+          previewImgSrc={src || ''}
+          previewAspectRatio="1:1"
+          renderActions={() => (
+            <ImageActions t={t} onRemove={this.handleRemove} onReplace={this.handleChange} />
+          )}
+        />
       );
     };
 
     renderSelection = subject => {
-      const { t, field } = this.props;
+      const { t } = this.props;
       const allowsMultiple = this.allowsMultiple();
       return (
         <div>
           {forImage ? this.renderImages() : null}
           <div>
             {forImage ? null : this.renderFileLinks()}
-            <FileWidgetButton onClick={this.handleChange}>
-              {t(
-                `editor.editorWidgets.${subject}.${
-                  this.allowsMultiple() ? 'addMore' : 'chooseDifferent'
-                }`,
-              )}
-            </FileWidgetButton>
-            {field.get('choose_url', true) && !this.allowsMultiple() ? (
-              <FileWidgetButton onClick={this.handleUrl(subject)}>
-                {t(`editor.editorWidgets.${subject}.replaceUrl`)}
-              </FileWidgetButton>
-            ) : null}
-            <FileWidgetButtonRemove onClick={this.handleRemove}>
-              {t(`editor.editorWidgets.${subject}.remove${allowsMultiple ? 'All' : ''}`)}
-            </FileWidgetButtonRemove>
+            {allowsMultiple && (
+              <Tooltip
+                label={t(`editor.editorWidgets.${subject}.addMore`)}
+                enterDelay={500}
+                leaveDelay={250}
+              >
+                <AddMoreButton
+                  type="neutral"
+                  variant="soft"
+                  size="lg"
+                  icon="plus"
+                  onClick={this.handleChange}
+                >
+                  {t(`editor.editorWidgets.${subject}.addMore`)}
+                </AddMoreButton>
+              </Tooltip>
+            )}
           </div>
         </div>
       );
     };
 
     renderNoSelection = subject => {
-      const { t, field } = this.props;
+      const { t } = this.props;
       return (
-        <>
-          <FileWidgetButton onClick={this.handleChange}>
+        <Tooltip
+          label={t(
+            `editor.editorWidgets.${subject}.choose${this.allowsMultiple() ? 'Multiple' : ''}`,
+          )}
+          enterDelay={500}
+          leaveDelay={250}
+        >
+          <AddMoreButton
+            type="neutral"
+            variant="soft"
+            size="lg"
+            icon="plus"
+            onClick={this.handleChange}
+          >
             {t(`editor.editorWidgets.${subject}.choose${this.allowsMultiple() ? 'Multiple' : ''}`)}
-          </FileWidgetButton>
-          {field.get('choose_url', true) ? (
-            <FileWidgetButton onClick={this.handleUrl(subject)}>
-              {t(`editor.editorWidgets.${subject}.chooseUrl`)}
-            </FileWidgetButton>
-          ) : null}
-        </>
+          </AddMoreButton>
+        </Tooltip>
       );
     };
 

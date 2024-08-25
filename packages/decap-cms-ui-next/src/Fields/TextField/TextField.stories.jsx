@@ -26,7 +26,7 @@ export default {
     status: 'Required',
     value: '',
     title: false,
-    inline: false,
+    filled: false,
     error: false,
     errors: [
       {

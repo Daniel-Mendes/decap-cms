@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslate } from 'react-polyglot';
 
 import TextField from '../TextField';
 import Field from '../../Field';
@@ -15,6 +16,8 @@ function SelectField({
   placeholder,
   ...props
 }) {
+  const t = useTranslate();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElWidth, setAnchorElWidth] = useState();
 
@@ -74,7 +77,10 @@ function SelectField({
               ))}
             </BadgeGroup>
           ) : (
-            <span>{placeholder || `Select ${label}...`}</span>
+            <span>
+              {placeholder ||
+                t('editor.editorWidgets.select.placeholder', { label: label.toLowerCase() })}
+            </span>
           )}
         </Field>
       ) : (
@@ -85,7 +91,12 @@ function SelectField({
           onClick={handleOpenMenu}
           focus={!!anchorEl}
           value={options && selection?.label}
-          placeholder={placeholder || `Select a ${labelSingular || label}...`}
+          placeholder={
+            placeholder ||
+            t('editor.editorWidgets.select.placeholder', {
+              label: labelSingular.toLowerCase() || label.toLowerCase(),
+            })
+          }
           icon="chevron-down"
         />
       )}
