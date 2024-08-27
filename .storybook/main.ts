@@ -11,21 +11,21 @@ function getAbsolutePath(value: string): any {
 }
 
 const config: StorybookConfig = {
-  stories: ['../packages/**/src/**/?(*.)(story|stories).(js|jsx|ts|tsx)'],
+  stories: ['../packages/**/src/**/?(*.)(story|stories).(js|jsx|ts|tsx|mdx)'],
+
   addons: [
     getAbsolutePath('@storybook/addon-essentials'),
+    getAbsolutePath('@storybook/addon-interactions'),
     getAbsolutePath('@storybook/addon-storysource'),
     getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('storybook-addon-deep-controls'),
     getAbsolutePath('storybook-dark-mode'),
+    getAbsolutePath('@storybook/addon-webpack5-compiler-babel'),
   ],
+
   framework: {
     name: getAbsolutePath('@storybook/react-webpack5'),
     options: {},
   },
-  docs: {
-    autodocs: 'tag',
-  },
 };
-
 export default config;

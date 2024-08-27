@@ -3,6 +3,7 @@ bin/
 public/
 node_modules/
 npm-debug.log
+*.tsbuildinfo
 .DS_Store
 .tern-project
 yarn-error.log
@@ -13,6 +14,7 @@ manifest.yml
 cypress/videos
 cypress/screenshots
 __diff_output__
+__image_snapshots__
 coverage/
 .cache
 *.log

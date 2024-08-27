@@ -35,4 +35,8 @@ export function selectUseWorkflow(state: CmsConfig) {
   return state.publish_mode === EDITORIAL_WORKFLOW;
 }
 
+export function selectAnalytics(state: CmsConfig) {
+  return state.analytics;
+}
+
 export default config;

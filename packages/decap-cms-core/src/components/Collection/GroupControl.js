@@ -1,6 +1,6 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
-import { Dropdown, DropdownItem } from 'decap-cms-ui-default';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownMenuItem } from 'decap-cms-ui-next';
 
 import { ControlButton } from './ControlButton';
 
@@ -11,27 +11,26 @@ function GroupControl({ viewGroups, t, onGroupClick, group }) {
     .some(f => f.active === true);
 
   return (
-    <Dropdown
-      renderButton={() => {
-        return (
-          <ControlButton active={hasActiveGroup} title={t('collection.collectionTop.groupBy')} />
-        );
-      }}
-      closeOnSelection={false}
-      dropdownTopOverlap="30px"
-      dropdownWidth="160px"
-      dropdownPosition="left"
-    >
-      {viewGroups.map(viewGroup => {
-        return (
-          <DropdownItem
-            key={viewGroup.id}
-            label={viewGroup.label}
-            onClick={() => onGroupClick(viewGroup)}
-            isActive={group.getIn([viewGroup.id, 'active'], false)}
-          />
-        );
-      })}
+    <Dropdown>
+      <DropdownTrigger>
+        <ControlButton active={hasActiveGroup}>
+          {t('collection.collectionTop.groupBy')}
+        </ControlButton>
+      </DropdownTrigger>
+
+      <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+        {viewGroups.map(viewGroup => {
+          return (
+            <DropdownMenuItem
+              key={viewGroup.id}
+              onClick={() => onGroupClick(viewGroup)}
+              selected={group.getIn([viewGroup.id, 'active'], false)}
+            >
+              {viewGroup.label}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenu>
     </Dropdown>
   );
 }

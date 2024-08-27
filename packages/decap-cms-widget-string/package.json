@@ -20,7 +20,6 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "decap-cms-ui-default": "^3.0.0",
     "prop-types": "^15.7.2",
     "react": "^18.2.0"
   }

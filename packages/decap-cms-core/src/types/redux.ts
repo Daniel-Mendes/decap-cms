@@ -11,6 +11,7 @@ import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
+import type { AnalyticsService, Metric, Period, Interval } from 'decap-cms-lib-analytics';
 
 export type CmsBackendType =
   | 'azure'
@@ -355,6 +356,15 @@ export interface CmsCollection {
   sortableFields?: string[];
 }
 
+export interface CmsResource {
+  name: string;
+  label: string;
+  url: string;
+  icon: string;
+}
+
+export type Resources = StaticallyTypedRecord<Resources> & CmsResource[];
+
 export interface CmsBackend {
   name: CmsBackendType;
   auth_scope?: CmsAuthScope;
@@ -390,8 +400,11 @@ export interface CmsLocalBackend {
 }
 
 export interface CmsConfig {
+  analytics?: CmsAnalytics;
   backend: CmsBackend;
+  branding: CmsBranding;
   collections: CmsCollection[];
+  resources: CmsResource[];
   locale?: string;
   site_url?: string;
   display_url?: string;
@@ -428,6 +441,32 @@ export interface CmsMediaLibrary {
   config?: CmsMediaLibraryOptions;
 }
 
+export type CmsAnalyticsType = 'fathom' | 'plausible' | 'simple-analytics' | 'umami';
+
+export interface CmsAnalyticsOptions {
+  app_id?: string;
+  api_key?: string;
+}
+
+export interface CmsAnalytics {
+  name: CmsAnalyticsType;
+  config?: CmsAnalyticsOptions;
+  metrics: Metric[];
+  period: Period;
+  isLoading: boolean;
+}
+
+type AnalyticsObject = {
+  name: string;
+  implementation: AnalyticsService;
+  metrics: Metric[];
+  period: Period;
+  interval: Interval;
+  isLoading: boolean;
+};
+
+export type Analytics = StaticallyTypedRecord<Analytics> & AnalyticsObject;
+
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
   clean_accents: boolean;
@@ -452,8 +491,28 @@ type BackendObject = {
 
 type Backend = StaticallyTypedRecord<Backend> & BackendObject;
 
+export type Theme = {
+  primary?: string;
+  danger?: string;
+  success?: string;
+};
+
+export type CmsBranding = {
+  app_name: string;
+  logo_url: string;
+  theme: Theme;
+};
+
+export type Branding = StaticallyTypedRecord<{
+  app_name: string;
+  logo_url: string;
+  theme: Theme;
+}>;
+
 export type Config = StaticallyTypedRecord<{
+  analytics: Analytics;
   backend: Backend;
+  branding: Branding;
   media_folder: string;
   public_folder: string;
   publish_mode?: string;
@@ -686,10 +745,13 @@ export type Integrations = StaticallyTypedRecord<{
 export type Cursors = StaticallyTypedRecord<{}>;
 
 export interface State {
+  analytics: Analytics;
   auth: Auth;
+  branding: Branding;
   config: CmsConfig;
   cursors: Cursors;
   collections: Collections;
+  resources: Resources;
   deploys: Deploys;
   globalUI: GlobalUI;
   editorialWorkflow: EditorialWorkflow;

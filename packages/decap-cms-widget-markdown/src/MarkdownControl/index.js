@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { List, Map } from 'immutable';
+import { Fullscreen } from 'decap-cms-ui-next';
 
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
@@ -51,12 +52,17 @@ export default class MarkdownControl extends React.Component {
           ? preferredMode
           : this.getAllowedModes()[0],
       pendingFocus: false,
+      isFullscreen: false,
     };
   }
 
   handleMode = mode => {
     this.setState({ mode, pendingFocus: true });
     localStorage.setItem(MODE_STORAGE_KEY, mode);
+  };
+
+  handleToggleFullscreen = () => {
+    this.setState(prevState => ({ isFullscreen: !prevState.isFullscreen }));
   };
 
   processRef = ref => (this.ref = ref);
@@ -91,6 +97,8 @@ export default class MarkdownControl extends React.Component {
           onAddAsset={onAddAsset}
           isShowModeToggle={isShowModeToggle}
           onMode={this.handleMode}
+          isFullscreen={this.state.isFullscreen}
+          onToggleFullscreen={this.handleToggleFullscreen}
           getAsset={getAsset}
           className={classNameWrapper}
           value={value}
@@ -120,6 +128,11 @@ export default class MarkdownControl extends React.Component {
         />
       </div>
     );
-    return mode === 'rich_text' ? visualEditor : rawEditor;
+
+    return (
+      <Fullscreen isFullscreen={this.state.isFullscreen}>
+        {mode === 'rich_text' ? visualEditor : rawEditor}
+      </Fullscreen>
+    );
   }
 }

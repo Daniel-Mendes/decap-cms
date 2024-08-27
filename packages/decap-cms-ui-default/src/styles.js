@@ -6,7 +6,7 @@ import { css, Global } from '@emotion/react';
  */
 const fonts = {
   primary: `
-    system-ui,
+    Inter,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
@@ -90,7 +90,7 @@ const lengths = {
   topBarHeight: '56px',
   inputPadding: '16px 20px',
   borderRadius: '5px',
-  richTextEditorMinHeight: '300px',
+  richTextEditorMinHeight: '8rem',
   borderWidth: '2px',
   topCardWidth: '682px',
   pageMargin: '28px 18px',
@@ -316,14 +316,17 @@ const components = {
     margin-bottom: 28px;
   `,
   cardTopHeading: css`
-    font-size: 22px;
+    /* font-size: 22px; */
     font-weight: 600;
     line-height: 37px;
     margin: 0;
     padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   `,
   cardTopDescription: css`
-    max-width: 480px;
+    /* max-width: 480px; */
     color: ${colors.text};
     font-size: 14px;
     margin-top: 8px;

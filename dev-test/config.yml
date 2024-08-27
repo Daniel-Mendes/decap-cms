@@ -1,15 +1,49 @@
 backend:
   name: test-repo
 
-site_url: https://example.com
+analytics:
+  name: simple-analytics
+  config:
+    site_id: simpleanalytics.com
+    # api_key: 'test-api-key'
+    # api_endpoint: 'https://simpleanalytics.com'
+    is_public: true
+
+# branding:
+#   logo_url: https://techhub.p-m.si/media/brand/logo.svg
+#   app_name: PM Admin
+#   theme:
+#     primary: '#E27832'
+
+# site_url: https://example.com
+# logo_url: https://techhub.p-m.si/media/brand/logo.svg
+# display_url: https://example.com
 
 publish_mode: editorial_workflow
+
 media_folder: assets/uploads
+
+locale: 'en'
+
+i18n:
+  # Required and can be one of multiple_folders, multiple_files or single_file
+  # multiple_folders - persists files in `<folder>/<locale>/<slug>.<extension>`
+  # multiple_files - persists files in `<folder>/<slug>.<locale>.<extension>`
+  # single_file - persists a single file in `<folder>/<slug>.<extension>`
+  structure: multiple_files
+
+  # Required - a list of locales to show in the editor UI
+  locales: [en, de, fr]
+
+  # Optional, defaults to the first item in locales.
+  # The locale to be used for fields validation and as a baseline for the entry.
+  default_locale: en
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
+    icon: edit-3
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
@@ -58,6 +92,7 @@ collections: # A list of collections the CMS should be able to edit
       Restaurants is an entry type used for testing galleries, relations and other widgets.
       The tests must be written in such way that adding new fields does not affect previous flows.
     folder: '_restaurants'
+    icon: coffee
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
@@ -77,55 +112,34 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'
+    icon: help-circle
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Answer', name: 'body', widget: 'markdown' }
 
-  - name: 'settings'
-    label: 'Settings'
-    delete: false # Prevent users from deleting documents in this collection
-    editor:
-      preview: false
-    files:
-      - name: 'general'
-        label: 'Site Settings'
-        file: '_data/settings.json'
-        description: 'General Site Settings'
-        fields:
-          - { label: 'Global title', name: 'site_title', widget: 'string' }
-          - label: 'Post Settings'
-            name: posts
-            widget: 'object'
-            fields:
-              - {
-                  label: 'Number of posts on frontpage',
-                  name: front_limit,
-                  widget: number,
-                  min: 1,
-                  max: 10,
-                }
-              - { label: 'Default Author', name: author, widget: string }
-              - {
-                  label: 'Default Thumbnail',
-                  name: thumb,
-                  widget: image,
-                  class: 'thumb',
-                  required: false,
-                }
-
-      - name: 'authors'
-        label: 'Authors'
-        file: '_data/authors.yml'
-        description: 'Author descriptions'
-        fields:
-          - name: authors
-            label: Authors
-            label_singular: 'Author'
-            widget: list
-            fields:
-              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-              - { label: 'Description', name: 'description', widget: 'markdown' }
+  - name: i18n_playground
+    label: i18n Playground
+    i18n: true
+    folder: _i18n_playground
+    icon: globe
+    identifier_field: slug
+    create: true
+    fields:
+      # The slug field will be omitted from the translation.
+      - name: slug
+        label: Slug
+        widget: string
+      # same as 'i18n: translate'. Allows translation of the description field
+      - name: description
+        label: Description
+        widget: text
+        i18n: true
+      # The date field will be duplicated from the default locale.
+      - name: date
+        label: Date
+        widget: datetime
+        i18n: duplicate
 
   - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
     label: 'Kitchen Sink'
@@ -270,6 +284,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: pages # a nested collection
     label: Pages
     label_singular: 'Page'
+    icon: file-text
     folder: _pages
     create: true
     nested: { depth: 100 }
@@ -278,3 +293,64 @@ collections: # A list of collections the CMS should be able to edit
         name: title
         widget: string
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+
+  - name: 'settings'
+    label: 'Settings'
+    icon: settings
+    delete: false # Prevent users from deleting documents in this collection
+    editor:
+      preview: false
+    files:
+      - name: 'general'
+        label: 'Site Settings'
+        file: '_data/settings.json'
+        description: 'General Site Settings'
+        fields:
+          - { label: 'Global title', name: 'site_title', widget: 'string' }
+          - label: 'Post Settings'
+            name: posts
+            widget: 'object'
+            fields:
+              - {
+                  label: 'Number of posts on frontpage',
+                  name: front_limit,
+                  widget: number,
+                  min: 1,
+                  max: 10,
+                }
+              - { label: 'Default Author', name: author, widget: string }
+              - {
+                  label: 'Default Thumbnail',
+                  name: thumb,
+                  widget: image,
+                  class: 'thumb',
+                  required: false,
+                }
+
+      - name: 'authors'
+        label: 'Authors'
+        file: '_data/authors.yml'
+        description: 'Author descriptions'
+        fields:
+          - name: authors
+            label: Authors
+            label_singular: 'Author'
+            widget: list
+            fields:
+              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
+              - { label: 'Description', name: 'description', widget: 'markdown' }
+# resources: # A list of resources the CMS should link to
+#   - name: 'analytics'
+#     label: 'Analytics'
+#     url: 'https://app.netlify.com/sites/decap-www/metrics/analytics'
+#     icon: bar-chart
+
+#   - name: 'hosting'
+#     label: 'Hosting'
+#     url: 'https://app.netlify.com/sites/decap-www/overview'
+#     icon: server
+
+#   - name: 'git-repository'
+#     label: 'Git Repository'
+#     url: 'https://github.com/decaporg/decap-website'
+#     icon: github

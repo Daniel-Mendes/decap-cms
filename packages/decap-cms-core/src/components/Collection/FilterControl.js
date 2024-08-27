@@ -1,6 +1,6 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
-import { Dropdown, DropdownCheckedItem } from 'decap-cms-ui-default';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownMenuItem } from 'decap-cms-ui-next';
 
 import { ControlButton } from './ControlButton';
 
@@ -11,27 +11,26 @@ function FilterControl({ viewFilters, t, onFilterClick, filter }) {
     .some(f => f.active === true);
 
   return (
-    <Dropdown
-      renderButton={() => {
-        return (
-          <ControlButton active={hasActiveFilter} title={t('collection.collectionTop.filterBy')} />
-        );
-      }}
-      closeOnSelection={false}
-      dropdownTopOverlap="30px"
-      dropdownPosition="left"
-    >
-      {viewFilters.map(viewFilter => {
-        return (
-          <DropdownCheckedItem
-            key={viewFilter.id}
-            label={viewFilter.label}
-            id={viewFilter.id}
-            checked={filter.getIn([viewFilter.id, 'active'], false)}
-            onClick={() => onFilterClick(viewFilter)}
-          />
-        );
-      })}
+    <Dropdown>
+      <DropdownTrigger>
+        <ControlButton active={hasActiveFilter}>
+          {t('collection.collectionTop.filterBy')}
+        </ControlButton>
+      </DropdownTrigger>
+
+      <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+        {viewFilters.map(viewFilter => {
+          return (
+            <DropdownMenuItem
+              key={viewFilter.id}
+              onClick={() => onFilterClick(viewFilter)}
+              selected={filter.getIn([viewFilter.id, 'active'], false)}
+            >
+              {viewFilter.label}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenu>
     </Dropdown>
   );
 }

@@ -14,15 +14,29 @@
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "@fontsource/inter": "^5.0.17",
-    "color": "4.2.3"
+    "@fontsource/inter": "^5.0.16",
+    "@tanstack/react-table": "^8.11.8",
+    "@tanstack/react-virtual": "^3.0.4",
+    "rc-datetime-picker-dayjs": "^1.0.1",
+    "react-aria-menubutton": "^7.0.0",
+    "react-colorful": "^5.6.1",
+    "react-textarea-autosize": "^8.0.0",
+    "react-transition-group": "^4.4.5",
+    "react-spring": "^9.7.3",
+    "keycode": "^2.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1"
+  },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
-    "react": "^18.2.0"
+    "@emotion/styled": "^11.11.0",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^18.2.0",
+    "recharts": "2.12.7"
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import color from 'color';
 import { Global, css, withTheme } from '@emotion/react';
-import interTypeface from '@fontsource/inter/400.css';
+import interTypeface from '@fontsource/inter/index.css';
 
 function getGlobalStyles(theme) {
   return css`
@@ -16,8 +16,8 @@ function getGlobalStyles(theme) {
     }
 
     *::selection {
-      background-color: ${color(theme.color.success['900']).alpha(0.3).string()};
-      color: ${theme.color.success[theme.darkMode ? '200' : '1500']};
+      background-color: ${color(theme.color.primary['900']).alpha(0.3).string()};
+      color: ${theme.color.primary[theme.darkMode ? '200' : '1500']};
     }
 
     ${interTypeface}

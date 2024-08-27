@@ -5,6 +5,7 @@ export default class StringControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
+    placeholder: PropTypes.string,
     value: PropTypes.node,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
@@ -41,7 +42,8 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { forID, value, placeholder, classNameWrapper, setActiveStyle, setInactiveStyle } =
+      this.props;
 
     return (
       <input
@@ -52,6 +54,7 @@ export default class StringControl extends React.Component {
         id={forID}
         className={classNameWrapper}
         value={value || ''}
+        placeholder={placeholder}
         onChange={this.handleChange}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}

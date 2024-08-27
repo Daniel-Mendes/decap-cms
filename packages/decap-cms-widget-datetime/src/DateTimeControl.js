@@ -1,49 +1,15 @@
-/** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { buttons } from 'decap-cms-ui-default';
+import { DatetimeField } from 'decap-cms-ui-next';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
-
-function Buttons({ t, handleChange, getNow }) {
-  return (
-    <div
-      css={css`
-        display: flex;
-        gap: 20px;
-        width: fit-content;
-      `}
-    >
-      <button
-        css={css`
-          ${buttons.button}
-          ${buttons.widget}
-        `}
-        onClick={() => handleChange(getNow())}
-        data-testid="now-button"
-      >
-        {t('editor.editorWidgets.datetime.now')}
-      </button>
-      <button
-        css={css`
-          ${buttons.button}
-          ${buttons.widget}
-        `}
-        onClick={() => handleChange('')}
-        data-testid="clear-button"
-      >
-        {t('editor.editorWidgets.datetime.clear')}
-      </button>
-    </div>
-  );
-}
 
 class DateTimeControl extends React.Component {
   static propTypes = {
@@ -155,29 +121,31 @@ class DateTimeControl extends React.Component {
     this.handleChange(etv);
   };
 
+  shortcuts({ t }) {
+    return {
+      [t('editor.editorWidgets.datetime.now')]: this.handleChange(this.getNow()),
+      [t('editor.editorWidgets.datetime.clear')]: this.handleChange(''),
+    };
+  }
+
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
-    const { inputType } = this.getFormat();
+    const { inputType, inputFormat } = this.getFormat();
 
     return (
-      <div
-        className={classNameWrapper}
-        css={css`
-          display: flex !important;
-          gap: 20px;
-          align-items: center;
-        `}
-      >
-        <input
-          id={forID}
+      <div className={classNameWrapper}>
+        <DatetimeField
+          name={forID}
           data-testid={forID}
           type={inputType}
+          format={inputFormat}
           value={value ? this.formatInputValue(value) : ''}
           onChange={this.onInputChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
-          disabled={isDisabled}
+          shortcuts={!isDisabled && this.shortcuts({ t })}
+          readOnly={isDisabled}
         />
         {this.isUtc && (
           <span
@@ -188,9 +156,6 @@ class DateTimeControl extends React.Component {
           >
             UTC
           </span>
-        )}
-        {!isDisabled && (
-          <Buttons t={t} handleChange={v => this.handleChange(v)} getNow={() => this.getNow()} />
         )}
       </div>
     );

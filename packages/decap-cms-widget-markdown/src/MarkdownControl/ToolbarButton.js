@@ -1,38 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from '@emotion/styled';
-import { Icon, buttons } from 'decap-cms-ui-default';
+import { Tooltip, Toggle } from 'decap-cms-ui-next';
 
-const StyledToolbarButton = styled.button`
-  ${buttons.button};
-  display: inline-block;
-  padding: 6px;
-  border: none;
-  background-color: transparent;
-  font-size: 16px;
-  color: ${props => (props.isActive ? '#1e2532' : 'inherit')};
-  cursor: pointer;
-
-  &:disabled {
-    cursor: auto;
-    opacity: 0.5;
-  }
-
-  ${Icon} {
-    display: block;
-  }
-`;
-
-function ToolbarButton({ type, label, icon, onClick, isActive, disabled }) {
+function ToolbarButton({ children, type, label, icon, hasMenu, onClick, isActive, disabled }) {
   return (
-    <StyledToolbarButton
-      isActive={isActive}
-      onClick={e => onClick && onClick(e, type)}
-      title={label}
-      disabled={disabled}
+    <Tooltip
+      label={label}
+      enterDelay={1000}
+      anchorOrigin={{ y: 'top', x: 'center' }}
+      transformOrigin={{ y: 'bottom', x: 'center' }}
     >
-      {icon ? <Icon type={icon} /> : label}
-    </StyledToolbarButton>
+      <div>
+        <Toggle
+          pressed={isActive}
+          disabled={disabled}
+          onPressedChange={event => onClick && onClick(event, type)}
+          icon={icon}
+          hasMenu={hasMenu}
+        >
+          {children}
+        </Toggle>
+      </div>
+    </Tooltip>
   );
 }
 

@@ -6,7 +6,6 @@ import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { partial } from 'lodash';
 import { Cursor } from 'decap-cms-lib-util';
-import { colors } from 'decap-cms-ui-default';
 
 import {
   loadEntries as actionLoadEntries,
@@ -22,14 +21,16 @@ import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
 import Entries from './Entries';
 
 const GroupHeading = styled.h2`
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 37px;
-  padding-inline-start: 20px;
-  color: ${colors.textLead};
+  font-size: 1.2rem;
+  font-weight: 400;
+  padding-inline-start: 2rem;
 `;
 
-const GroupContainer = styled.div``;
+const GroupsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
 
 function getGroupEntries(entries, paths) {
   return entries.filter(entry => paths.has(entry.get('path')));
@@ -50,10 +51,10 @@ function withGroups(groups, entries, EntriesToRender, t) {
   return groups.map(group => {
     const title = getGroupTitle(group, t);
     return (
-      <GroupContainer key={group.id} id={group.id}>
+      <div key={group.id} id={group.id}>
         <GroupHeading>{title}</GroupHeading>
         <EntriesToRender entries={getGroupEntries(entries, group.paths)} />
-      </GroupContainer>
+      </div>
     );
   });
 }
@@ -110,7 +111,7 @@ export class EntriesCollection extends React.Component {
     };
 
     if (groups && groups.length > 0) {
-      return withGroups(groups, entries, EntriesToRender, t);
+      return <GroupsContainer>{withGroups(groups, entries, EntriesToRender, t)}</GroupsContainer>;
     }
 
     return <EntriesToRender entries={entries} />;
