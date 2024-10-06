@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ClassNames } from '@emotion/react';
-import olStyles from 'ol/ol.css';
+import 'ol/ol.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -94,7 +94,6 @@ export default function withMapControl({ getFormat, getMap } = {}) {
               className={cx(
                 this.props.classNameWrapper,
                 css`
-                  ${olStyles};
                   padding: 0;
                   overflow: hidden;
                   height: ${height};

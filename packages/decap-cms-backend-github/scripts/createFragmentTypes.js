@@ -1,6 +1,6 @@
-const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
+import fetch from 'node-fetch';
+import fs from 'fs';
+import path from 'path';
 
 const API_HOST = process.env.GITHUB_HOST || 'https://api.github.com';
 const API_TOKEN = process.env.GITHUB_API_TOKEN;
@@ -36,7 +36,7 @@ fetch(`${API_HOST}/graphql`, {
     result.data.__schema.types = filteredData;
     fs.writeFile(
       path.join(__dirname, '..', 'src', 'fragmentTypes.js'),
-      `module.exports = ${JSON.stringify(result.data)}`,
+      `export default ${JSON.stringify(result.data)}`,
       err => {
         if (err) {
           console.error('Error writing fragmentTypes file', err);

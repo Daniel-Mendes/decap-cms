@@ -10,8 +10,8 @@ import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/sublime';
 import 'codemirror/keymap/emacs';
-import codeMirrorStyles from 'codemirror/lib/codemirror.css';
-import materialTheme from 'codemirror/theme/material.css';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
 
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
@@ -267,8 +267,6 @@ export default class CodeControl extends React.Component {
             className={cx(
               classNameWrapper,
               css`
-                ${codeMirrorStyles};
-                ${materialTheme};
                 ${styleString};
               `,
             )}

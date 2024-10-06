@@ -4,8 +4,15 @@
   "version": "3.1.3",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-editor-component-image",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
-  "module": "dist/esm/index.js",
+  "type": "module",
+  "module": "dist/decap-cms-editor-component-image.mjs",
   "main": "dist/decap-cms-editor-component-image.js",
+  "exports": {
+    ".": {
+      "import": "./dist/decap-cms-editor-component-image.mjs",
+      "require": "./dist/decap-cms-editor-component-image.js"
+    }
+  },
   "license": "MIT",
   "keywords": [
     "decap-cms",
@@ -14,9 +21,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build": "vite build",
+    "develop": "vite build --watch"
   },
   "devDependencies": {
     "cross-env": "^7.0.0"

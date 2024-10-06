@@ -5,15 +5,21 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-locales",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
-  "module": "dist/esm/index.js",
+  "type": "module",
   "main": "dist/decap-cms-locales.js",
+  "module": "dist/decap-cms-locales.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/decap-cms-locales.mjs",
+      "require": "./dist/decap-cms-locales.js"
+    }
+  },
   "keywords": [
     "decap-cms"
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build": "vite build",
+    "develop": "vite build --watch"
   }
 }

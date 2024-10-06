@@ -49,12 +49,12 @@ Runs the `clean` script and builds the CMS packages.
 npm run build
 ```
 
-### build-preview
+### preview
 
-Runs the `build` and `build-preview` scripts in each package and serves the resulting build locally.
+Runs the `build` and `preview` scripts in each package and serves the resulting build locally.
 
 ```sh
-npm run build-preview
+npm run preview
 ```
 
 ### test
@@ -122,9 +122,8 @@ In order to debug a specific issue follow the next steps:
 1. Replace `dev-test/config.yml` with the relevant `config.yml`. If you want to test the backend, make sure that the `backend` property of the config indicates which backend you use (GitHub, Gitlab, Bitbucket etc) and path to the repo.
 
 ```js
-backend:
-  name: github
-  repo: owner-name/repo-name
+backend: name: github;
+repo: owner - name / repo - name;
 ```
 
 2. Change the content of `dev-test/index.html` to:
@@ -145,6 +144,7 @@ backend:
   </body>
 </html>
 ```
+
 The most important thing is to make sure that Decap CMS is loaded from the `dist` folder. This way, every time you make changes to the source code, they will be compiled and reflected immediately on `localhost`.
 
 3. Run `npm run start`
@@ -157,11 +157,11 @@ When debugging the CMS with Git Gateway you must:
 1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.decapcms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
-    1. Open `http://localhost:8080/` in the browser
-    2. Open the Developer Console. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
-    3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
-    4. Refresh the page
-    5. You should be able to log in via your Netlify Identity email/password
+   1. Open `http://localhost:8080/` in the browser
+   2. Open the Developer Console. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
+   3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
+   4. Refresh the page
+   5. You should be able to log in via your Netlify Identity email/password
 
 ### Fine tune the way you run unit tests
 

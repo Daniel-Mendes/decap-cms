@@ -4,8 +4,15 @@
   "description": "Decap CMS default exports",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-default-exports",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
-  "module": "dist/esm/index.js",
+  "type": "module",
+  "module": "dist/decap-cms-default-exports.mjs",
   "main": "dist/decap-cms-default-exports.js",
+  "exports": {
+    ".": {
+      "import": "./dist/decap-cms-default-exports.mjs",
+      "require": "./dist/decap-cms-default-exports.js"
+    }
+  },
   "license": "MIT",
   "keywords": [
     "decap-cms",
@@ -14,9 +21,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
-    "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build": "vite build",
+    "develop": "vite build --watch"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

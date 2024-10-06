@@ -6,7 +6,7 @@ const packages = fs
   .map(dirent => dirent.name);
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: 'eslint',
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -55,7 +55,7 @@ module.exports = {
     'unicorn/prefer-string-slice': 'error',
     'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
   },
-  plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
+  plugins: ['@emotion', 'cypress', 'unicorn'],
   settings: {
     react: {
       version: 'detect',

@@ -4,8 +4,15 @@
   "version": "3.4.2",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
-  "module": "dist/esm/index.js",
+  "type": "module",
   "main": "dist/decap-cms-core.js",
+  "module": "dist/decap-cms-core.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/decap-cms-core.mjs",
+      "require": "./dist/decap-cms-core.js"
+    }
+  },
   "files": [
     "src/",
     "dist/",
@@ -13,10 +20,8 @@
   ],
   "types": "index.d.ts",
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
-    "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
-    "build": "cross-env NODE_ENV=production run-s webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+    "build": "vite build",
+    "develop": "vite build --watch"
   },
   "keywords": [
     "cms",
