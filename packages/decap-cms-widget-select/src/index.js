@@ -1,6 +1,6 @@
-import controlComponent from './SelectControl';
-import previewComponent from './SelectPreview';
-import schema from './schema';
+import controlComponent from './SelectControl.jsx';
+import previewComponent from './SelectPreview.jsx';
+import schema from './schema.js';
 
 function Widget(opts = {}) {
   return {

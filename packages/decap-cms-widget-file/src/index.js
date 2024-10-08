@@ -1,5 +1,5 @@
-import withFileControl from './withFileControl';
-import previewComponent from './FilePreview';
+import withFileControl from './withFileControl.jsx';
+import previewComponent from './FilePreview.jsx';
 import schema from './schema';
 
 const controlComponent = withFileControl();

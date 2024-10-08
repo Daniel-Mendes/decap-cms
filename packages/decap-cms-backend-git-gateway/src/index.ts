@@ -1,5 +1,5 @@
-import GitGatewayBackend from './implementation';
-import AuthenticationPage from './AuthenticationPage';
+import GitGatewayBackend from './implementation.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendGitGateway = {
   GitGatewayBackend,

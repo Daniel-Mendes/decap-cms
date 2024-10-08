@@ -1,7 +1,7 @@
 import DecapCmsWidgetFile from 'decap-cms-widget-file';
 
-import previewComponent from './ImagePreview';
-import schema from './schema';
+import previewComponent from './ImagePreview.jsx';
+import schema from './schema.js';
 
 const controlComponent = DecapCmsWidgetFile.withFileControl({ forImage: true });
 

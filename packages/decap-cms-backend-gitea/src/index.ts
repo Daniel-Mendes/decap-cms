@@ -1,3 +1,3 @@
-export { default as GiteaBackend } from './implementation';
-export { default as API } from './API';
-export { default as AuthenticationPage } from './AuthenticationPage';
+export { default as GiteaBackend } from './implementation.tsx';
+export { default as API } from './API.ts';
+export { default as AuthenticationPage } from './AuthenticationPage.jsx';

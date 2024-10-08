@@ -1,6 +1,6 @@
-import withMapControl from './withMapControl';
-import previewComponent from './MapPreview';
-import schema from './schema';
+import withMapControl from './withMapControl.jsx';
+import previewComponent from './MapPreview.jsx';
+import schema from './schema.js';
 
 const controlComponent = withMapControl();
 

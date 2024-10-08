@@ -1,5 +1,5 @@
-import ProxyBackend from './implementation';
-import AuthenticationPage from './AuthenticationPage';
+import ProxyBackend from './implementation.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendProxy = {
   ProxyBackend,

@@ -1,6 +1,6 @@
-import GitHubBackend from './implementation';
-import API from './API';
-import AuthenticationPage from './AuthenticationPage';
+import GitHubBackend from './implementation.tsx';
+import API from './API.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendGithub = {
   GitHubBackend,

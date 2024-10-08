@@ -9,7 +9,7 @@ import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
-import Toolbar from './Toolbar';
+import Toolbar from './Toolbar.jsx';
 import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
 
 function rawEditorStyles({ minimal }) {

@@ -1,4 +1,4 @@
-import controlComponent from './BooleanControl';
+import controlComponent from './BooleanControl.jsx';
 
 function Widget(opts = {}) {
   return {

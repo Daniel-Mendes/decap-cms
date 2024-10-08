@@ -1,7 +1,7 @@
 import { API } from 'decap-cms-backend-github';
 
-import AwsCognitoGitHubProxyBackend from './implementation';
-import AuthenticationPage from './AuthenticationPage';
+import AwsCognitoGitHubProxyBackend from './implementation.tsx';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendAwsCognitoGithubProxy = {
   AwsCognitoGitHubProxyBackend,

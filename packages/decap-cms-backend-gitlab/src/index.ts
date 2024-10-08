@@ -1,6 +1,6 @@
-import GitLabBackend from './implementation';
-import API from './API';
-import AuthenticationPage from './AuthenticationPage';
+import GitLabBackend from './implementation.ts';
+import API from './API.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendGitlab = {
   GitLabBackend,

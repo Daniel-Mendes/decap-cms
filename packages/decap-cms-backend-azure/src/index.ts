@@ -1,6 +1,6 @@
-import AzureBackend from './implementation';
-import API from './API';
-import AuthenticationPage from './AuthenticationPage';
+import AzureBackend from './implementation.ts';
+import API from './API.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendAzure = {
   AzureBackend,

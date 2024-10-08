@@ -1,7 +1,7 @@
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 
-import controlComponent from './ListControl';
-import schema from './schema';
+import controlComponent from './ListControl.jsx';
+import schema from './schema.js';
 
 const previewComponent = DecapCmsWidgetObject.previewComponent;
 

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { List, Map } from 'immutable';
 
-import RawEditor from './RawEditor';
-import VisualEditor from './VisualEditor';
+import RawEditor from './RawEditor.jsx';
+import VisualEditor from './VisualEditor.jsx';
 
 const MODE_STORAGE_KEY = 'cms.md-mode';
 

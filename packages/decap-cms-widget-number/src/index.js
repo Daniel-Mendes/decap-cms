@@ -1,6 +1,6 @@
-import controlComponent from './NumberControl';
-import previewComponent from './NumberPreview';
-import schema from './schema';
+import controlComponent from './NumberControl.jsx';
+import previewComponent from './NumberPreview.jsx';
+import schema from './schema.js';
 
 function Widget(opts = {}) {
   return {

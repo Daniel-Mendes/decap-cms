@@ -1,6 +1,6 @@
 import controlComponent from './MarkdownControl';
-import previewComponent from './MarkdownPreview';
-import schema from './schema';
+import previewComponent from './MarkdownPreview.jsx';
+import schema from './schema.js';
 
 function Widget(opts = {}) {
   return {

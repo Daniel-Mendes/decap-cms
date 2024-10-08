@@ -1,6 +1,6 @@
-import controlComponent from './RelationControl';
-import previewComponent from './RelationPreview';
-import schema from './schema';
+import controlComponent from './RelationControl.jsx';
+import previewComponent from './RelationPreview.jsx';
+import schema from './schema.js';
 
 function Widget(opts = {}) {
   return {

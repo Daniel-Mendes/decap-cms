@@ -1,6 +1,6 @@
-import controlComponent from './DateTimeControl';
-import previewComponent from './DateTimePreview';
-import schema from './schema';
+import controlComponent from './DateTimeControl.jsx';
+import previewComponent from './DateTimePreview.jsx';
+import schema from './schema.js';
 
 function Widget(opts = {}) {
   return {

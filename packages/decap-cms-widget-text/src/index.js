@@ -1,5 +1,5 @@
-import controlComponent from './TextControl';
-import previewComponent from './TextPreview';
+import controlComponent from './TextControl.jsx';
+import previewComponent from './TextPreview.jsx';
 
 function Widget(opts = {}) {
   return {

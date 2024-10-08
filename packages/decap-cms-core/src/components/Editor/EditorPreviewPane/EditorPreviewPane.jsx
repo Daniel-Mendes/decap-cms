@@ -23,9 +23,9 @@ import {
 import { boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
-import EditorPreviewContent from './EditorPreviewContent.js';
-import PreviewHOC from './PreviewHOC';
-import EditorPreview from './EditorPreview';
+import EditorPreviewContent from './EditorPreviewContent.jsx';
+import PreviewHOC from './PreviewHOC.jsx';
+import EditorPreview from './EditorPreview.jsx';
 
 const PreviewPaneFrame = styled(Frame)`
   width: 100%;

@@ -1,5 +1,5 @@
-import controlComponent from './StringControl';
-import previewComponent from './StringPreview';
+import controlComponent from './StringControl.jsx';
+import previewComponent from './StringPreview.jsx';
 
 function Widget(opts = {}) {
   return {

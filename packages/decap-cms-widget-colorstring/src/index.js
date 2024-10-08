@@ -1,5 +1,5 @@
-import controlComponent from './ColorControl';
-import previewComponent from './ColorPreview';
+import controlComponent from './ColorControl.jsx';
+import previewComponent from './ColorPreview.jsx';
 
 function Widget(opts = {}) {
   return {

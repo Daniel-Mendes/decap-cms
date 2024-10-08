@@ -1,5 +1,5 @@
-import TestBackend from './implementation';
-import AuthenticationPage from './AuthenticationPage';
+import TestBackend from './implementation.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendTest = {
   TestBackend,

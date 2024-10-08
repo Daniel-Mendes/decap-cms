@@ -1,4 +1,4 @@
-import bootstrap from './bootstrap';
+import bootstrap from './bootstrap.jsx';
 import Registry from './lib/registry';
 
 export const DecapCmsCore = {

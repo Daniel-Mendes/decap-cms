@@ -9,7 +9,7 @@ import { colors, lengths } from 'decap-cms-ui-default';
 
 import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
-import WorkflowCard from './WorkflowCard';
+import WorkflowCard from './WorkflowCard.jsx';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 
 const WorkflowListContainer = styled.div`

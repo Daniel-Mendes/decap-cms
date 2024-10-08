@@ -6,7 +6,7 @@ import { omit } from 'lodash';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Range, Transforms } from 'slate';
 
-import { getEditorControl, getEditorComponents } from '../index';
+import { getEditorControl, getEditorComponents } from '../index.jsx';
 
 function Shortcode(props) {
   const editor = useSlate();

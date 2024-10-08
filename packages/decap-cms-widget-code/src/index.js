@@ -1,6 +1,6 @@
-import controlComponent from './CodeControl';
-import previewComponent from './CodePreview';
-import schema from './schema';
+import controlComponent from './CodeControl.jsx';
+import previewComponent from './CodePreview.jsx';
+import schema from './schema.js';
 
 function Widget(opts = {}) {
   return {

@@ -1,6 +1,6 @@
-import BitbucketBackend from './implementation';
-import API from './API';
-import AuthenticationPage from './AuthenticationPage';
+import BitbucketBackend from './implementation.ts';
+import API from './API.ts';
+import AuthenticationPage from './AuthenticationPage.jsx';
 
 export const DecapCmsBackendBitbucket = {
   BitbucketBackend,

@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { colorsRaw } from './styles.js';
-import Icon from './Icon';
+import { colorsRaw } from './styles.jsx';
+import Icon from './Icon.jsx';
 
 const GoBackButtonStyle = styled.a`
   display: flex;

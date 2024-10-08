@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import semaphore from 'semaphore';
 import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';

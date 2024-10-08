@@ -5,8 +5,8 @@ import styled from '@emotion/styled';
 import { colors, lengths } from 'decap-cms-ui-default';
 import { useSelected } from 'slate-react';
 
-import VoidBlock from './components/VoidBlock';
-import Shortcode from './components/Shortcode';
+import VoidBlock from './components/VoidBlock.jsx';
+import Shortcode from './components/Shortcode.jsx';
 
 const bottomMargin = '16px';
 

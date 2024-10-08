@@ -24,7 +24,7 @@ import {
 } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
-import WorkflowList from './WorkflowList';
+import WorkflowList from './WorkflowList.jsx';
 
 const WorkflowContainer = styled.div`
   padding: ${lengths.pageMargin} 0;

@@ -46,10 +46,8 @@ import iconUser from './user.svg';
 import iconWorkflow from './workflow.svg';
 import iconWrite from './write.svg';
 
-const iconix = iconAdd;
-
 const images = {
-  add: iconix,
+  add: iconAdd,
   'add-with': iconAddWith,
   arrow: iconArrow,
   azure: iconAzure,
