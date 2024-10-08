@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
+    "allowImportingTsExtensions": true,
+    "types": ["vite/client"],
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",

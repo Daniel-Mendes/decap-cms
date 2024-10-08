@@ -134,8 +134,10 @@
     </script>
   </head>
   <body>
-    <script type="module" src="../packages/decap-cms/src/index.js"></script>
-    <script>
+    <script type="module">
+      import 'decap-cms';
+    </script>
+    <!-- <script>
       var PostPreview = createClass({
         render: function () {
           var entry = this.props.entry;
@@ -275,6 +277,6 @@
           );
         },
       });
-    </script>
+    </script> -->
   </body>
 </html>
