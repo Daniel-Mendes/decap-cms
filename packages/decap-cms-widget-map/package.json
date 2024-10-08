@@ -6,12 +6,12 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-map",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
-  "module": "dist/decap-cms-widget-map.mjs",
-  "main": "dist/decap-cms-widget-map.js",
+  "module": "dist/decap-cms-widget-map.js",
+  "main": "dist/decap-cms-widget-map.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-widget-map.mjs",
-      "require": "./dist/decap-cms-widget-map.js"
+      "import": "./dist/decap-cms-widget-map.js",
+      "require": "./dist/decap-cms-widget-map.umd.cjs"
     }
   },
   "license": "MIT",

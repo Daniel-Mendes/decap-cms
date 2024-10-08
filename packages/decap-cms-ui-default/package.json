@@ -6,12 +6,15 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "type": "module",
-  "module": "dist/decap-cms-ui-default.mjs",
-  "main": "dist/decap-cms-ui-default.js",
+  "files": [
+    "dist"
+  ],
+  "module": "dist/decap-cms-ui-default.js",
+  "main": "dist/decap-cms-ui-default.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-ui-default.mjs",
-      "require": "./dist/decap-cms-ui-default.js"
+      "import": "./dist/decap-cms-ui-default.js",
+      "require": "./dist/decap-cms-ui-default.umd.cjs"
     }
   },
   "keywords": [

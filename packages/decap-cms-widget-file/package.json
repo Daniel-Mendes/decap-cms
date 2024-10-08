@@ -6,12 +6,12 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-file",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
-  "module": "dist/decap-cms-widget-file.mjs",
-  "main": "dist/decap-cms-widget-file.js",
+  "module": "dist/decap-cms-widget-file.js",
+  "main": "dist/decap-cms-widget-file.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-widget-file.mjs",
-      "require": "./dist/decap-cms-widget-file.js"
+      "import": "./dist/decap-cms-widget-file.js",
+      "require": "./dist/decap-cms-widget-file.umd.cjs"
     }
   },
   "license": "MIT",

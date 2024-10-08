@@ -6,12 +6,12 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "type": "module",
-  "module": "dist/decap-cms-backend-test.mjs",
-  "main": "dist/decap-cms-backend-test.js",
+  "module": "dist/decap-cms-backend-test.js",
+  "main": "dist/decap-cms-backend-test.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-backend-test.mjs",
-      "require": "./dist/decap-cms-backend-test.js"
+      "import": "./dist/decap-cms-backend-test.js",
+      "require": "./dist/decap-cms-backend-test.umd.cjs"
     }
   },
   "keywords": [

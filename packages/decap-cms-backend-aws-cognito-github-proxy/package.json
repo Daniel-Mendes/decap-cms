@@ -6,12 +6,12 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-aws-cognito-github-proxy",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
-  "module": "dist/decap-cms-backend-aws-cognito-github-proxy.mjs",
-  "main": "dist/decap-cms-backend-aws-cognito-github-proxy.js",
+  "module": "dist/decap-cms-backend-aws-cognito-github-proxy.js",
+  "main": "dist/decap-cms-backend-aws-cognito-github-proxy.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-backend-aws-cognito-github-proxy.mjs",
-      "require": "./dist/decap-cms-backend-aws-cognito-github-proxy.js"
+      "import": "./dist/decap-cms-backend-aws-cognito-github-proxy.js",
+      "require": "./dist/decap-cms-backend-aws-cognito-github-proxy.umd.cjs"
     }
   },
   "keywords": [

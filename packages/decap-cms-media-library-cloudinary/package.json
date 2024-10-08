@@ -5,12 +5,12 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-media-library-cloudinary",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
-  "module": "dist/decap-cms-media-library-cloudinary.mjs",
-  "main": "dist/decap-cms-media-library-cloudinary.js",
+  "module": "dist/decap-cms-media-library-cloudinary.js",
+  "main": "dist/decap-cms-media-library-cloudinary.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-media-library-cloudinary.mjs",
-      "require": "./dist/decap-cms-media-library-cloudinary.js"
+      "import": "./dist/decap-cms-media-library-cloudinary.js",
+      "require": "./dist/decap-cms-media-library-cloudinary.umd.cjs"
     }
   },
   "license": "MIT",

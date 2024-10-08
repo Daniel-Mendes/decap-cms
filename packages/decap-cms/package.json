@@ -7,13 +7,15 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
   "main": "dist/decap-cms.js",
-  "module": "dist/decap-cms.mjs",
+  "module": "dist/decap-cms.js",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms.mjs",
-      "require": "./dist/decap-cms.js"
+      "default": "./dist/decap-cms.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
     "develop": "vite ",
@@ -32,10 +34,8 @@
     "decap-cms-app": "^3.3.3",
     "decap-cms-media-library-cloudinary": "^3.0.3",
     "decap-cms-media-library-uploadcare": "^3.0.2",
-    "file-loader": "^6.2.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "svgo-loader": "^3.0.3"
+    "react-dom": "^18.2.0"
   },
   "incrementToForceBump": 2
 }

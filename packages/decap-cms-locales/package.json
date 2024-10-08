@@ -6,12 +6,12 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "type": "module",
-  "main": "dist/decap-cms-locales.js",
-  "module": "dist/decap-cms-locales.mjs",
+  "main": "dist/decap-cms-locales.umd.cjs",
+  "module": "dist/decap-cms-locales.js",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-locales.mjs",
-      "require": "./dist/decap-cms-locales.js"
+      "import": "./dist/decap-cms-locales.js",
+      "require": "./dist/decap-cms-locales.umd.cjs"
     }
   },
   "keywords": [

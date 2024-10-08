@@ -6,12 +6,12 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "type": "module",
-  "module": "dist/decap-cms-backend-proxy.mjs",
-  "main": "dist/decap-cms-backend-proxy.js",
+  "module": "dist/decap-cms-backend-proxy.js",
+  "main": "dist/decap-cms-backend-proxy.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-backend-proxy.mjs",
-      "require": "./dist/decap-cms-backend-proxy.js"
+      "import": "./dist/decap-cms-backend-proxy.js",
+      "require": "./dist/decap-cms-backend-proxy.umd.cjs"
     }
   },
   "keywords": [

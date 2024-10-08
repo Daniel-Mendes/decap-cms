@@ -6,12 +6,12 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-boolean",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
-  "module": "dist/decap-cms-widget-boolean.mjs",
-  "main": "dist/decap-cms-widget-boolean.js",
+  "module": "dist/decap-cms-widget-boolean.js",
+  "main": "dist/decap-cms-widget-boolean.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-widget-boolean.mjs",
-      "require": "./dist/decap-cms-widget-boolean.js"
+      "import": "./dist/decap-cms-widget-boolean.js",
+      "require": "./dist/decap-cms-widget-boolean.umd.cjs"
     }
   },
   "license": "MIT",

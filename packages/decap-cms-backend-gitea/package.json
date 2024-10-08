@@ -6,12 +6,12 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "type": "module",
-  "module": "dist/decap-cms-backend-gitea.mjs",
-  "main": "dist/decap-cms-backend-gitea.js",
+  "module": "dist/decap-cms-backend-gitea.js",
+  "main": "dist/decap-cms-backend-gitea.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-backend-gitea.mjs",
-      "require": "./dist/decap-cms-backend-gitea.js"
+      "import": "./dist/decap-cms-backend-gitea.js",
+      "require": "./dist/decap-cms-backend-gitea.umd.cjs"
     }
   },
   "keywords": [

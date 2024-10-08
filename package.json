@@ -43,17 +43,17 @@
     "last 2 ChromeAndroid versions"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^16.0.0",
-    "@commitlint/config-conventional": "^16.0.0",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@emotion/eslint-plugin": "^11.0.0",
     "@emotion/jest": "^11.11.0",
     "@octokit/rest": "^16.28.7",
     "@simonsmith/cypress-image-snapshot": "^8.1.2",
-    "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@storybook/addon-actions": "^7.5.1",
     "@storybook/addon-links": "^7.5.1",
     "@storybook/react": "^7.5.1",
     "@stylelint/postcss-css-in-js": "^0.37.2",
+    "@swc/plugin-emotion": "^4.0.2",
     "@testing-library/dom": "^8.0.0",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^14.0.0",
@@ -69,9 +69,7 @@
     "all-contributors-cli": "^6.0.0",
     "axios": "^1.6.0",
     "cache-me-outside": "^0.0.10",
-    "copy-webpack-plugin": "^10.2.4",
     "cross-env": "^7.0.0",
-    "css-loader": "^7.1.2",
     "cypress": "12.5.0",
     "cypress-jest-adapter": "^0.1.1",
     "cypress-plugin-tab": "^1.0.0",
@@ -109,20 +107,16 @@
     "rimraf": "^3.0.0",
     "simple-git": "^3.0.0",
     "start-server-and-test": "^1.7.11",
-    "style-loader": "^3.3.3",
     "stylelint": "^14.5.3",
     "stylelint-config-standard-scss": "^3.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
-    "svg-inline-loader": "^0.8.0",
-    "to-string-loader": "^1.1.5",
     "typescript": "^4.9.4",
     "unist-util-visit": "^1.4.0",
     "vite": "^5.4.8",
     "vite-plugin-dts": "^4.2.3",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1"
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "vite-plugin-svgr": "4.2.0"
   },
   "workspaces": {
     "packages": [
@@ -135,14 +129,10 @@
   },
   "private": true,
   "dependencies": {
-    "browserify": "^17.0.0",
-    "buffer": "^6.0.3",
     "emotion": "^11.0.0",
     "eslint-config-prettier": "^8.0.0",
     "globby": "^12.0.0",
-    "imports-loader": "^4.0.1",
-    "lerna": "^8.0.2",
-    "process": "^0.11.10"
+    "lerna": "^8.0.2"
   },
   "resolutions": {
     "react-redux": "^7.2.0"

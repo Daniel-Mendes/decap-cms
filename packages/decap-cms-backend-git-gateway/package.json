@@ -5,12 +5,12 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-git-gateway",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "type": "module",
-  "module": "dist/decap-cms-backend-git-gateway.mjs",
-  "main": "dist/decap-cms-backend-git-gateway.js",
+  "module": "dist/decap-cms-backend-git-gateway.js",
+  "main": "dist/decap-cms-backend-git-gateway.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/decap-cms-backend-git-gateway.mjs",
-      "require": "./dist/decap-cms-backend-git-gateway.js"
+      "import": "./dist/decap-cms-backend-git-gateway.js",
+      "require": "./dist/decap-cms-backend-git-gateway.umd.cjs"
     }
   },
   "license": "MIT",
