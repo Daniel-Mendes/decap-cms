@@ -155,19 +155,22 @@ export function extractSearchFields(searchFields: string[]) {
 
 export function expandSearchEntries(entries: EntryValue[], searchFields: string[]) {
   // expand the entries for the purpose of the search
-  const expandedEntries = entries.reduce((acc, e) => {
-    const expandedFields = searchFields.reduce((acc, f) => {
-      const fields = expandPath({ data: e.data, path: f });
-      acc.push(...fields);
+  const expandedEntries = entries.reduce(
+    (acc, e) => {
+      const expandedFields = searchFields.reduce((acc, f) => {
+        const fields = expandPath({ data: e.data, path: f });
+        acc.push(...fields);
+        return acc;
+      }, [] as string[]);
+
+      for (let i = 0; i < expandedFields.length; i++) {
+        acc.push({ ...e, field: expandedFields[i] });
+      }
+
       return acc;
-    }, [] as string[]);
-
-    for (let i = 0; i < expandedFields.length; i++) {
-      acc.push({ ...e, field: expandedFields[i] });
-    }
-
-    return acc;
-  }, [] as (EntryValue & { field: string })[]);
+    },
+    [] as (EntryValue & { field: string })[],
+  );
 
   return expandedEntries;
 }
@@ -177,26 +180,29 @@ export function mergeExpandedEntries(entries: (EntryValue & { field: string })[]
   const fields = entries.map(f => f.field);
   const arrayPaths: Record<string, Set<string>> = {};
 
-  const merged = entries.reduce((acc, e) => {
-    if (!acc[e.slug]) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { field, ...rest } = e;
-      acc[e.slug] = rest;
-      arrayPaths[e.slug] = Set();
-    }
-
-    const nestedFields = e.field.split('.');
-    let value = acc[e.slug].data;
-    for (let i = 0; i < nestedFields.length; i++) {
-      value = value[nestedFields[i]];
-      if (Array.isArray(value)) {
-        const path = nestedFields.slice(0, i + 1).join('.');
-        arrayPaths[e.slug] = arrayPaths[e.slug].add(path);
+  const merged = entries.reduce(
+    (acc, e) => {
+      if (!acc[e.slug]) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { field, ...rest } = e;
+        acc[e.slug] = rest;
+        arrayPaths[e.slug] = Set();
       }
-    }
 
-    return acc;
-  }, {} as Record<string, EntryValue>);
+      const nestedFields = e.field.split('.');
+      let value = acc[e.slug].data;
+      for (let i = 0; i < nestedFields.length; i++) {
+        value = value[nestedFields[i]];
+        if (Array.isArray(value)) {
+          const path = nestedFields.slice(0, i + 1).join('.');
+          arrayPaths[e.slug] = arrayPaths[e.slug].add(path);
+        }
+      }
+
+      return acc;
+    },
+    {} as Record<string, EntryValue>,
+  );
 
   // this keeps the search score sorting order designated by the order in entries
   // and filters non matching items

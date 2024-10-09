@@ -25,7 +25,9 @@ const ToolbarContainer = styled.div`
   align-items: center;
   padding: 11px 14px;
   min-height: 58px;
-  transition: background-color ${transitions.main}, color ${transitions.main};
+  transition:
+    background-color ${transitions.main},
+    color ${transitions.main};
   color: ${colors.text};
 `;
 

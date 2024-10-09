@@ -149,7 +149,9 @@ const effects = {
   checkerboard: css`
     background-color: ${colors.checkerboardLight};
     background-size: 16px 16px;
-    background-position: 0 0, 8px 8px;
+    background-position:
+      0 0,
+      8px 8px;
     background-image: ${gradients.checkerboard}, ${gradients.checkerboard};
   `,
 };
@@ -382,8 +384,8 @@ const reactSelectStyles = {
     backgroundColor: state.isSelected
       ? `${colors.active}`
       : state.isFocused
-      ? `${colors.activeBackground}`
-      : 'transparent',
+        ? `${colors.activeBackground}`
+        : 'transparent',
     paddingLeft: '22px',
   }),
   menu: styles => ({ ...styles, right: 0, zIndex: zIndex.zIndex300 }),

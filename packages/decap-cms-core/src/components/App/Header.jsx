@@ -131,9 +131,12 @@ class Header extends React.Component {
   intervalId;
 
   componentDidMount() {
-    this.intervalId = setInterval(() => {
-      this.props.checkBackendStatus();
-    }, 5 * 60 * 1000);
+    this.intervalId = setInterval(
+      () => {
+        this.props.checkBackendStatus();
+      },
+      5 * 60 * 1000,
+    );
   }
 
   componentWillUnmount() {

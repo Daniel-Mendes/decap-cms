@@ -180,12 +180,12 @@ export function query(
     const queryPromise = queuedQueryPromise
       ? queuedQueryPromise.queryResponse
       : integration
-      ? getIntegrationProvider(state.integrations, backend.getToken, integration).searchBy(
-          searchFields.map(f => `data.${f}`),
-          collectionName,
-          searchTerm,
-        )
-      : backend.query(collection, searchFields, searchTerm, file, limit);
+        ? getIntegrationProvider(state.integrations, backend.getToken, integration).searchBy(
+            searchFields.map(f => `data.${f}`),
+            collectionName,
+            searchTerm,
+          )
+        : backend.query(collection, searchFields, searchTerm, file, limit);
 
     dispatch(
       querying(

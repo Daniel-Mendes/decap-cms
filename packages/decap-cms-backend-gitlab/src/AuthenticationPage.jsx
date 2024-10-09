@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import {
-  NetlifyAuthenticator,
-  ImplicitAuthenticator,
-  PkceAuthenticator,
-} from 'decap-cms-lib-auth';
+import { NetlifyAuthenticator, ImplicitAuthenticator, PkceAuthenticator } from 'decap-cms-lib-auth';
 import { AuthenticationPage, Icon } from 'decap-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
@@ -13,11 +9,7 @@ const LoginButtonIcon = styled(Icon)`
 `;
 
 const clientSideAuthenticators = {
-  pkce: ({
-    base_url,
-    auth_endpoint,
-    app_id,
-    auth_token_endpoint}) =>
+  pkce: ({ base_url, auth_endpoint, app_id, auth_token_endpoint }) =>
     new PkceAuthenticator({
       base_url,
       auth_endpoint,
@@ -26,11 +18,7 @@ const clientSideAuthenticators = {
       auth_token_endpoint_content_type: 'application/json; charset=utf-8',
     }),
 
-  implicit: ({
-    base_url,
-    auth_endpoint,
-    app_id,
-    clearHash }) =>
+  implicit: ({ base_url, auth_endpoint, app_id, clearHash }) =>
     new ImplicitAuthenticator({
       base_url,
       auth_endpoint,

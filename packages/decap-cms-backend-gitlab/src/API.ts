@@ -520,9 +520,7 @@ export default class API {
 
     const [blobsResults, commitsResults] = await Promise.all([
       (await Promise.all(blobPromises)).map(result => result.data.project.repository.blobs.nodes),
-      (
-        await Promise.all(commitPromises)
-      ).map(
+      (await Promise.all(commitPromises)).map(
         result =>
           Object.values(result.data.project.repository)
             .map(({ lastCommit }) => lastCommit)
