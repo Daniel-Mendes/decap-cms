@@ -33,12 +33,12 @@ const Caret = styled.div`
 
 const CaretDown = styled(Caret)`
   ${components.caretDown};
-  color: currentColor;
+  color: currentcolor;
 `;
 
 const CaretRight = styled(Caret)`
   ${components.caretRight};
-  color: currentColor;
+  color: currentcolor;
   left: 2px;
 `;
 

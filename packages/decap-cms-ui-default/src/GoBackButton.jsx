@@ -8,10 +8,8 @@ import Icon from './Icon.jsx';
 const GoBackButtonStyle = styled.a`
   display: flex;
   align-items: center;
-
   margin-top: 50px;
   padding: 10px;
-
   font-size: 14px;
 `;
 

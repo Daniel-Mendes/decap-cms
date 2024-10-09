@@ -38,8 +38,8 @@ const FieldLabel = styled.label`
   /**
    * Faux outside curve into top of input
    */
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     content: '';
     display: block;
     position: absolute;
@@ -50,7 +50,7 @@ const FieldLabel = styled.label`
     background-color: inherit;
   }
 
-  &:after {
+  &::after {
     border-bottom-left-radius: 3px;
     background-color: #fff;
   }

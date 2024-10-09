@@ -51,7 +51,7 @@ const ColorSwatch = styled.div`
   margin-top: 10px;
   margin-left: 10px;
   border-radius: 5px;
-  border: 2px solid rgb(223, 223, 227);
+  border: 2px solid rgb(223 223 227);
   text-align: center;
   font-size: 27px;
   line-height: 1;
@@ -70,10 +70,7 @@ const ColorPickerContainer = styled.div`
 // fullscreen div to close color picker when clicking outside of picker
 const ClickOutsideDiv = styled.div`
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
 `;
 
 export default class ColorControl extends React.Component {

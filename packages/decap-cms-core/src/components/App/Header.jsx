@@ -103,7 +103,7 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.gray};
   margin-right: 8px;
 
-  &:after {
+  &::after {
     top: 11px;
   }
 `;

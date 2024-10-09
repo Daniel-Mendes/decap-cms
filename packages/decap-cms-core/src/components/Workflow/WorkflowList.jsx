@@ -35,8 +35,8 @@ const styles = {
         margin-right: 0;
       `) ||
     css`
-      &:before,
-      &:after {
+      &::before,
+      &::after {
         content: '';
         display: block;
         position: absolute;
@@ -46,11 +46,11 @@ const styles = {
         background-color: ${colors.textFieldBorder};
       }
 
-      &:before {
+      &::before {
         left: -23px;
       }
 
-      &:after {
+      &::after {
         right: -23px;
       }
     `,
@@ -69,8 +69,8 @@ const styles = {
     display: none;
   `,
   hiddenRightBorder: css`
-    &:not(:first-child):not(:last-child) {
-      &:after {
+    &:not(:first-child, :last-child) {
+      &::after {
         display: none;
       }
     }

@@ -146,14 +146,12 @@ function PaginatedGrid({
 }
 
 const CardGridContainer = styled.div`
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
 `;
 
 const CardGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-
   margin-left: -10px;
   margin-right: -10px;
 `;

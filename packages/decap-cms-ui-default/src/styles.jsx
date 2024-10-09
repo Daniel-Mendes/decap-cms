@@ -269,12 +269,12 @@ const components = {
   card,
   caretDown: css`
     ${caret};
-    border-top: 6px solid currentColor;
+    border-top: 6px solid currentcolor;
     border-bottom: 0;
   `,
   caretRight: css`
     ${caret};
-    border-left: 6px solid currentColor;
+    border-left: 6px solid currentcolor;
     border-right: 0;
   `,
   badge: css`
@@ -432,8 +432,8 @@ function GlobalStyles() {
     <Global
       styles={css`
         *,
-        *:before,
-        *:after {
+        *::before,
+        *::after {
           box-sizing: border-box;
         }
 

@@ -93,6 +93,6 @@ Toggle.propTypes = {
   Handle: PropTypes.func,
 };
 
-const StyledToggle = styled(Toggle)``;
+const StyledToggle = styled(Toggle);
 
 export { StyledToggle as default, ToggleContainer, ToggleBackground, ToggleHandle };

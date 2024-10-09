@@ -36,7 +36,7 @@ const LocaleButton = styled(StyledDropdownButton)`
   background: ${colors.textFieldBorder};
   height: 100%;
 
-  &:after {
+  &::after {
     top: 11px;
   }
 `;

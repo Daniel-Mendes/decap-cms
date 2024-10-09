@@ -126,8 +126,8 @@ const StyledLoader = styled(Loader)`
   z-index: ${zIndex.zIndex1000};
   transform: translateX(-50%) translateY(-50%);
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
     top: 0%;
@@ -141,12 +141,12 @@ const StyledLoader = styled(Loader)`
   }
 
   /* Static Shape */
-  &:before {
-    border-color: rgba(0, 0, 0, 0.1);
+  &::before {
+    border-color: rgb(0 0 0 / 10%);
   }
 
   /* Active Shape */
-  &:after {
+  &::after {
     animation: ${animations.loader} 0.6s linear;
     animation-iteration-count: infinite;
     border-color: ${colors.active} transparent transparent;

@@ -68,7 +68,7 @@ const CardBody = styled.div`
   position: relative;
   margin-bottom: ${props => props.hasImage && 0};
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
     display: block;

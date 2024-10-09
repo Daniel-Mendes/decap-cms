@@ -21,14 +21,14 @@ const StyledDropdownButton = styled(DropdownButton)`
   padding-right: 40px;
   position: relative;
 
-  &:after {
+  &::after {
     ${components.caretDown};
     content: '';
     display: block;
     position: absolute;
     top: 16px;
     right: 10px;
-    color: currentColor;
+    color: currentcolor;
   }
 `;
 
@@ -62,10 +62,12 @@ function StyledMenuItem({ isActive, isCheckedItem = false, ...props }) {
           color: ${isActive ? colors.active : '#313d3e'};
           ${isCheckedItem ? 'display: flex; justify-content: start' : ''};
         }
+
         &:hover {
           color: ${colors.active};
           background-color: ${colors.activeBackground};
         }
+
         &.active {
           text-decoration: underline;
         }

@@ -29,7 +29,7 @@ const GroupHeading = styled.h2`
   color: ${colors.textLead};
 `;
 
-const GroupContainer = styled.div``;
+const GroupContainer = styled.div;
 
 function getGroupEntries(entries, paths) {
   return entries.filter(entry => paths.has(entry.get('path')));

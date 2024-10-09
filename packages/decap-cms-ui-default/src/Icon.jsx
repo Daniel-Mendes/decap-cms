@@ -15,7 +15,7 @@ const IconWrapper = styled.span`
   & circle:not(.no-fill),
   & polygon:not(.no-fill),
   & rect:not(.no-fill) {
-    fill: currentColor;
+    fill: currentcolor;
   }
 
   & path.clipped {
@@ -73,4 +73,4 @@ Icon.propTypes = {
   className: PropTypes.string,
 };
 
-export default styled(Icon)``;
+export default styled(Icon);

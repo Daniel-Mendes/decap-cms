@@ -52,7 +52,7 @@ function ReactSplitPaneGlobalStyles() {
           position: relative;
           background: none;
 
-          &:before {
+          &::before {
             content: '';
             width: 2px;
             height: 100%;
@@ -65,7 +65,7 @@ function ReactSplitPaneGlobalStyles() {
 
           &:hover,
           &:active {
-            &:before {
+            &::before {
               width: 4px;
               left: -1px;
               background-color: ${colorsRaw.blue};

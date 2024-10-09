@@ -32,7 +32,6 @@ const AuthForm = styled.form`
 const AuthInput = styled.input`
   background-color: ${colorsRaw.white};
   border-radius: ${lengths.borderRadius};
-
   font-size: 14px;
   padding: 10px;
   margin-bottom: 15px;
