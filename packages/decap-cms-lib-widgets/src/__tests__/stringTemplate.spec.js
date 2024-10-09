@@ -39,7 +39,7 @@ describe('stringTemplate', () => {
       const entry = fromJS({ data: {} });
       expect(parseDateFromEntry(entry, '')).toBeUndefined();
       expect(parseDateFromEntry(entry, null)).toBeUndefined();
-      expect(parseDateFromEntry(entry, undefined)).toBeUndefined();
+      expect(parseDateFromEntry(entry)).toBeUndefined();
     });
 
     it('should return undefined on invalid date', () => {

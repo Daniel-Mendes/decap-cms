@@ -54,7 +54,7 @@ function bootstrap(opts = {}) {
     /**
      * Return existing root if found.
      */
-    const existingRoot = document.getElementById(ROOT_ID);
+    const existingRoot = document.querySelector(`#${ROOT_ID}`);
     if (existingRoot) {
       return existingRoot;
     }
@@ -64,7 +64,7 @@ function bootstrap(opts = {}) {
      */
     const newRoot = document.createElement('div');
     newRoot.id = ROOT_ID;
-    document.body.appendChild(newRoot);
+    document.body.append(newRoot);
     return newRoot;
   }
 

@@ -118,7 +118,7 @@ export default class ControlPane extends React.Component {
     ({ targetLocale, t }) =>
     sourceLocale => {
       if (
-        !window.confirm(
+        !globalThis.confirm(
           t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
             locale: sourceLocale.toUpperCase(),
           }),
@@ -136,7 +136,7 @@ export default class ControlPane extends React.Component {
         defaultLocale,
       };
 
-      this.props.fields.forEach(field => {
+      for (const field of this.props.fields) {
         if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
           const copyValue = getFieldValue({
             field,
@@ -146,14 +146,14 @@ export default class ControlPane extends React.Component {
           });
           if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
         }
-      });
+      }
     };
 
   validate = async () => {
-    this.props.fields.forEach(field => {
-      if (field.get('widget') === 'hidden') return;
+    for (const field of this.props.fields) {
+      if (field.get('widget') === 'hidden') continue;
       this.componentValidate[field.get('name')]();
-    });
+    }
   };
 
   switchToDefaultLocale = () => {

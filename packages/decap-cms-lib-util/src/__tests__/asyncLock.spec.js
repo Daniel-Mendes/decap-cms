@@ -19,7 +19,7 @@ describe('asyncLock', () => {
     const promise = lock.acquire();
 
     // advance by default lock timeout
-    jest.advanceTimersByTime(15000);
+    jest.advanceTimersByTime(15_000);
 
     const acquired = await promise;
 
@@ -64,7 +64,7 @@ describe('asyncLock', () => {
     const promise = lock.acquire();
 
     // advance by default lock timeout
-    jest.advanceTimersByTime(15000);
+    jest.advanceTimersByTime(15_000);
 
     let acquired = await promise;
 

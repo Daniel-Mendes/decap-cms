@@ -11,13 +11,8 @@ function Link({ type }) {
 
           const url = getUrl(link.data.url);
 
-          if (url) {
-            // replace the old link
-            return editor.setInlines({ data: { url } });
-          } else {
-            // remove url if it was removed by the user
-            return editor.unwrapInline(type);
-          }
+          // replace the old link or remove url if it was removed by the user
+          return url ? editor.setInlines({ data: { url } }) : editor.unwrapInline(type);
         } else {
           const url = getUrl();
           if (!url) {

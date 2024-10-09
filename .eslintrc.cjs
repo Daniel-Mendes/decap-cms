@@ -9,6 +9,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
+    'plugin:unicorn/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
@@ -16,7 +17,7 @@ module.exports = {
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@emotion', 'cypress', '@typescript-eslint'],
+  plugins: ['@emotion', 'cypress', 'unicorn', '@typescript-eslint'],
   root: true,
   settings: {
     react: {
@@ -59,10 +60,23 @@ module.exports = {
     'import/no-named-as-default': 'off',
     'react/prop-types': 'off',
     'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
+    'unicorn/prevent-abbreviations': 'off',
+    'unicorn/no-null': 'off',
+    'unicorn/filename-case': 'off',
+    'unicorn/prefer-module': 'off',
+    'unicorn/no-thenable': 'off',
+    'unicorn/consistent-function-scoping': 'off',
+    'unicorn/no-array-callback-reference': 'off',
+    'unicorn/no-array-reduce': 'off',
+    'unicorn/no-useless-switch-case': 'off',
+    'unicorn/prefer-spread': 'off',
+    'unicorn/import-style': 'off',
+    'unicorn/no-await-expression-member': 'off',
+    'unicorn/error-message': 'off',
     '@typescript-eslint/no-empty-object-type': 'off',
     '@typescript-eslint/no-require-imports': 'off',
     '@typescript-eslint/no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-unsafe-function-type': 'off',
-  }
+  },
 };

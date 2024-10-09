@@ -24,11 +24,11 @@ export default class ImplicitAuthenticator {
     authURL.searchParams.set('response_type', 'token');
     authURL.searchParams.set('scope', options.scope);
 
-    if (options.prompt != null && options.prompt != undefined) {
+    if (options.prompt != undefined && options.prompt != undefined) {
       authURL.searchParams.set('prompt', options.prompt);
     }
 
-    if (options.resource != null && options.resource != undefined) {
+    if (options.resource != undefined && options.resource != undefined) {
       authURL.searchParams.set('resource', options.resource);
     }
 

@@ -173,6 +173,8 @@ export {
   Dropdown as default,
   DropdownItem,
   DropdownCheckedItem,
-  DropdownButton,
+  
   StyledDropdownButton,
 };
+
+export {Button as DropdownButton} from 'react-aria-menubutton';

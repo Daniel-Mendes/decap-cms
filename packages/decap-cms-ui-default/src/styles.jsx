@@ -425,8 +425,8 @@ const zIndex = {
   zIndex299: 299,
   zIndex300: 300,
   zIndex1000: 1000,
-  zIndex10000: 10000,
-  zIndex99999: 99999,
+  zIndex10000: 10_000,
+  zIndex99999: 99_999,
 };
 
 function GlobalStyles() {

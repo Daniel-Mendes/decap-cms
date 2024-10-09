@@ -47,7 +47,7 @@ export default class MarkdownControl extends React.Component {
     _getEditorComponents = props.getEditorComponents;
     this.state = {
       mode:
-        this.getAllowedModes().indexOf(preferredMode) !== -1
+        this.getAllowedModes().includes(preferredMode)
           ? preferredMode
           : this.getAllowedModes()[0],
       pendingFocus: false,

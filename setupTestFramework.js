@@ -9,5 +9,5 @@ jest.mock('path', () => {
   };
 });
 
-window.fetch = fetch;
-window.URL.createObjectURL = jest.fn();
+globalThis.fetch = fetch;
+globalThis.URL.createObjectURL = jest.fn();

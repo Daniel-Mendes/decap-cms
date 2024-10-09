@@ -12,19 +12,19 @@ function process(text) {
 
 describe('remarkEscapeMarkdownEntities', () => {
   it('should escape common markdown entities', () => {
-    expect(process('*a*')).toEqual('\\*a\\*');
-    expect(process('**a**')).toEqual('\\*\\*a\\*\\*');
-    expect(process('***a***')).toEqual('\\*\\*\\*a\\*\\*\\*');
-    expect(process('_a_')).toEqual('\\_a\\_');
-    expect(process('__a__')).toEqual('\\_\\_a\\_\\_');
-    expect(process('~~a~~')).toEqual('\\~\\~a\\~\\~');
-    expect(process('[]')).toEqual('\\[]');
-    expect(process('[]()')).toEqual('\\[]()');
-    expect(process('[a](b)')).toEqual('\\[a](b)');
+    expect(process('*a*')).toEqual(String.raw`\*a\*`);
+    expect(process('**a**')).toEqual(String.raw`\*\*a\*\*`);
+    expect(process('***a***')).toEqual(String.raw`\*\*\*a\*\*\*`);
+    expect(process('_a_')).toEqual(String.raw`\_a\_`);
+    expect(process('__a__')).toEqual(String.raw`\_\_a\_\_`);
+    expect(process('~~a~~')).toEqual(String.raw`\~\~a\~\~`);
+    expect(process('[]')).toEqual(String.raw`\[]`);
+    expect(process('[]()')).toEqual(String.raw`\[]()`);
+    expect(process('[a](b)')).toEqual(String.raw`\[a](b)`);
     expect(process('[Test sentence.](https://www.example.com)')).toEqual(
-      '\\[Test sentence.](https://www.example.com)',
+      String.raw`\[Test sentence.](https://www.example.com)`,
     );
-    expect(process('![a](b)')).toEqual('!\\[a](b)');
+    expect(process('![a](b)')).toEqual(String.raw`!\[a](b)`);
   });
 
   it('should not escape inactive, single markdown entities', () => {
@@ -35,19 +35,19 @@ describe('remarkEscapeMarkdownEntities', () => {
   });
 
   it('should escape leading markdown entities', () => {
-    expect(process('#')).toEqual('\\#');
-    expect(process('-')).toEqual('\\-');
-    expect(process('*')).toEqual('\\*');
-    expect(process('>')).toEqual('\\>');
-    expect(process('=')).toEqual('\\=');
-    expect(process('|')).toEqual('\\|');
+    expect(process('#')).toEqual(String.raw`\#`);
+    expect(process('-')).toEqual(String.raw`\-`);
+    expect(process('*')).toEqual(String.raw`\*`);
+    expect(process('>')).toEqual(String.raw`\>`);
+    expect(process('=')).toEqual(String.raw`\=`);
+    expect(process('|')).toEqual(String.raw`\|`);
     expect(process('```')).toEqual('\\`\\``');
-    expect(process('    ')).toEqual('\\    ');
+    expect(process('    ')).toEqual(String.raw`\    `);
   });
 
   it('should escape leading markdown entities preceded by whitespace', () => {
-    expect(process('\n #')).toEqual('\\#');
-    expect(process(' \n-')).toEqual('\\-');
+    expect(process('\n #')).toEqual(String.raw`\#`);
+    expect(process(' \n-')).toEqual(String.raw`\-`);
   });
 
   it('should not escape leading markdown entities preceded by non-whitespace characters', () => {
@@ -61,7 +61,7 @@ describe('remarkEscapeMarkdownEntities', () => {
   });
 
   it('should escape the contents of html blocks', () => {
-    expect(process('<div>*a*</div>')).toEqual('<div>\\*a\\*</div>');
+    expect(process('<div>*a*</div>')).toEqual(String.raw`<div>\*a\*</div>`);
   });
 
   it('should not escape the contents of preformatted html blocks', () => {

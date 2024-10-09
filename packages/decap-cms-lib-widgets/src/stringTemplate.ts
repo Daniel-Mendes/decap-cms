@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { get, trimEnd, truncate } from 'lodash';
 import dayjs from 'dayjs';
-import { basename, dirname, extname } from 'path';
+import path from 'node:path';
 
 const filters = [
   { pattern: /^upper$/, transform: (str: string) => str.toUpperCase() },
@@ -15,7 +15,7 @@ const filters = [
   },
   {
     pattern: /^default\('(.+)'\)$/,
-    transform: (str: string, match: RegExpMatchArray) => (str ? str : match[1]),
+    transform: (str: string, match: RegExpMatchArray) => (str || match[1]),
   },
   {
     pattern: /^ternary\('(.*)',\s*'(.*)'\)$/,
@@ -25,7 +25,7 @@ const filters = [
     pattern: /^truncate\(([0-9]+)(?:(?:,\s*['"])([^'"]*)(?:['"]))?\)$/,
     transform: (str: string, match: RegExpMatchArray) => {
       const omission = match[2] || '...';
-      const length = parseInt(match[1]) + omission.length;
+      const length = Number.parseInt(match[1]) + omission.length;
 
       return truncate(str, {
         length,
@@ -37,7 +37,7 @@ const filters = [
 
 const FIELD_PREFIX = 'fields.';
 const templateContentPattern = '([^}{|]+)';
-const filterPattern = '( \\| ([^}{]+))?';
+const filterPattern = String.raw`( \| ([^}{]+))?`;
 const templateVariablePattern = `{{${templateContentPattern}${filterPattern}}}`;
 
 // prepends a Zero if the date has only 1 digit
@@ -116,13 +116,13 @@ export function expandPath({
     const value = get(data, partialPath);
 
     if (Array.isArray(value)) {
-      value.forEach((_, index) => {
+      for (const [index, _] of value.entries()) {
         expandPath({
           data,
           path: trimEnd(`${partialPath}.${index}.${parts.slice(1).join(sep)}`, '.'),
           paths,
         });
-      });
+      }
     }
   }
 
@@ -171,8 +171,8 @@ export function compileStringTemplate(
   // `null` as the date arg.
   const useDate = date !== null;
 
-  const compiledString = template.replace(
-    RegExp(templateVariablePattern, 'g'),
+  const compiledString = template.replaceAll(
+    new RegExp(templateVariablePattern, 'g'),
     (_full, key: string, _part, filter: string) => {
       let replacement;
       const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
@@ -213,8 +213,8 @@ export function compileStringTemplate(
 }
 
 export function extractTemplateVars(template: string) {
-  const regexp = RegExp(templateVariablePattern, 'g');
-  const contentRegexp = RegExp(templateContentPattern, 'g');
+  const regexp = new RegExp(templateVariablePattern, 'g');
+  const contentRegexp = new RegExp(templateContentPattern, 'g');
   const matches = template.match(regexp) || [];
   return matches.map(elem => {
     const match = elem.match(contentRegexp);
@@ -235,9 +235,9 @@ export function addFileTemplateFields(entryPath: string, fields: Map<string, str
     return fields;
   }
 
-  const extension = extname(entryPath);
-  const filename = basename(entryPath, extension);
-  const dirnameExcludingFolder = dirname(entryPath).replace(new RegExp(`^(/?)${folder}/?`), '$1');
+  const extension = path.extname(entryPath);
+  const filename = path.basename(entryPath, extension);
+  const dirnameExcludingFolder = path.dirname(entryPath).replace(new RegExp(`^(/?)${folder}/?`), '$1');
   fields = fields.withMutations(map => {
     map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);

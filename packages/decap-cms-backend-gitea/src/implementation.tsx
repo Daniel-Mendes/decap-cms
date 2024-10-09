@@ -98,8 +98,8 @@ export default class Gitea implements Implementation {
       (await this.api
         ?.user()
         .then(user => !!user)
-        .catch(e => {
-          console.warn('[StaticCMS] Failed getting Gitea user', e);
+        .catch(error => {
+          console.warn('[StaticCMS] Failed getting Gitea user', error);
           return false;
         })) || false;
 
@@ -206,12 +206,10 @@ export default class Gitea implements Implementation {
 
     const actions = [] as string[];
     if (page > 1) {
-      actions.push('prev');
-      actions.push('first');
+      actions.push('prev', 'first');
     }
     if (page < pageCount) {
-      actions.push('next');
-      actions.push('last');
+      actions.push('next', 'last');
     }
 
     const cursor = Cursor.create({

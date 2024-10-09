@@ -245,7 +245,7 @@ class EditorControl extends React.Component {
                   error =>
                     error.message &&
                     typeof error.message === 'string' && (
-                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                      <li key={error.message.trim().replaceAll(/[^a-z0-9]+/gi, '-')}>
                         {error.message}
                       </li>
                     ),

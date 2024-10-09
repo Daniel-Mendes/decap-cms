@@ -33,13 +33,14 @@ function collections(state = defaultState, action: ConfigAction) {
     case CONFIG_SUCCESS: {
       const collections = action.payload.collections;
       let newState = OrderedMap({});
-      collections.forEach(collection => {
+      for (const collection of collections) {
         newState = newState.set(collection.name, fromJS(collection));
-      });
+      }
       return newState;
     }
-    default:
+    default: {
       return state;
+    }
   }
 }
 
@@ -164,13 +165,13 @@ export function selectMediaFolders(config: CmsConfig, collection: Collection, en
   if (collection.has('files')) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     if (file) {
-      folders.unshift(selectMediaFolder(config, collection, entry, undefined));
+      folders.unshift(selectMediaFolder(config, collection, entry));
     }
   }
   if (collection.has('media_folder')) {
     // stop evaluating media folders at collection level
     collection = collection.delete('files');
-    folders.unshift(selectMediaFolder(config, collection, entry, undefined));
+    folders.unshift(selectMediaFolder(config, collection, entry));
   }
 
   return Set(folders).toArray();
@@ -211,7 +212,7 @@ export function selectTemplateName(collection: Collection, slug: string) {
 export function getFieldsNames(fields: EntryField[], prefix = '') {
   let names = fields.map(f => `${prefix}${f.get('name')}`);
 
-  fields.forEach((f, index) => {
+  for (const [index, f] of fields.entries()) {
     if (f.has('fields')) {
       const fields = f.get('fields')?.toArray() as EntryField[];
       names = [...names, ...getFieldsNames(fields, `${names[index]}.`)];
@@ -222,7 +223,7 @@ export function getFieldsNames(fields: EntryField[], prefix = '') {
       const types = f.get('types')?.toArray() as EntryField[];
       names = [...names, ...getFieldsNames(types, `${names[index]}.`)];
     }
-  });
+  }
 
   return names;
 }
@@ -342,14 +343,14 @@ export function selectInferredField(collection: Collection, fieldName: string) {
   const mainTypeFields = fields
     .filter(f => f?.get('widget', 'string') === inferableField.type)
     .map(f => f?.get('name'));
-  field = mainTypeFields.filter(f => inferableField.synonyms.indexOf(f as string) !== -1);
+  field = mainTypeFields.filter(f => inferableField.synonyms.includes(f as string));
   if (field && field.size > 0) return field.first();
 
   // Try to return a field for each of the specified secondary types
   const secondaryTypeFields = fields
-    .filter(f => inferableField.secondaryTypes.indexOf(f?.get('widget', 'string') as string) !== -1)
+    .filter(f => inferableField.secondaryTypes.includes(f?.get('widget', 'string') as string))
     .map(f => f?.get('name'));
-  field = secondaryTypeFields.filter(f => inferableField.synonyms.indexOf(f as string) !== -1);
+  field = secondaryTypeFields.filter(f => inferableField.synonyms.includes(f as string));
   if (field && field.size > 0) return field.first();
 
   // Try to return the first field of the specified type
@@ -465,12 +466,12 @@ export function selectFieldsComments(collection: Collection, entryMap: EntryMap)
   }
   const comments: Record<string, string> = {};
   const names = getFieldsNames(fields);
-  names.forEach(name => {
+  for (const name of names) {
     const field = selectField(collection, name);
     if (field?.has('comment')) {
       comments[name] = field.get('comment')!;
     }
-  });
+  }
 
   return comments;
 }

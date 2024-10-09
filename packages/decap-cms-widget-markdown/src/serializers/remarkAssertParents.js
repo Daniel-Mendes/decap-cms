@@ -38,18 +38,18 @@ export default function remarkUnwrapInvalidNest() {
     /**
      * Node types that are considered "blocks".
      */
-    const blocks = ['paragraph', 'heading', 'code', 'blockquote', 'list', 'table', 'thematicBreak'];
+    const blocks = new Set(['paragraph', 'heading', 'code', 'blockquote', 'list', 'table', 'thematicBreak']);
 
     /**
      * Node types that can contain "block" nodes as direct children. We check
      */
-    const canContainBlocks = ['root', 'blockquote', 'listItem', 'tableCell'];
+    const canContainBlocks = new Set(['root', 'blockquote', 'listItem', 'tableCell']);
 
     let invalidNest;
 
     visitParents(tree, (node, parents) => {
       const parentType = !isEmpty(parents) && last(parents).type;
-      const isInvalidNest = blocks.includes(node.type) && !canContainBlocks.includes(parentType);
+      const isInvalidNest = blocks.has(node.type) && !canContainBlocks.has(parentType);
 
       if (isInvalidNest) {
         invalidNest = concat(parents, node);

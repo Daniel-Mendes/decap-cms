@@ -170,7 +170,7 @@ export default class API {
   async parseJsonResponse(response: Response) {
     const json = await response.json();
     if (!response.ok) {
-      return Promise.reject(json);
+      throw json;
     }
     return json;
   }
@@ -182,7 +182,7 @@ export default class API {
         params.push(`${key}=${encodeURIComponent(options.params[key] as string)}`);
       }
     }
-    if (params.length) {
+    if (params.length > 0) {
       path += `?${params.join('&')}`;
     }
     return this.apiRoot + path;
@@ -190,12 +190,12 @@ export default class API {
 
   parseResponse(response: Response) {
     const contentType = response.headers.get('Content-Type');
-    if (contentType && contentType.match(/json/)) {
+    if (contentType && /json/.test(contentType)) {
       return this.parseJsonResponse(response);
     }
     const textPromise = response.text().then(text => {
       if (!response.ok) {
-        return Promise.reject(text);
+        throw text;
       }
       return text;
     });
@@ -297,7 +297,7 @@ export default class API {
           author: commit.author.name || commit.author.email,
           updatedOn: commit.author.date,
         };
-      } catch (e) {
+      } catch {
         return { author: '', updatedOn: '' };
       }
     };
@@ -319,7 +319,7 @@ export default class API {
       const content = Base64.atob(result.content);
       const byteArray = new Uint8Array(content.length);
       for (let i = 0; i < content.length; i++) {
-        byteArray[i] = content.charCodeAt(i);
+        byteArray[i] = content.codePointAt(i);
       }
       const blob = new Blob([byteArray]);
       return blob;
@@ -346,7 +346,7 @@ export default class API {
           // filter only files and/or folders up to the required depth
           .filter(
             file =>
-              (!folderSupport ? file.type === 'blob' : true) &&
+              (folderSupport ? true : file.type === 'blob') &&
               decodeURIComponent(file.path).split('/').length <= depth,
           )
           .map(file => ({
@@ -358,12 +358,12 @@ export default class API {
           }))
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      if (err && err.status === 404) {
+    } catch (error: any) {
+      if (error && error.status === 404) {
         console.info('[StaticCMS] This 404 was expected and handled appropriately.');
         return [];
       } else {
-        throw err;
+        throw error;
       }
     }
   }

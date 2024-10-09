@@ -42,7 +42,7 @@ export default function remarkStripTrailingBreaks() {
          * Because some break nodes may be excluded, we filter out the resulting
          * null values.
          */
-        .filter(child => child)
+        .filter(Boolean)
 
         /**
          * Recurse through the MDAST by transforming each individual child node.

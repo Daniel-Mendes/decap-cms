@@ -15,7 +15,7 @@ export function getLinesWithOffsets(value) {
     .reduce(
       (acc, line) => {
         const { start: previousLineStart, originalLength: previousLineOriginalLength } =
-          acc[acc.length - 1];
+          acc.at(-1);
 
         return [
           ...acc,
@@ -78,7 +78,7 @@ function createShortcodeTokenizer({ plugins }) {
           type: 'shortcode',
           data: { shortcode: plugin.id, shortcodeData },
         });
-      } catch (e) {
+      } catch {
         console.warn(
           `Sent invalid data to remark. Plugin: ${plugin.id}. Value: ${
             match[0]

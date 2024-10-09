@@ -1,8 +1,8 @@
 import API, { getMaxAccess } from '../API';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+globalThis.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
-jest.spyOn(console, 'log').mockImplementation(() => undefined);
+jest.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('GitLab API', () => {
   beforeEach(() => {

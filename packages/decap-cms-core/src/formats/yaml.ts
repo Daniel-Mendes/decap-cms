@@ -5,30 +5,30 @@ import { sortKeys } from './helpers';
 import type { YAMLMap, YAMLSeq, Pair, Node } from 'yaml/types';
 
 function addComments(items: Array<Pair>, comments: Record<string, string>, prefix = '') {
-  items.forEach(item => {
+  for (const item of items) {
     if (item.key !== undefined) {
       const itemKey = item.key.toString();
       const key = prefix ? `${prefix}.${itemKey}` : itemKey;
       if (comments[key]) {
-        const value = comments[key].split('\\n').join('\n ');
+        const value = comments[key].split(String.raw`\n`).join('\n ');
         item.commentBefore = ` ${value}`;
       }
       if (Array.isArray(item.value?.items)) {
         addComments(item.value.items, comments, key);
       }
     }
-  });
+  }
 }
 
 const timestampTag = {
   identify: (value: unknown) => value instanceof Date,
   default: true,
   tag: '!timestamp',
-  test: RegExp(
+  test: new RegExp(
     '^' +
       '([0-9]{4})-([0-9]{2})-([0-9]{2})' + // YYYY-MM-DD
       'T' + // T
-      '([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]+)?)' + // HH:MM:SS(.ss)?
+      String.raw`([0-9]{2}):([0-9]{2}):([0-9]{2}(\.[0-9]+)?)` + // HH:MM:SS(.ss)?
       'Z' + // Z
       '$',
   ),

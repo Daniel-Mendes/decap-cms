@@ -12,18 +12,21 @@ const defaultState = {
 
 const config = produce((state: CmsConfig, action: ConfigAction) => {
   switch (action.type) {
-    case CONFIG_REQUEST:
+    case CONFIG_REQUEST: {
       state.isFetching = true;
       break;
-    case CONFIG_SUCCESS:
+    }
+    case CONFIG_SUCCESS: {
       return {
         ...action.payload,
         isFetching: false,
         error: undefined,
       };
-    case CONFIG_FAILURE:
+    }
+    case CONFIG_FAILURE: {
       state.isFetching = false;
       state.error = action.payload.toString();
+    }
   }
 }, defaultState);
 

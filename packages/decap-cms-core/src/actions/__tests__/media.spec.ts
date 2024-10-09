@@ -31,7 +31,7 @@ describe('media', () => {
   describe('getAsset', () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    global.URL = { createObjectURL: jest.fn() };
+    globalThis.URL = { createObjectURL: jest.fn() };
 
     beforeEach(() => {
       jest.resetAllMocks();

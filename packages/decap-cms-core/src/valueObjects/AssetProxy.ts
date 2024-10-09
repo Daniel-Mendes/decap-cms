@@ -14,7 +14,7 @@ export default class AssetProxy {
   field?: EntryField;
 
   constructor({ url, file, path, field }: AssetProxyArgs) {
-    this.url = url ? url : file ? window.URL.createObjectURL(file) : '';
+    this.url = url || (file ? globalThis.URL.createObjectURL(file) : '');
     this.fileObj = file;
     this.path = path;
     this.field = field;
@@ -31,11 +31,11 @@ export default class AssetProxy {
     }
     const result = await new Promise<string>(resolve => {
       const fr = new FileReader();
-      fr.onload = (readerEvt): void => {
+      fr.addEventListener('load', (readerEvt): void => {
         const binaryString = readerEvt.target?.result || '';
 
         resolve(binaryString.toString().split('base64,')[1]);
-      };
+      });
       fr.readAsDataURL(blob);
     });
 

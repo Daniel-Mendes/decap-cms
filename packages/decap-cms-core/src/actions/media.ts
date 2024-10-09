@@ -60,8 +60,8 @@ export function loadAsset(resolvedPath: string) {
         dispatch(addAsset(asset));
       }
       dispatch(loadAssetSuccess(resolvedPath));
-    } catch (e) {
-      dispatch(loadAssetFailure(resolvedPath, e));
+    } catch (error) {
+      dispatch(loadAssetFailure(resolvedPath, error));
     }
   };
 }

@@ -113,7 +113,7 @@ export default class SelectControl extends React.Component {
     const isMultiple = field.get('multiple', false);
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const options = [...fieldOptions.map(convertToOption)];
+    const options = fieldOptions.map(convertToOption);
     const selectedValue = getSelectedValue({
       options,
       value,

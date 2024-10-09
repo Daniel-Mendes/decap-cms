@@ -119,12 +119,15 @@ const DNDNamespace = 'cms-workflow';
 
 function getColumnHeaderText(columnName, t) {
   switch (columnName) {
-    case 'draft':
+    case 'draft': {
       return t('workflow.workflowList.draftHeader');
-    case 'pending_review':
+    }
+    case 'pending_review': {
       return t('workflow.workflowList.inReviewHeader');
-    case 'pending_publish':
+    }
+    case 'pending_publish': {
       return t('workflow.workflowList.readyHeader');
+    }
   }
 }
 
@@ -147,16 +150,16 @@ class WorkflowList extends React.Component {
   };
 
   requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
+    if (globalThis.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
 
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
-      window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
+      globalThis.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
       return;
-    } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
+    } else if (!globalThis.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
       return;
     }
     this.props.handlePublish(collection, slug);

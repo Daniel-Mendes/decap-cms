@@ -117,7 +117,7 @@ describe('Number widget', () => {
     fireEvent.change(input, { target: { value: String(testValue) } });
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
-    expect(onChangeSpy).toHaveBeenCalledWith(parseInt(testValue, 10));
+    expect(onChangeSpy).toHaveBeenCalledWith(Number.parseInt(testValue, 10));
   });
 
   it('should parse float numbers as float', () => {
@@ -129,7 +129,7 @@ describe('Number widget', () => {
     fireEvent.change(input, { target: { value: String(testValue) } });
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
-    expect(onChangeSpy).toHaveBeenCalledWith(parseFloat(testValue));
+    expect(onChangeSpy).toHaveBeenCalledWith(Number.parseFloat(testValue));
   });
 
   it('should allow 0 as a value', () => {

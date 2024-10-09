@@ -57,7 +57,7 @@ export function selectPublishedSlugs(state: State, collection: string) {
 export function selectSearchedEntries(state: State, availableCollections: string[]) {
   // only return search results for actually available collections
   return List(state.search.entryIds)
-    .filter(entryId => availableCollections.indexOf(entryId!.collection) !== -1)
+    .filter(entryId => availableCollections.includes(entryId!.collection))
     .map(entryId => fromEntries.selectEntry(state.entries, entryId!.collection, entryId!.slug));
 }
 

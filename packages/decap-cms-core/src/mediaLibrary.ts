@@ -23,19 +23,19 @@ interface MediaLibrary {
 function handleInsert(url: string) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return store.dispatch(insertMedia(url, undefined));
+  return store.dispatch(insertMedia(url));
 }
 
 const initializeMediaLibrary = once(async function initializeMediaLibrary(name, options) {
   const lib = getMediaLibrary(name) as unknown as MediaLibrary | undefined;
-  if (!lib) {
+  if (lib) {
+    const instance = await lib.init({ options, handleInsert });
+    store.dispatch(createMediaLibrary(instance));
+  } else {
     const err = new Error(
       `Missing external media library '${name}'. Please use 'registerMediaLibrary' to register it.`,
     );
     store.dispatch(configFailed(err));
-  } else {
-    const instance = await lib.init({ options, handleInsert });
-    store.dispatch(createMediaLibrary(instance));
   }
 });
 

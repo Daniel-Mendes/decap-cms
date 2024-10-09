@@ -22,9 +22,9 @@ const medias = produce((state: Medias, action: MediasAction) => {
   switch (action.type) {
     case ADD_ASSETS: {
       const assets = action.payload;
-      assets.forEach(asset => {
+      for (const asset of assets) {
         state[asset.path] = { asset, isLoading: false, error: null };
-      });
+      }
       break;
     }
     case ADD_ASSET: {

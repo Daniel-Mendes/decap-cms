@@ -1,5 +1,5 @@
-import path from 'path';
-import { promises as fs } from 'fs';
+import path from 'node:path';
+import { promises as fs } from 'node:fs';
 
 async function listFiles(dir: string, extension: string, depth: number): Promise<string[]> {
   if (depth <= 0) {
@@ -16,8 +16,8 @@ async function listFiles(dir: string, extension: string, depth: number): Promise
           : [res].filter(f => f.endsWith(extension));
       }),
     );
-    return ([] as string[]).concat(...files);
-  } catch (e) {
+    return files.flat();
+  } catch {
     return [];
   }
 }
@@ -38,7 +38,7 @@ export async function writeFile(filePath: string, content: Buffer | string) {
 }
 
 export async function deleteFile(repoPath: string, filePath: string) {
-  await fs.unlink(path.join(repoPath, filePath)).catch(() => undefined);
+  await fs.unlink(path.join(repoPath, filePath)).catch(() => {});
 }
 
 async function moveFile(from: string, to: string) {

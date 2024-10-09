@@ -39,7 +39,7 @@ function VoidBlock({ attributes, children, element }) {
   }
 
   function handleInsertAfter() {
-    insertAtPath([...path.slice(0, -1), path[path.length - 1] + 1]);
+    insertAtPath([...path.slice(0, -1), path.at(-1) + 1]);
   }
 
   const insertBefore = path[0] === 0;

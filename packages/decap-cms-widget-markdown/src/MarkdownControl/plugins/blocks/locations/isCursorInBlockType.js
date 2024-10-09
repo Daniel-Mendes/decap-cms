@@ -4,8 +4,7 @@ function isCursorInBlockType(editor, type, ignoreHeadings, ignoreLists) {
   const { selection } = editor;
   if (!selection) return false;
 
-  const [match] = Array.from(
-    Editor.nodes(editor, {
+  const [match] = [...Editor.nodes(editor, {
       match: n =>
         Element.isElement(n) &&
         Editor.isBlock(editor, n) &&
@@ -14,8 +13,7 @@ function isCursorInBlockType(editor, type, ignoreHeadings, ignoreLists) {
         (ignoreHeadings || !`${n.type}`.startsWith('heading-')) &&
         (!ignoreLists || !`${n.type}`.endsWith('-list')),
       mode: 'lowest',
-    }),
-  );
+    })];
 
   return (
     !!match &&

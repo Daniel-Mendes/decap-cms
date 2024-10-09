@@ -154,7 +154,7 @@ list:
 
       expect(result).toEqual(expected);
 
-      expect(yaml.toFile({ a: 'a' }, [], { a: 'line 1\\nline 2' })).toEqual(
+      expect(yaml.toFile({ a: 'a' }, [], { a: String.raw`line 1\nline 2` })).toEqual(
         '# line 1\n# line 2\na: a\n',
       );
     });

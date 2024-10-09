@@ -66,11 +66,7 @@ class ObjectWidgetTopBar extends React.Component {
     if (!this.props.allowAdd) {
       return null;
     }
-    if (this.props.types && this.props.types.size > 0) {
-      return this.renderTypesDropdown(this.props.types);
-    } else {
-      return this.renderAddButton();
-    }
+    return this.props.types && this.props.types.size > 0 ? this.renderTypesDropdown(this.props.types) : this.renderAddButton();
   }
 
   renderTypesDropdown(types) {

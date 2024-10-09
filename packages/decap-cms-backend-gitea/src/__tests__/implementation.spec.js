@@ -13,7 +13,7 @@ describe('gitea backend implementation', () => {
   };
 
   const createObjectURL = jest.fn();
-  global.URL = {
+  globalThis.URL = {
     createObjectURL,
   };
 
@@ -38,9 +38,9 @@ describe('gitea backend implementation', () => {
     };
 
     persistFiles.mockImplementation((_, files) => {
-      files.forEach((file, index) => {
+      for (const [index, file] of files.entries()) {
         file.sha = index;
-      });
+      }
     });
 
     it('should persist media file', async () => {

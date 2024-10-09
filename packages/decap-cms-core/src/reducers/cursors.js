@@ -28,8 +28,9 @@ function cursors(state = fromJS({ cursorsByType: { collectionEntries: {} } }), a
     case SORT_ENTRIES_SUCCESS: {
       return state.deleteIn(['cursorsByType', 'collectionEntries', action.payload.collection]);
     }
-    default:
+    default: {
       return state;
+    }
   }
 }
 

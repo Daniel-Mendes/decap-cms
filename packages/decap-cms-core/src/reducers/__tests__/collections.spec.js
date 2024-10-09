@@ -43,7 +43,7 @@ describe('collections', () => {
   });
 
   it('should maintain config collections order', () => {
-    const collectionsData = new Array(1000).fill(0).map((_, index) => ({
+    const collectionsData = Array.from({length: 1000}).fill(0).map((_, index) => ({
       name: `collection_${index}`,
       folder: `collection_${index}`,
       fields: [{ name: 'title', widget: 'string' }],

@@ -275,7 +275,7 @@ describe('formatters', () => {
 
   describe('slugFormatter', () => {
     const date = new Date('2020-01-01');
-    jest.spyOn(global, 'Date').mockImplementation(() => date);
+    jest.spyOn(globalThis, 'Date').mockImplementation(() => date);
 
     const { selectIdentifier } = require('../../reducers/collections');
 
@@ -608,7 +608,7 @@ describe('formatters', () => {
 
   describe('folderFormatter', () => {
     it('should return folder is entry is undefined', () => {
-      expect(folderFormatter('static/images', undefined)).toBe('static/images');
+      expect(folderFormatter('static/images')).toBe('static/images');
     });
 
     it('should return folder is entry data is undefined', () => {

@@ -63,7 +63,7 @@ async function init({ options = {}, handleInsert } = {}) {
     handleInsert(providedConfig.multiple || assets.length > 1 ? assets : assets[0]);
   }
 
-  const mediaLibrary = window.cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
+  const mediaLibrary = globalThis.cloudinary.createMediaLibrary(cloudinaryConfig, { insertHandler });
 
   return {
     show: ({ config: instanceConfig = {}, allowMultiple } = {}) => {

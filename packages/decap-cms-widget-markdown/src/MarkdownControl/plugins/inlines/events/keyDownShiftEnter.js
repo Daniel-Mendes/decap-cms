@@ -6,7 +6,7 @@ function keyDownShiftEnter(editor) {
   const focus = {
     path: [
       ...editor.selection.focus.path.slice(0, -1),
-      editor.selection.focus.path[editor.selection.focus.path.length - 1] + 2,
+      editor.selection.focus.path.at(-1) + 2,
     ],
     offset: 0,
   };

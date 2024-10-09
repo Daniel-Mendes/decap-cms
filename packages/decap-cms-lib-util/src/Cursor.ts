@@ -33,7 +33,7 @@ function jsToMap(obj: {}) {
   }
   const immutableObj = fromJS(obj);
   if (!Map.isMap(immutableObj)) {
-    throw new Error('Object must be equivalent to a Map.');
+    throw new TypeError('Object must be equivalent to a Map.');
   }
   return immutableObj;
 }

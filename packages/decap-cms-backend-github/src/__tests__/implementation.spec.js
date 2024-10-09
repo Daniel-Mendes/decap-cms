@@ -14,7 +14,7 @@ describe('github backend implementation', () => {
   };
 
   const createObjectURL = jest.fn();
-  global.URL = {
+  globalThis.URL = {
     createObjectURL,
   };
 
@@ -29,7 +29,7 @@ describe('github backend implementation', () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
 
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.fetch = jest.fn().mockResolvedValue({
         // matching should be case-insensitive
         json: () => ({ fork: true, parent: { full_name: 'OWNER/REPO' } }),
       });
@@ -38,8 +38,8 @@ describe('github backend implementation', () => {
 
       expect(gitHubImplementation.currentUser).toHaveBeenCalledTimes(1);
       expect(gitHubImplementation.currentUser).toHaveBeenCalledWith({ token: 'token' });
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith('https://api.github.com/repos/login/repo', {
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+      expect(globalThis.fetch).toHaveBeenCalledWith('https://api.github.com/repos/login/repo', {
         method: 'GET',
         headers: {
           Authorization: 'token token',
@@ -52,7 +52,7 @@ describe('github backend implementation', () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
 
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.fetch = jest.fn().mockResolvedValue({
         // matching should be case-insensitive
         json: () => ({ fork: false }),
       });
@@ -65,7 +65,7 @@ describe('github backend implementation', () => {
       const gitHubImplementation = new GitHubImplementation(config);
       gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
 
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.fetch = jest.fn().mockResolvedValue({
         json: () => ({ fork: true, parent: { full_name: 'owner/other_repo' } }),
       });
 
@@ -81,9 +81,9 @@ describe('github backend implementation', () => {
     };
 
     persistFiles.mockImplementation((_, files) => {
-      files.forEach((file, index) => {
+      for (const [index, file] of files.entries()) {
         file.sha = index;
-      });
+      }
     });
 
     it('should persist media file', async () => {

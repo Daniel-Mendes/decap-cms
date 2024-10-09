@@ -52,7 +52,7 @@ const { fetchWithTimeout: fetch } = unsentRequest;
 
 const STATUS_PAGE = 'https://www.githubstatus.com';
 const GITHUB_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
-const GITHUB_OPERATIONAL_UNITS = ['API Requests', 'Issues, Pull Requests, Projects'];
+const GITHUB_OPERATIONAL_UNITS = new Set(['API Requests', 'Issues, Pull Requests, Projects']);
 type GitHubStatusComponent = {
   id: string;
   name: string;
@@ -143,14 +143,14 @@ export default class GitHub implements Implementation {
       .then(res => {
         return res['components']
           .filter((statusComponent: GitHubStatusComponent) =>
-            GITHUB_OPERATIONAL_UNITS.includes(statusComponent.name),
+            GITHUB_OPERATIONAL_UNITS.has(statusComponent.name),
           )
           .every(
             (statusComponent: GitHubStatusComponent) => statusComponent.status === 'operational',
           );
       })
-      .catch(e => {
-        console.warn('Failed getting GitHub status', e);
+      .catch(error => {
+        console.warn('Failed getting GitHub status', error);
         return true;
       });
 
@@ -161,8 +161,8 @@ export default class GitHub implements Implementation {
         (await this.api
           ?.getUser({ token: this.token ?? '' })
           .then(user => !!user)
-          .catch(e => {
-            console.warn('Failed getting GitHub user', e);
+          .catch(error => {
+            console.warn('Failed getting GitHub user', error);
             return false;
           })) || false;
     }
@@ -194,12 +194,12 @@ export default class GitHub implements Implementation {
         headers: { Authorization: `${this.tokenKeyword} ${token}` },
       })
         .then(() => true)
-        .catch(err => {
-          if (err && err.status === 404) {
+        .catch(error => {
+          if (error && error.status === 404) {
             console.log('This 404 was expected and handled appropriately.');
             return false;
           } else {
-            return Promise.reject(err);
+            throw error;
           }
         });
       // wait between polls
@@ -207,7 +207,7 @@ export default class GitHub implements Implementation {
         await new Promise(resolve => setTimeout(resolve, pollDelay));
       }
     }
-    return Promise.resolve();
+    return;
   }
 
   async currentUser({ token }: { token: string }) {
@@ -286,7 +286,7 @@ export default class GitHub implements Implementation {
     if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
       this.repo = this.originRepo;
       this.useOpenAuthoring = false;
-      return Promise.resolve();
+      return;
     }
 
     // If a fork exists merge it with upstream
@@ -396,12 +396,10 @@ export default class GitHub implements Implementation {
 
     const actions = [] as string[];
     if (page > 1) {
-      actions.push('prev');
-      actions.push('first');
+      actions.push('prev', 'first');
     }
     if (page < pageCount) {
-      actions.push('next');
-      actions.push('last');
+      actions.push('next', 'last');
     }
 
     const cursor = Cursor.create({
@@ -685,7 +683,7 @@ export default class GitHub implements Implementation {
       } else {
         return null;
       }
-    } catch (e) {
+    } catch {
       return null;
     }
   }

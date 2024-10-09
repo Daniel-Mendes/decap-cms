@@ -10,7 +10,7 @@ const image = {
       title: match[4],
     },
   toBlock: ({ alt, image, title }) =>
-    `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
+    `![${alt || ''}](${image || ''}${title ? ` "${title.replaceAll('"', String.raw`\"`)}"` : ''})`,
   // eslint-disable-next-line react/display-name
   toPreview: ({ alt, image, title }, getAsset, fields) => {
     const imageField = fields?.find(f => f.get('widget') === 'image');

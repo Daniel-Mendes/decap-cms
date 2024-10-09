@@ -80,7 +80,7 @@ describe('registry', () => {
         );
       });
 
-      events.forEach(name => {
+      for (const name of events) {
         it(`should register '${name}' event`, () => {
           const { registerEventListener, getEventListeners } = require('../registry');
 
@@ -89,7 +89,7 @@ describe('registry', () => {
 
           expect(getEventListeners(name)).toEqual([{ handler, options: {} }]);
         });
-      });
+      }
     });
 
     describe('removeEventListener', () => {
@@ -101,7 +101,7 @@ describe('registry', () => {
         );
       });
 
-      events.forEach(name => {
+      for (const name of events) {
         it(`should remove '${name}' event by handler`, () => {
           const {
             registerEventListener,
@@ -120,9 +120,9 @@ describe('registry', () => {
 
           expect(getEventListeners(name)).toEqual([{ handler: handler2, options: {} }]);
         });
-      });
+      }
 
-      events.forEach(name => {
+      for (const name of events) {
         it(`should remove '${name}' event by name`, () => {
           const {
             registerEventListener,
@@ -141,7 +141,7 @@ describe('registry', () => {
 
           expect(getEventListeners(name)).toHaveLength(0);
         });
-      });
+      }
     });
 
     describe('invokeEvent', () => {
@@ -153,7 +153,7 @@ describe('registry', () => {
         );
       });
 
-      events.forEach(name => {
+      for (const name of events) {
         it(`should invoke '${name}' event with data`, async () => {
           const { registerEventListener, invokeEvent } = require('../registry');
 
@@ -198,7 +198,7 @@ describe('registry', () => {
 
           await expect(invokeEvent({ name, data })).rejects.toThrow('handler failed!');
         });
-      });
+      }
 
       it(`should return an updated entry's DataMap`, async () => {
         const { registerEventListener, invokeEvent } = require('../registry');

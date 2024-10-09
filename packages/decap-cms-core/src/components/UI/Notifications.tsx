@@ -28,9 +28,8 @@ function Notifications({ notifications }: Props) {
   const [idMap, setIdMap] = React.useState<IdMap>({});
 
   useEffect(() => {
-    notifications
-      .filter(notification => !idMap[notification.id])
-      .forEach(notification => {
+    for (const notification of notifications
+      .filter(notification => !idMap[notification.id])) {
         const toastId = toast(
           typeof notification.message == 'string'
             ? notification.message
@@ -49,15 +48,15 @@ function Notifications({ notifications }: Props) {
             dispatch(dismissNotification(notification.id));
           }, notification.dismissAfter);
         }
-      });
+      }
 
-    Object.entries(idMap).forEach(([id, toastId]) => {
-      if (!notifications.find(notification => notification.id === id)) {
+    for (const [id, toastId] of Object.entries(idMap)) {
+      if (!notifications.some(notification => notification.id === id)) {
         toast.dismiss(toastId);
         delete idMap[id];
         setIdMap(idMap);
       }
-    });
+    }
   }, [notifications]);
 
   toast.onChange((payload: ToastItem) => {

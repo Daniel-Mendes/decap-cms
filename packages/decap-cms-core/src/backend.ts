@@ -10,7 +10,7 @@ import {
   asyncLock,
   EDITORIAL_WORKFLOW_ERROR,
 } from 'decap-cms-lib-util';
-import { basename, join, extname, dirname } from 'path';
+import { basename, join, extname, dirname } from 'node:path';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import { resolveFormat } from './formats/formats';
@@ -104,16 +104,16 @@ export class LocalStorageAuthStore {
   storageKey = 'decap-cms-user';
 
   retrieve() {
-    const data = window.localStorage.getItem(this.storageKey);
+    const data = globalThis.localStorage.getItem(this.storageKey);
     return data && JSON.parse(data);
   }
 
   store(userData: unknown) {
-    window.localStorage.setItem(this.storageKey, JSON.stringify(userData));
+    globalThis.localStorage.setItem(this.storageKey, JSON.stringify(userData));
   }
 
   logout() {
-    window.localStorage.removeItem(this.storageKey);
+    globalThis.localStorage.removeItem(this.storageKey);
   }
 }
 
@@ -128,28 +128,14 @@ function getEntryBackupKey(collectionName?: string, slug?: string) {
 
 function getEntryField(field: string, entry: EntryValue) {
   const value = get(entry.data, field);
-  if (value) {
-    return String(value);
-  } else {
-    const firstFieldPart = field.split('.')[0];
-    if (entry[firstFieldPart as keyof EntryValue]) {
-      // allows searching using entry.slug/entry.path etc.
-      return entry[firstFieldPart as keyof EntryValue];
-    } else {
-      return '';
-    }
-  }
+  return value ? String(value) : entry[field.split('.')[0] as keyof EntryValue] || '';
 }
 
 export function extractSearchFields(searchFields: string[]) {
   return (entry: EntryValue) =>
     searchFields.reduce((acc, field) => {
       const value = getEntryField(field, entry);
-      if (value) {
-        return `${acc} ${value}`;
-      } else {
-        return acc;
-      }
+      return value ? `${acc} ${value}` : acc;
     }, '');
 }
 
@@ -163,8 +149,8 @@ export function expandSearchEntries(entries: EntryValue[], searchFields: string[
         return acc;
       }, [] as string[]);
 
-      for (let i = 0; i < expandedFields.length; i++) {
-        acc.push({ ...e, field: expandedFields[i] });
+      for (const expandedField of expandedFields) {
+        acc.push({ ...e, field: expandedField });
       }
 
       return acc;
@@ -206,7 +192,7 @@ export function mergeExpandedEntries(entries: (EntryValue & { field: string })[]
 
   // this keeps the search score sorting order designated by the order in entries
   // and filters non matching items
-  Object.keys(merged).forEach(slug => {
+  for (const slug of Object.keys(merged)) {
     const data = merged[slug].data;
     for (const path of arrayPaths[slug].toArray()) {
       const array = get(data, path) as unknown[];
@@ -227,7 +213,7 @@ export function mergeExpandedEntries(entries: (EntryValue & { field: string })[]
 
       set(data, path, filtered);
     }
-  });
+  }
 
   return Object.values(merged);
 }
@@ -332,7 +318,7 @@ function collectionRegex(collection: Collection): RegExp | undefined {
   let ruleString = '';
 
   if (collection.get('path')) {
-    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(
+    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replaceAll(
       /{{.*}}/gm,
       '(.*)',
     );
@@ -437,8 +423,8 @@ export class Backend {
   async logout() {
     try {
       await this.implementation.logout();
-    } catch (e) {
-      console.warn('Error during logout', e.message);
+    } catch (error) {
+      console.warn('Error during logout', error.message);
     } finally {
       this.user = null;
       if (this.authStore) {
@@ -456,9 +442,9 @@ export class Backend {
         .unpublishedEntry({ collection: collection.get('name'), slug })
         .catch(error => {
           if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
-            return Promise.resolve(false);
+            return false;
           }
-          return Promise.reject(error);
+          throw error;
         }));
 
     if (unpublishedEntry) return unpublishedEntry;
@@ -467,7 +453,7 @@ export class Backend {
       .getEntry(path)
       .then(({ data }) => data)
       .catch(() => {
-        return Promise.resolve(false);
+        return false;
       });
 
     return publishedEntry;
@@ -481,12 +467,9 @@ export class Backend {
     customPath: string | undefined,
   ) {
     const slugConfig = config.slug;
-    let slug: string;
-    if (customPath) {
-      slug = slugFromCustomPath(collection, customPath);
-    } else {
-      slug = slugFormatter(collection, entryData, slugConfig);
-    }
+    const slug = customPath
+      ? slugFromCustomPath(collection, customPath)
+      : slugFormatter(collection, entryData, slugConfig);
     let i = 1;
     let uniqueSlug = slug;
 
@@ -651,8 +634,8 @@ export class Backend {
         });
       })
       .map(p =>
-        p.catch(err => {
-          errors.push(err);
+        p.catch(error => {
+          errors.push(error);
           return [] as fuzzy.FilterResult<EntryValue>[];
         }),
       );
@@ -794,8 +777,8 @@ export class Backend {
       });
       const result = await localForage.setItem(getEntryBackupKey(), raw);
       return result;
-    } catch (e) {
-      console.warn('persistLocalDraftBackup', e);
+    } catch (error) {
+      console.warn('persistLocalDraftBackup', error);
     } finally {
       this.backupSync.release();
     }
@@ -809,8 +792,8 @@ export class Backend {
       slug && (await localForage.removeItem(getEntryBackupKey(collection.get('name'))));
       const result = await this.deleteAnonymousBackup();
       return result;
-    } catch (e) {
-      console.warn('deleteLocalDraftBackup', e);
+    } catch (error) {
+      console.warn('deleteLocalDraftBackup', error);
     } finally {
       this.backupSync.release();
     }
@@ -842,12 +825,9 @@ export class Backend {
       return entry;
     };
 
-    let entryValue: EntryValue;
-    if (hasI18n(collection)) {
-      entryValue = await getI18nEntry(collection, extension, path, slug, getEntryValue);
-    } else {
-      entryValue = await getEntryValue(path);
-    }
+    const entryValue: EntryValue = await (hasI18n(collection)
+      ? getI18nEntry(collection, extension, path, slug, getEntryValue)
+      : getEntryValue(path));
 
     return entryValue;
   }
@@ -1065,7 +1045,7 @@ export class Backend {
       count++;
       deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
       if (!deployPreview) {
-        await new Promise(resolve => setTimeout(() => resolve(undefined), interval));
+        await new Promise(resolve => setTimeout(() => resolve(), interval));
       }
     }
 
@@ -1099,12 +1079,10 @@ export class Backend {
   }: PersistArgs) {
     const updatedEntity = await this.invokePreSaveEvent(draft.get('entry'));
 
-    let entryDraft;
-    if (updatedEntity.get('data') === undefined) {
-      entryDraft = (updatedEntity && draft.setIn(['entry', 'data'], updatedEntity)) || draft;
-    } else {
-      entryDraft = (updatedEntity && draft.setIn(['entry'], updatedEntity)) || draft;
-    }
+    const entryDraft =
+      updatedEntity.get('data') === undefined
+        ? (updatedEntity && draft.setIn(['entry', 'data'], updatedEntity)) || draft
+        : (updatedEntity && draft.setIn(['entry'], updatedEntity)) || draft;
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
@@ -1347,7 +1325,7 @@ export class Backend {
       .filter(f => f!.get('name') === entry.get('slug'))
       .get(0);
 
-    if (file == null) {
+    if (file == undefined) {
       throw new Error(`No file found for ${entry.get('slug')} in ${collection.get('name')}`);
     }
     return file
@@ -1376,10 +1354,10 @@ export function resolveBackend(config: CmsConfig) {
   const authStore = new LocalStorageAuthStore();
 
   const backend = getBackend(name);
-  if (!backend) {
-    throw new Error(`Backend not found: ${name}`);
-  } else {
+  if (backend) {
     return new Backend(backend, { backendName: name, authStore, config });
+  } else {
+    throw new Error(`Backend not found: ${name}`);
   }
 }
 

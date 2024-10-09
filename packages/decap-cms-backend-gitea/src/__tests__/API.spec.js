@@ -2,7 +2,7 @@ import { Base64 } from 'js-base64';
 
 import API from '../API';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+globalThis.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('gitea API', () => {
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe('gitea API', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function mockAPI(api, responses) {
     api.request = jest.fn().mockImplementation((path, options = {}) => {
-      const normalizedPath = path.indexOf('?') !== -1 ? path.slice(0, path.indexOf('?')) : path;
+      const normalizedPath = path.includes('?') ? path.slice(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
       return typeof response === 'function'
         ? Promise.resolve(response(options))
@@ -23,7 +23,7 @@ describe('gitea API', () => {
   describe('request', () => {
     const fetch = jest.fn();
     beforeEach(() => {
-      global.fetch = fetch;
+      globalThis.fetch = fetch;
     });
 
     afterEach(() => {

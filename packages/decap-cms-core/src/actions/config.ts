@@ -133,15 +133,11 @@ function getI18nDefaults(
 }
 
 function setI18nDefaultsForFields(collectionOrFileFields: CmsField[], hasI18n: boolean) {
-  if (hasI18n) {
-    return traverseFieldsJS(collectionOrFileFields, setI18nField);
-  } else {
-    return traverseFieldsJS(collectionOrFileFields, field => {
+  return hasI18n ? traverseFieldsJS(collectionOrFileFields, setI18nField) : traverseFieldsJS(collectionOrFileFields, field => {
       const newField = { ...field };
       delete newField[I18N];
       return newField;
     });
-  }
 }
 
 function throwOnInvalidFileCollectionStructure(i18n?: CmsI18nConfig) {
@@ -364,13 +360,13 @@ export function applyDefaults(originalConfig: CmsConfig) {
 export function parseConfig(data: string) {
   const config = yaml.parse(data, { maxAliasCount: -1, prettyErrors: true, merge: true });
   if (
-    typeof window !== 'undefined' &&
-    typeof window.CMS_ENV === 'string' &&
-    config[window.CMS_ENV]
+    typeof globalThis !== 'undefined' &&
+    typeof globalThis.CMS_ENV === 'string' &&
+    config[globalThis.CMS_ENV]
   ) {
-    const configKeys = Object.keys(config[window.CMS_ENV]) as ReadonlyArray<keyof CmsConfig>;
+    const configKeys = Object.keys(config[globalThis.CMS_ENV]) as ReadonlyArray<keyof CmsConfig>;
     for (const key of configKeys) {
-      config[key] = config[window.CMS_ENV][key] as CmsConfig[keyof CmsConfig];
+      config[key] = config[globalThis.CMS_ENV][key] as CmsConfig[keyof CmsConfig];
     }
   }
   return config as Partial<CmsConfig>;
@@ -386,7 +382,7 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
     throw new Error(`Failed to load config.yml (${message})`);
   }
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
-  const isYaml = contentType.indexOf('yaml') !== -1;
+  const isYaml = contentType.includes('yaml');
   if (!isYaml) {
     console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
     if (hasManualConfig) {
@@ -497,8 +493,8 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
 }
 
 export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => unknown) {
-  if (window.CMS_CONFIG) {
-    return configLoaded(window.CMS_CONFIG);
+  if (globalThis.CMS_CONFIG) {
+    return configLoaded(globalThis.CMS_CONFIG);
   }
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
     dispatch(configLoading());
@@ -526,9 +522,9 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
       if (typeof onLoad === 'function') {
         onLoad();
       }
-    } catch (err) {
-      dispatch(configFailed(err));
-      throw err;
+    } catch (error) {
+      dispatch(configFailed(error));
+      throw error;
     }
   };
 }

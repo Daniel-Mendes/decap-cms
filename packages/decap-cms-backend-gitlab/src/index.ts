@@ -7,4 +7,8 @@ export const DecapCmsBackendGitlab = {
   API,
   AuthenticationPage,
 };
-export { GitLabBackend, API, AuthenticationPage };
+
+
+export {default as GitLabBackend} from './implementation.ts';
+export {default as API} from './API.ts';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

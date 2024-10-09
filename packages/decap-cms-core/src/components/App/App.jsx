@@ -108,7 +108,7 @@ class App extends React.Component {
     const { auth, t } = this.props;
     const backend = currentBackend(this.props.config);
 
-    if (backend == null) {
+    if (backend == undefined) {
       return (
         <div>
           <h1>{t('app.app.waitingBackend')}</h1>
@@ -165,7 +165,7 @@ class App extends React.Component {
       return <Loader active>{t('app.app.loadingConfig')}</Loader>;
     }
 
-    if (user == null) {
+    if (user == undefined) {
       return this.authenticating(t);
     }
 

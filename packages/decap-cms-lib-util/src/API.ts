@@ -43,18 +43,18 @@ class RateLimitError extends Error {
 async function parseJsonResponse(response: Response) {
   const json = await response.json();
   if (!response.ok) {
-    return Promise.reject(json);
+    throw json;
   }
   return json;
 }
 
 export function parseResponse(response: Response) {
   const contentType = response.headers.get('Content-Type');
-  if (contentType && contentType.match(/json/)) {
+  if (contentType && /json/.test(contentType)) {
     return parseJsonResponse(response);
   }
   const textPromise = response.text().then(text => {
-    if (!response.ok) return Promise.reject(text);
+    if (!response.ok) throw text;
     return text;
   });
   return textPromise;
@@ -83,7 +83,7 @@ export async function requestWithBackoff(
       if (json.message.match('API rate limit exceeded')) {
         const now = new Date();
         const nextWindowInSeconds = response.headers.has('X-RateLimit-Reset')
-          ? parseInt(response.headers.get('X-RateLimit-Reset')!)
+          ? Number.parseInt(response.headers.get('X-RateLimit-Reset')!)
           : now.getTime() / 1000 + 60;
 
         throw new RateLimitError(json.message, nextWindowInSeconds);
@@ -91,17 +91,17 @@ export async function requestWithBackoff(
       response.json = () => Promise.resolve(json);
     }
     return response;
-  } catch (err) {
-    if (attempt > 5 || err.message === "Can't refresh access token when using implicit auth") {
-      throw err;
+  } catch (error) {
+    if (attempt > 5 || error.message === "Can't refresh access token when using implicit auth") {
+      throw error;
     } else {
       if (!api.rateLimiter) {
-        const timeout = err.resetSeconds || attempt * attempt;
+        const timeout = error.resetSeconds || attempt * attempt;
         console.log(
           `Pausing requests for ${timeout} ${
             attempt === 1 ? 'second' : 'seconds'
           } due to fetch failures:`,
-          err.message,
+          error.message,
         );
         api.rateLimiter = asyncLock();
         api.rateLimiter.acquire();
@@ -172,7 +172,7 @@ function constructUrlWithParams(url: string, params?: ParamObject) {
     for (const key in params) {
       paramList.push(`${key}=${encodeURIComponent(params[key])}`);
     }
-    if (paramList.length) {
+    if (paramList.length > 0) {
       url += `?${paramList.join('&')}`;
     }
   }
@@ -185,7 +185,7 @@ async function constructRequestHeaders(headerConfig: HeaderConfig) {
   if (token) {
     baseHeaders['Authorization'] = `Bearer ${token}`;
   }
-  return Promise.resolve(baseHeaders);
+  return baseHeaders;
 }
 
 function handleRequestError(error: FetchError, responseStatus: number, backend: Backend) {
@@ -365,7 +365,7 @@ export async function throwOnConflictingBranches(
     ),
   );
 
-  const conflictingBranch = conflictingBranches.filter(Boolean)[0];
+  const conflictingBranch = conflictingBranches.find(Boolean);
   if (conflictingBranch) {
     throw new APIError(
       `Failed creating branch '${branchName}' since there is already a branch named '${conflictingBranch}'. Please delete the '${conflictingBranch}' branch and try again`,

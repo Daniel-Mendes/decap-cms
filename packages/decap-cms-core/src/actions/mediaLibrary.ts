@@ -49,11 +49,11 @@ export const MEDIA_DISPLAY_URL_FAILURE = 'MEDIA_DISPLAY_URL_FAILURE';
 
 export function createMediaLibrary(instance: MediaLibraryInstance) {
   const api = {
-    show: instance.show || (() => undefined),
-    hide: instance.hide || (() => undefined),
-    onClearControl: instance.onClearControl || (() => undefined),
-    onRemoveControl: instance.onRemoveControl || (() => undefined),
-    enableStandalone: instance.enableStandalone || (() => undefined),
+    show: instance.show || (() => {}),
+    hide: instance.hide || (() => {}),
+    onClearControl: instance.onClearControl || (() => {}),
+    onRemoveControl: instance.onRemoveControl || (() => {}),
+    enableStandalone: instance.enableStandalone || (() => {}),
   };
   return { type: MEDIA_LIBRARY_CREATE, payload: api } as const;
 }
@@ -118,13 +118,9 @@ export function insertMedia(mediaPath: string | string[], field: EntryField | un
     const entry = state.entryDraft.get('entry');
     const collectionName = state.entryDraft.getIn(['entry', 'collection']);
     const collection = state.collections.get(collectionName);
-    if (Array.isArray(mediaPath)) {
-      mediaPath = mediaPath.map(path =>
+    mediaPath = Array.isArray(mediaPath) ? mediaPath.map(path =>
         selectMediaFilePublicPath(config, collection, path, entry, field),
-      );
-    } else {
-      mediaPath = selectMediaFilePublicPath(config, collection, mediaPath as string, entry, field);
-    }
+      ) : selectMediaFilePublicPath(config, collection, mediaPath as string, entry, field);
     dispatch(mediaInserted(mediaPath));
   };
 }
@@ -154,7 +150,7 @@ export function loadMedia(
           privateUpload,
         };
         return dispatch(mediaLoaded(files, mediaLoadedOpts));
-      } catch (error) {
+      } catch {
         return dispatch(mediaLoadFailed({ privateUpload }));
       }
     }
@@ -175,13 +171,9 @@ export function loadMedia(
         });
     }
 
-    if (delay > 0) {
-      return new Promise(resolve => {
+    return delay > 0 ? new Promise(resolve => {
         setTimeout(() => resolve(loadFunction()), delay);
-      });
-    } else {
-      return loadFunction();
-    }
+      }) : loadFunction();
   };
 }
 
@@ -229,10 +221,10 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
      * may not be unique, so we forego this check.
      */
     if (!integration && existingFile) {
-      if (!window.confirm(`${existingFile.name} already exists. Do you want to replace it?`)) {
-        return;
-      } else {
+      if (globalThis.confirm(`${existingFile.name} already exists. Do you want to replace it?`)) {
         await dispatch(deleteMedia(existingFile, { privateUpload }));
+      } else {
+        return;
       }
     }
 
@@ -254,7 +246,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
             url: response.asset.url,
             path: response.asset.url,
           });
-        } catch (error) {
+        } catch {
           assetProxy = createAssetProxy({
             file,
             path: fileName,
@@ -383,7 +375,7 @@ export function loadMediaDisplayURL(file: MediaFile) {
       displayURLState.get('isFetching') ||
       displayURLState.get('err')
     ) {
-      return Promise.resolve();
+      return;
     }
     if (typeof displayURL === 'string') {
       dispatch(mediaDisplayURLRequest(id));
@@ -399,9 +391,9 @@ export function loadMediaDisplayURL(file: MediaFile) {
       } else {
         throw new Error('No display URL was returned!');
       }
-    } catch (err) {
-      console.error(err);
-      dispatch(mediaDisplayURLFailure(id, err));
+    } catch (error) {
+      console.error(error);
+      dispatch(mediaDisplayURLFailure(id, error));
     }
   };
 }

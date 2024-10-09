@@ -68,10 +68,10 @@ export default class ObjectControl extends React.Component {
     const { field } = this.props;
     let fields = field.get('field') || field.get('fields');
     fields = List.isList(fields) ? fields : List([fields]);
-    fields.forEach(field => {
-      if (field.get('widget') === 'hidden') return;
+    for (const field of fields) {
+      if (field.get('widget') === 'hidden') continue;
       this.componentValidate[field.get('name')]();
-    });
+    }
   };
 
   controlFor(field, key) {

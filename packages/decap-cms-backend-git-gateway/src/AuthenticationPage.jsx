@@ -52,14 +52,14 @@ const ErrorMessage = styled.p`
 
 let component = null;
 
-if (window.netlifyIdentity) {
-  window.netlifyIdentity.on('login', user => {
+if (globalThis.netlifyIdentity) {
+  globalThis.netlifyIdentity.on('login', user => {
     component && component.handleIdentityLogin(user);
   });
-  window.netlifyIdentity.on('logout', () => {
+  globalThis.netlifyIdentity.on('logout', () => {
     component && component.handleIdentityLogout();
   });
-  window.netlifyIdentity.on('error', err => {
+  globalThis.netlifyIdentity.on('error', err => {
     component && component.handleIdentityError(err);
   });
 }
@@ -73,9 +73,9 @@ export default class GitGatewayAuthenticationPage extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
-      this.props.onLogin(window.netlifyIdentity.currentUser());
-      window.netlifyIdentity.close();
+    if (!this.loggedIn && globalThis.netlifyIdentity && globalThis.netlifyIdentity.currentUser()) {
+      this.props.onLogin(globalThis.netlifyIdentity.currentUser());
+      globalThis.netlifyIdentity.close();
     }
   }
 
@@ -85,16 +85,16 @@ export default class GitGatewayAuthenticationPage extends React.Component {
 
   handleIdentityLogin = user => {
     this.props.onLogin(user);
-    window.netlifyIdentity.close();
+    globalThis.netlifyIdentity.close();
   };
 
   handleIdentityLogout = () => {
-    window.netlifyIdentity.open();
+    globalThis.netlifyIdentity.open();
   };
 
   handleIdentityError = err => {
     if (err?.message?.match(/^Failed to load settings from.+\.netlify\/identity$/)) {
-      window.netlifyIdentity.close();
+      globalThis.netlifyIdentity.close();
       this.setState({
         errors: { identity: this.props.t('auth.errors.identitySettings') },
       });
@@ -102,11 +102,11 @@ export default class GitGatewayAuthenticationPage extends React.Component {
   };
 
   handleIdentity = () => {
-    const user = window.netlifyIdentity.currentUser();
+    const user = globalThis.netlifyIdentity.currentUser();
     if (user) {
       this.props.onLogin(user);
     } else {
-      window.netlifyIdentity.open();
+      globalThis.netlifyIdentity.open();
     }
   };
 
@@ -158,9 +158,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     const { errors } = this.state;
     const { error, inProgress, config, t } = this.props;
 
-    if (window.netlifyIdentity) {
-      if (errors.identity) {
-        return (
+    if (globalThis.netlifyIdentity) {
+      return errors.identity ? (
           <AuthenticationPage
             logoUrl={config.logo_url}
             siteUrl={config.site_url}
@@ -176,9 +175,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
             )}
             t={t}
           />
-        );
-      } else {
-        return (
+        ) : (
           <AuthenticationPage
             logoUrl={config.logo_url}
             siteUrl={config.site_url}
@@ -187,7 +184,6 @@ export default class GitGatewayAuthenticationPage extends React.Component {
             t={t}
           />
         );
-      }
     }
 
     return (
@@ -196,8 +192,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
         siteUrl={config.site_url}
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>
-            {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
-            {!errors.server ? null : <ErrorMessage>{String(errors.server)}</ErrorMessage>}
+            {error ? <ErrorMessage>{error}</ErrorMessage> : null}
+            {errors.server ? <ErrorMessage>{String(errors.server)}</ErrorMessage> : null}
             <ErrorMessage>{errors.email || null}</ErrorMessage>
             <AuthInput
               type="text"

@@ -79,8 +79,6 @@ describe('entries', () => {
         selectMediaFolder(
           { media_folder: 'static/media' },
           fromJS({ name: 'posts' }),
-          undefined,
-          undefined,
         ),
       ).toEqual('static/media');
     });
@@ -90,8 +88,6 @@ describe('entries', () => {
         selectMediaFolder(
           { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
-          undefined,
-          undefined,
         ),
       ).toEqual('posts/DRAFT_MEDIA_FILES');
     });
@@ -102,7 +98,6 @@ describe('entries', () => {
           { media_folder: 'static/media' },
           fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           fromJS({ path: 'posts/title/index.md' }),
-          undefined,
         ),
       ).toEqual('posts/title');
     });
@@ -113,7 +108,6 @@ describe('entries', () => {
           fromJS({ media_folder: 'static/media' }),
           fromJS({ name: 'posts', folder: 'posts', media_folder: '../' }),
           fromJS({ path: 'posts/title/index.md' }),
-          undefined,
         ),
       ).toEqual('posts');
     });
@@ -145,7 +139,6 @@ describe('entries', () => {
             media_folder: '/static/images/docs/getting-started',
           }),
           fromJS({}),
-          undefined,
         ),
       ).toEqual('static/images/docs/getting-started');
     });
@@ -173,7 +166,6 @@ describe('entries', () => {
           { media_folder: 'static/media', slug: slugConfig },
           collection,
           entry,
-          undefined,
         ),
       ).toEqual('static/media/hosting-and-deployment/deployment-with-nanobox');
     });
@@ -200,7 +192,6 @@ describe('entries', () => {
           { media_folder: '/static/images', slug: slugConfig },
           collection,
           entry,
-          undefined,
         ),
       ).toEqual('static/images/docs/extending');
     });
@@ -262,7 +253,6 @@ describe('entries', () => {
           { media_folder: '/static/img/', slug: slugConfig },
           collection,
           entry,
-          undefined,
         ),
       ).toEqual('static/img/blog');
 
@@ -271,7 +261,6 @@ describe('entries', () => {
           { media_folder: 'static/img/', slug: slugConfig },
           collection,
           entry,
-          undefined,
         ),
       ).toEqual('content/en/hosting-and-deployment/static/img/blog');
     });
@@ -282,7 +271,6 @@ describe('entries', () => {
           { media_folder: 'static/media' },
           fromJS({ name: 'posts', files: [{ name: 'index', media_folder: '/static/images/' }] }),
           fromJS({ path: 'posts/title/index.md', slug: 'index' }),
-          undefined,
         ),
       ).toBe('static/images');
     });
@@ -350,7 +338,6 @@ describe('entries', () => {
           fromJS({ name: 'posts', folder: 'posts' }),
           undefined,
           'image.png',
-          undefined,
         ),
       ).toBe('static/media/image.png');
     });
@@ -362,7 +349,6 @@ describe('entries', () => {
           fromJS({ name: 'posts', folder: 'posts', media_folder: '' }),
           undefined,
           'image.png',
-          undefined,
         ),
       ).toBe('posts/DRAFT_MEDIA_FILES/image.png');
     });
@@ -374,7 +360,6 @@ describe('entries', () => {
           fromJS({ name: 'posts', folder: 'posts', media_folder: '../../static/media/' }),
           fromJS({ path: 'posts/title/index.md' }),
           'image.png',
-          undefined,
         ),
       ).toBe('static/media/image.png');
     });
@@ -406,8 +391,6 @@ describe('entries', () => {
           { public_folder: '/media' },
           null,
           '/media/image.png',
-          undefined,
-          undefined,
         ),
       ).toBe('/media/image.png');
     });
@@ -418,8 +401,6 @@ describe('entries', () => {
           { public_folder: '/media' },
           fromJS({ name: 'posts', folder: 'posts', public_folder: '' }),
           'image.png',
-          undefined,
-          undefined,
         ),
       ).toBe('image.png');
     });
@@ -430,8 +411,6 @@ describe('entries', () => {
           { public_folder: '/media' },
           fromJS({ name: 'posts', folder: 'posts', public_folder: '../../static/media/' }),
           'image.png',
-          undefined,
-          undefined,
         ),
       ).toBe('../../static/media/image.png');
     });
@@ -446,8 +425,6 @@ describe('entries', () => {
             public_folder: 'https://www.netlify.com/media',
           }),
           'image.png',
-          undefined,
-          undefined,
         ),
       ).toBe('https://www.netlify.com/media/image.png');
     });
@@ -476,7 +453,6 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          undefined,
         ),
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
@@ -572,7 +548,6 @@ describe('entries', () => {
           collection,
           'image.png',
           entry,
-          undefined,
         ),
       ).toBe('/images/image.png');
     });

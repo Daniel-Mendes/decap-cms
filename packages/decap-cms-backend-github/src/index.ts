@@ -7,4 +7,8 @@ export const DecapCmsBackendGithub = {
   API,
   AuthenticationPage,
 };
-export { GitHubBackend, API, AuthenticationPage };
+
+
+export {default as GitHubBackend} from './implementation.tsx';
+export {default as API} from './API.ts';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

@@ -5,8 +5,8 @@ import wrapLink from '../transforms/wrapLink';
 function toggleLink(editor, promptText) {
   const activeLink = getActiveLink(editor);
   const activeUrl = activeLink ? activeLink[0]?.data?.url : '';
-  const url = window.prompt(promptText, activeUrl);
-  if (url == null) return;
+  const url = globalThis.prompt(promptText, activeUrl);
+  if (url == undefined) return;
   if (url === '') {
     unwrapLink(editor);
     return;

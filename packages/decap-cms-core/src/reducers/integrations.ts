@@ -17,20 +17,20 @@ export function getIntegrations(config: CmsConfig) {
       const { hooks, collections, provider, ...providerData } = integration;
       acc.providers[provider] = { ...providerData };
       if (!collections) {
-        hooks.forEach(hook => {
+        for (const hook of hooks) {
           acc.hooks[hook] = provider;
-        });
+        }
         return acc;
       }
       const integrationCollections =
         collections === '*' ? config.collections.map(collection => collection.name) : collections;
-      integrationCollections.forEach(collection => {
-        hooks.forEach(hook => {
+      for (const collection of integrationCollections) {
+        for (const hook of hooks) {
           acc.hooks[collection]
             ? ((acc.hooks[collection] as Record<string, string>)[hook] = provider)
             : (acc.hooks[collection] = { [hook]: provider });
-        });
-      });
+        }
+      }
       return acc;
     },
     { providers: {}, hooks: {} } as Acc,
@@ -45,8 +45,9 @@ function integrations(state = defaultState, action: ConfigAction): Integrations 
     case CONFIG_SUCCESS: {
       return getIntegrations(action.payload);
     }
-    default:
+    default: {
       return state;
+    }
   }
 }
 

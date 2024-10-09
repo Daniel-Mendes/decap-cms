@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 
 import { markdownToSlate, htmlToSlate } from '../';
 
@@ -20,7 +20,7 @@ describe('markdownToSlate', () => {
           {
             italic: true,
             marks: [{ type: 'italic' }],
-            text: 'this_mark, and your charge is but a penny; tothisa penny more; and so on to the full glass—the Cape Horn measure, which you may gulp down for a shilling.\\n\\nUpon entering the place I found a number of young seamen gathered about a table, examining by a dim light divers specimens ofskrimshander',
+            text: String.raw`this_mark, and your charge is but a penny; tothisa penny more; and so on to the full glass—the Cape Horn measure, which you may gulp down for a shilling.\n\nUpon entering the place I found a number of young seamen gathered about a table, examining by a dim light divers specimens ofskrimshander`,
           },
           {
             text: '.',

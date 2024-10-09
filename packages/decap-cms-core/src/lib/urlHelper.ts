@@ -1,4 +1,4 @@
-import url from 'url';
+import url from 'node:url';
 import urlJoin from 'url-join';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
@@ -26,7 +26,7 @@ export function addParams(urlString: string, params: Record<string, string>) {
 
 export function stripProtocol(urlString: string) {
   const protocolEndIndex = urlString.indexOf('//');
-  return protocolEndIndex > -1 ? urlString.slice(protocolEndIndex + 2) : urlString;
+  return protocolEndIndex === -1 ? urlString : urlString.slice(protocolEndIndex + 2);
 }
 
 /* See https://www.w3.org/International/articles/idn-and-iri/#path.
@@ -38,7 +38,7 @@ export function stripProtocol(urlString: string) {
  */
 const uriChars = /[\w\-.~]/i;
 const ucsChars =
-  /[\xA0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
+  /[\u00A0-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}]/u;
 
 function validURIChar(char: string) {
   return uriChars.test(char);
@@ -60,7 +60,7 @@ export function getCharReplacer(encoding: string, replacement: string) {
   }
 
   // Check and make sure the replacement character is actually a safe char itself.
-  if (!Array.from(replacement).every(validChar)) {
+  if (![...replacement].every(validChar)) {
     throw new Error('The replacement character(s) (options.replacement) is itself unsafe.');
   }
 
@@ -82,7 +82,7 @@ export function sanitizeURI(
 
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
-  return Array.from(str).map(getCharReplacer(encoding, replacement)).join('');
+  return [...str].map(getCharReplacer(encoding, replacement)).join('');
 }
 
 export function sanitizeChar(char: string, options?: CmsSlug) {

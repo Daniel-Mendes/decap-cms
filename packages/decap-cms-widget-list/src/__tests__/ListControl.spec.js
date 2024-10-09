@@ -620,7 +620,7 @@ describe('ListControl', () => {
 
     let mock;
     try {
-      mock = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      mock = jest.spyOn(console, 'error').mockImplementation(() => {});
 
       const items = getAllByText('Remove');
       fireEvent.click(items[0]);

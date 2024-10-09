@@ -4,10 +4,10 @@
 export default function loadScript(url) {
   return new Promise((resolve, reject) => {
     let done = false;
-    const head = document.getElementsByTagName('head')[0];
+    const head = document.querySelectorAll('head')[0];
     const script = document.createElement('script');
     script.src = url;
-    script.onload = script.onreadystatechange = function () {
+    script.addEventListener('load', script.onreadystatechange = function () {
       if (
         !done &&
         (!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete')
@@ -17,8 +17,8 @@ export default function loadScript(url) {
       } else {
         reject();
       }
-    };
+    });
     script.onerror = error => reject(error);
-    head.appendChild(script);
+    head.append(script);
   });
 }

@@ -11,7 +11,7 @@ function WithError() {
 jest.spyOn(console, 'error').mockImplementation(() => ({}));
 
 Object.defineProperty(
-  window.navigator,
+  globalThis.navigator,
   'userAgent',
   (value => ({
     get() {
@@ -20,7 +20,7 @@ Object.defineProperty(
     set(v) {
       value = v;
     },
-  }))(window.navigator['userAgent']),
+  }))(globalThis.navigator['userAgent']),
 );
 
 describe('Editor', () => {
@@ -33,7 +33,7 @@ describe('Editor', () => {
   });
 
   it('should match snapshot with issue URL', () => {
-    global.navigator.userAgent = 'Test User Agent';
+    globalThis.navigator.userAgent = 'Test User Agent';
     const { getByTestId } = render(
       <ErrorBoundary {...props}>
         <WithError />

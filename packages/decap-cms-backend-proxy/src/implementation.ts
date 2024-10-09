@@ -33,14 +33,14 @@ type MediaFile = {
 
 function deserializeMediaFile({ id, content, encoding, path, name }: MediaFile) {
   let byteArray = new Uint8Array(0);
-  if (encoding !== 'base64') {
-    console.error(`Unsupported encoding '${encoding}' for file '${path}'`);
-  } else {
+  if (encoding === 'base64') {
     const decodedContent = atob(content);
     byteArray = new Uint8Array(decodedContent.length);
     for (let i = 0; i < decodedContent.length; i++) {
-      byteArray[i] = decodedContent.charCodeAt(i);
+      byteArray[i] = decodedContent.codePointAt(i);
     }
+  } else {
+    console.error(`Unsupported encoding '${encoding}' for file '${path}'`);
   }
   const blob = new Blob([byteArray]);
   const file = blobToFileObj(name, blob);
@@ -155,11 +155,11 @@ export default class ProxyBackend implements Implementation {
       });
 
       return entry;
-    } catch (e) {
-      if (e.status === 404) {
+    } catch (error) {
+      if (error.status === 404) {
         throw new EditorialWorkflowError('content is not under editorial workflow', true);
       }
-      throw e;
+      throw error;
     }
   }
 

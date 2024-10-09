@@ -16,9 +16,9 @@ function catchFormatErrors(format: string, formatter: Formatter) {
   return (res: Response) => {
     try {
       return formatter(res);
-    } catch (err) {
+    } catch (error) {
       throw new Error(
-        `Response cannot be parsed into the expected format (${format}): ${err.message}`,
+        `Response cannot be parsed into the expected format (${format}): ${error.message}`,
       );
     }
   };
@@ -50,8 +50,8 @@ export async function parseResponse(
       throw new Error(`${format} is not a supported response format.`);
     }
     body = await formatter(res);
-  } catch (err) {
-    throw new APIError(err.message, res.status, apiName);
+  } catch (error) {
+    throw new APIError(error.message, res.status, apiName);
   }
   if (expectingOk && !res.ok) {
     const isJSON = format === 'json';
@@ -81,7 +81,7 @@ export function parseLinkHeader(header: string | null) {
       linkStr
         .trim()
         .match(/<(.*?)>/)[1]
-        .replace(/\+/g, '%20'),
+        .replaceAll('+', '%20'),
     ]),
     fromPairs,
   ])(header);

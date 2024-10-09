@@ -129,10 +129,10 @@ export default class Widget extends Component {
     if (field.get('meta')) {
       validations.push(this.props.validateMetaField);
     }
-    validations.forEach(func => {
+    for (const func of validations) {
       const response = func(field, value, this.props.t);
       if (response.error) errors.push(response.error);
-    });
+    }
     if (skipWrapped) {
       if (skipWrapped.error) errors.push(skipWrapped.error);
     } else {
@@ -168,7 +168,7 @@ export default class Widget extends Component {
       return { error: false };
     }
 
-    if (pattern && !RegExp(pattern.first()).test(value)) {
+    if (pattern && !new RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
         parentIds,
@@ -187,7 +187,7 @@ export default class Widget extends Component {
   validateWrappedControl = field => {
     const { t, parentIds } = this.props;
     if (typeof this.wrappedControlValid !== 'function') {
-      throw new Error(oneLine`
+      throw new TypeError(oneLine`
         this.wrappedControlValid is not a function. Are you sure widget
         "${field.get('widget')}" is registered?
       `);
@@ -204,10 +204,10 @@ export default class Widget extends Component {
         () => {
           this.validate({ error: false });
         },
-        err => {
+        error_ => {
           const error = {
             type: ValidationErrorTypes.CUSTOM,
-            message: `${field.get('label', field.get('name'))} - ${err}.`,
+            message: `${field.get('label', field.get('name'))} - ${error_}.`,
           };
 
           this.validate({ error });

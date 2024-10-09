@@ -713,7 +713,7 @@ describe('i18n', () => {
 
     it('should not duplicate field when field i18n is not DUPLICATE', () => {
       const date = new Date('2020/01/01');
-      [i18n.I18N_FIELD.TRANSLATE, i18n.I18N_FIELD.TRANSLATE.DUPLICATE].forEach(fieldI18n => {
+      for (const fieldI18n of [i18n.I18N_FIELD.TRANSLATE, i18n.I18N_FIELD.TRANSLATE.DUPLICATE]) {
         expect(
           i18n
             .duplicateI18nFields(
@@ -728,7 +728,7 @@ describe('i18n', () => {
             data: { date },
           },
         });
-      });
+      }
     });
 
     it('should duplicate nested field when nested fields i18n is DUPLICATE', () => {

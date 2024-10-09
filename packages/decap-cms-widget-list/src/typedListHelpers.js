@@ -25,11 +25,8 @@ export function resolveFieldKeyType(field) {
 export function getErrorMessageForTypedFieldAndValue(field, value) {
   const keyType = resolveFieldKeyType(field);
   const type = value.get(keyType);
-  let errorMessage;
-  if (!type) {
-    errorMessage = `Error: item has no '${keyType}' property`;
-  } else {
-    errorMessage = `Error: item has illegal '${keyType}' property: '${type}'`;
-  }
+  const errorMessage = type
+    ? `Error: item has illegal '${keyType}' property: '${type}'`
+    : `Error: item has no '${keyType}' property`;
   return errorMessage;
 }

@@ -185,7 +185,7 @@ describe('defaultSchema', () => {
     });
   });
 
-  ['unpublishedEntryDataFile', 'unpublishedEntryMediaFile'].forEach(action => {
+  for (const action of ['unpublishedEntryDataFile', 'unpublishedEntryMediaFile']) {
     describe(action, () => {
       it('should fail on invalid params', () => {
         const schema = defaultSchema();
@@ -233,7 +233,7 @@ describe('defaultSchema', () => {
         expect(error).toBeUndefined();
       });
     });
-  });
+  }
 
   describe('deleteUnpublishedEntry', () => {
     it('should fail on invalid params', () => {

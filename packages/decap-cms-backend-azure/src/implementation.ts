@@ -42,7 +42,7 @@ function parseAzureRepo(config: Config) {
   const { repo } = config.backend;
 
   if (typeof repo !== 'string') {
-    throw new Error('The Azure backend needs a "repo" in the backend configuration.');
+    throw new TypeError('The Azure backend needs a "repo" in the backend configuration.');
   }
 
   const parts = repo.split('/');
@@ -106,8 +106,8 @@ export default class Azure implements Implementation {
     const auth =
       (await this.api!.user()
         .then(user => !!user)
-        .catch(e => {
-          console.warn('Failed getting Azure user', e);
+        .catch(error => {
+          console.warn('Failed getting Azure user', error);
           return false;
         })) || false;
 
@@ -376,7 +376,7 @@ export default class Azure implements Implementation {
       } else {
         return null;
       }
-    } catch (e) {
+    } catch {
       return null;
     }
   }

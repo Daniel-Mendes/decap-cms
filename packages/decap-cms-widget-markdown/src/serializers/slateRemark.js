@@ -39,7 +39,7 @@ const markMap = {
   code: 'inlineCode',
 };
 
-const blockTypes = [
+const blockTypes = new Set([
   'paragraph',
   'quote',
   'heading-one',
@@ -55,9 +55,9 @@ const blockTypes = [
   'table',
   'table-row',
   'table-cell',
-];
+]);
 
-const inlineTypes = ['link', 'image', 'break'];
+const inlineTypes = new Set(['link', 'image', 'break']);
 
 const leadingWhitespaceExp = /^\s+\S/;
 const trailingWhitespaceExp = /(?!\S)\s+$/;
@@ -86,9 +86,9 @@ export default function slateToRemark(value, { voidCodeBlock }) {
      * share marks.
      */
     const hasBlockChildren =
-      node.children && node.children[0] && blockTypes.includes(node.children[0].type);
+      node.children && node.children[0] && blockTypes.has(node.children[0].type);
     const children = hasBlockChildren
-      ? node.children.map(transform).filter(v => v)
+      ? node.children.map(transform).filter(Boolean)
       : convertInlineAndTextChildren(node.children);
 
     const output = convertBlockNode(node, children);
@@ -114,7 +114,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
           return { ...node, data };
         }
 
-        default:
+        default: {
           delete newNode[markType];
           newNode.marks = newNode.marks
             ? newNode.marks.filter(({ type }) => type !== markType)
@@ -124,6 +124,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
             delete newNode.marks;
           }
           return newNode;
+        }
       }
     });
   }
@@ -147,11 +148,13 @@ export default function slateToRemark(value, { voidCodeBlock }) {
       }
 
       case 'break':
-      case 'image':
+      case 'image': {
         return map(get(node, ['data', 'marks']), mark => mark.type);
+      }
 
-      default:
+      default: {
         return getNodeMarkArray(node);
+      }
     }
   }
 
@@ -224,14 +227,18 @@ export default function slateToRemark(value, { voidCodeBlock }) {
 
   function collectCenterNodes(nodes, leadingNode, trailingNode) {
     switch (nodes.length) {
-      case 0:
+      case 0: {
         return [];
-      case 1:
+      }
+      case 1: {
         return [trailingNode];
-      case 2:
+      }
+      case 2: {
         return [leadingNode, trailingNode];
-      default:
+      }
+      default: {
         return [leadingNode, ...nodes.slice(1, -1), trailingNode];
+      }
     }
   }
 
@@ -240,7 +247,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
     const lastNode = nodes.length > 1 ? last(nodes) : leadingNode;
     const trailingSplitResult = splitWhitespace(lastNode, { trailing: true });
     const { whitespace: trailingWhitespace, trimmedNode: trailingNode } = trailingSplitResult;
-    const centerNodes = collectCenterNodes(nodes, leadingNode, trailingNode).filter(val => val);
+    const centerNodes = collectCenterNodes(nodes, leadingNode, trailingNode).filter(Boolean);
     return { leadingWhitespace, centerNodes, trailingWhitespace };
   }
 
@@ -249,7 +256,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
   }
 
   function isNodeInline(node) {
-    return inlineTypes.includes(node.type);
+    return inlineTypes.has(node.type);
   }
 
   function convertInlineAndTextChildren(nodes = []) {
@@ -290,7 +297,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
             createText(leadingWhitespace),
             markNode,
             createText(trailingWhitespace),
-          ].filter(val => val);
+          ].filter(Boolean);
           convertedNodes.push(...normalizedNodes);
         }
         remainingNodes = remainder;

@@ -179,8 +179,8 @@ export default class GraphQLAPI extends API {
             await this.deleteBranch(branchName);
             const result = await this.client.mutate(options);
             return result;
-          } catch (e) {
-            console.log(e);
+          } catch (error_) {
+            console.log(error_);
           }
         }
       }
@@ -273,10 +273,10 @@ export default class GraphQLAPI extends API {
 
     if (isNull) {
       throw new APIError('Not Found', 404, 'GitHub');
-    } else if (!isBinary) {
-      return text;
-    } else {
+    } else if (isBinary) {
       return super.fetchBlobContent({ sha, repoURL, parseText });
+    } else {
+      return text;
     }
   }
 
@@ -561,7 +561,9 @@ export default class GraphQLAPI extends API {
       const contentKey = this.generateContentKey(collectionName, slug);
       const branchName = branchFromContentKey(contentKey);
       const pr = await this.getBranchPullRequest(branchName);
-      if (pr.number !== MOCK_PULL_REQUEST) {
+      if (pr.number === MOCK_PULL_REQUEST) {
+        return await this.deleteBranch(branchName);
+      } else {
         const { branch, pullRequest } = await this.getPullRequestAndBranch(branchName, pr.number);
 
         const { data } = await this.mutate({
@@ -578,18 +580,16 @@ export default class GraphQLAPI extends API {
         });
 
         return data!.closePullRequest;
-      } else {
-        return await this.deleteBranch(branchName);
       }
-    } catch (e) {
-      const { graphQLErrors } = e;
+    } catch (error) {
+      const { graphQLErrors } = error;
       if (graphQLErrors && graphQLErrors.length > 0) {
         const branchNotFound = graphQLErrors.some((e: Error) => e.type === 'NOT_FOUND');
         if (branchNotFound) {
           return;
         }
       }
-      throw e;
+      throw error;
     }
   }
 

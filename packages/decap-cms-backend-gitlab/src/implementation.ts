@@ -107,8 +107,8 @@ export default class GitLab implements Implementation {
       (await this.api
         ?.user()
         .then(user => !!user)
-        .catch(e => {
-          console.warn('Failed getting GitLab user', e);
+        .catch(error => {
+          console.warn('Failed getting GitLab user', error);
           return false;
         })) || false;
 
@@ -463,7 +463,7 @@ export default class GitLab implements Implementation {
       } else {
         return null;
       }
-    } catch (e) {
+    } catch {
       return null;
     }
   }

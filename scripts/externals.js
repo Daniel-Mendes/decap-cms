@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { resolve } from 'node:path';
+import path from 'node:path';
 
 /**
  * Takes a dash [-] separated name and makes it camel-cased
@@ -18,7 +18,7 @@ export function toGlobalName(name) {
     .replace(new RegExp(/\w/), s => s.toUpperCase());
 }
 
-const packages = fs.readdirSync(resolve(import.meta.dirname, '../packages'));
+const packages = fs.readdirSync(path.resolve(import.meta.dirname, '../packages'));
 
 export const externals = [
   ...packages,

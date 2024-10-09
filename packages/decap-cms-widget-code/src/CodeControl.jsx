@@ -80,7 +80,7 @@ export default class CodeControl extends React.Component {
     keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
     settingsVisible: false,
     codeMirrorKey: uuid(),
-    theme: localStorage.getItem(settingsPersistKeys['theme']) || themes[themes.length - 1],
+    theme: localStorage.getItem(settingsPersistKeys['theme']) || themes.at(-1),
     lastKnownValue: this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value,
   };
 
@@ -312,7 +312,7 @@ export default class CodeControl extends React.Component {
                 extraKeys: {
                   'Shift-Tab': 'indentLess',
                   Tab: 'indentMore',
-                  ...(widget.codeMirrorConfig.extraKeys || {}),
+                  ...widget.codeMirrorConfig.extraKeys,
                 },
                 theme,
                 mode,

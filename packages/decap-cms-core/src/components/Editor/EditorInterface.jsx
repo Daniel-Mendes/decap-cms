@@ -149,7 +149,7 @@ function isPreviewEnabled(collection, entry) {
   if (collection.get('type') === FILES) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     const previewEnabled = file?.getIn(['editor', 'preview']);
-    if (previewEnabled != null) return previewEnabled;
+    if (previewEnabled != undefined) return previewEnabled;
   }
   return collection.getIn(['editor', 'preview'], true);
 }
@@ -285,7 +285,7 @@ class EditorInterface extends Component {
           <StyledSplitPane
             maxSize={-100}
             minSize={400}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            defaultSize={Number.parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
             onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
@@ -310,7 +310,7 @@ class EditorInterface extends Component {
         <div>
           <StyledSplitPane
             maxSize={-100}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            defaultSize={Number.parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
             onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}

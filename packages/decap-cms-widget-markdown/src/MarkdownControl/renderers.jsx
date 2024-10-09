@@ -285,12 +285,15 @@ export function Leaf({ attributes, children, leaf }) {
 export function renderInline__DEPRECATED() {
   return props => {
     switch (props.node.type) {
-      case 'link':
+      case 'link': {
         return <Link {...props} />;
-      case 'image':
+      }
+      case 'image': {
         return <Image {...props} />;
-      case 'break':
+      }
+      case 'break': {
         return <Break {...props} />;
+      }
     }
   };
 }
@@ -300,45 +303,62 @@ export function Element(props) {
   const style = { textAlign: element.align };
 
   switch (element.type) {
-    case 'bulleted-list':
+    case 'bulleted-list': {
       return <BulletedList>{children}</BulletedList>;
-    case 'quote':
+    }
+    case 'quote': {
       return <Quote>{children}</Quote>;
-    case 'heading-one':
+    }
+    case 'heading-one': {
       return <HeadingOne>{children}</HeadingOne>;
-    case 'heading-two':
+    }
+    case 'heading-two': {
       return <HeadingTwo>{children}</HeadingTwo>;
-    case 'heading-three':
+    }
+    case 'heading-three': {
       return <HeadingThree>{children}</HeadingThree>;
-    case 'heading-four':
+    }
+    case 'heading-four': {
       return <HeadingFour>{children}</HeadingFour>;
-    case 'heading-five':
+    }
+    case 'heading-five': {
       return <HeadingFive>{children}</HeadingFive>;
-    case 'heading-six':
+    }
+    case 'heading-six': {
       return <HeadingSix>{children}</HeadingSix>;
-    case 'list-item':
+    }
+    case 'list-item': {
       return <ListItem>{children}</ListItem>;
-    case 'numbered-list':
+    }
+    case 'numbered-list': {
       return <NumberedList>{children}</NumberedList>;
-    case 'table':
+    }
+    case 'table': {
       return <Table {...props} />;
-    case 'table-row':
+    }
+    case 'table-row': {
       return <TableRow {...props} />;
-    case 'table-cell':
+    }
+    case 'table-cell': {
       return <TableCell {...props} />;
-    case 'thematic-break':
+    }
+    case 'thematic-break': {
       return (
         <VoidBlock {...props}>
           <ThematicBreak {...props} />
         </VoidBlock>
       );
-    case 'link':
+    }
+    case 'link': {
       return <Link {...props} />;
-    case 'image':
+    }
+    case 'image': {
       return <Image {...props} />;
-    case 'break':
+    }
+    case 'break': {
       return <Break {...props} />;
-    case 'shortcode':
+    }
+    case 'shortcode': {
       if (element.id === 'code-block' && codeBlockComponent) {
         return (
           <VoidBlock {...props}>
@@ -351,7 +371,9 @@ export function Element(props) {
           <Shortcode {...props}>{children}</Shortcode>
         </VoidBlock>
       );
-    default:
+    }
+    default: {
       return <Paragraph style={style}>{children}</Paragraph>;
+    }
   }
 }

@@ -9,4 +9,8 @@ export const DecapCmsBackendAwsCognitoGithubProxy = {
   AuthenticationPage,
 };
 
-export { AwsCognitoGitHubProxyBackend, API, AuthenticationPage };
+
+
+export {default as AwsCognitoGitHubProxyBackend} from './implementation.tsx';
+export {API} from 'decap-cms-backend-github';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

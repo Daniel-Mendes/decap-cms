@@ -144,10 +144,10 @@ class CollectionSearch extends React.Component {
     const { selectedCollectionIdx, query } = this.state;
 
     this.toggleSuggestions(false);
-    if (selectedCollectionIdx !== -1) {
-      onSubmit(query, collections.toIndexedSeq().getIn([selectedCollectionIdx, 'name']));
-    } else {
+    if (selectedCollectionIdx === -1) {
       onSubmit(query);
+    } else {
+      onSubmit(query, collections.toIndexedSeq().getIn([selectedCollectionIdx, 'name']));
     }
   };
 

@@ -218,7 +218,7 @@ async function fetchFiles(
 ) {
   const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
   const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
-  files.forEach(file => {
+  for (const file of files) {
     promises.push(
       new Promise(resolve =>
         sem.take(async () => {
@@ -229,7 +229,7 @@ async function fetchFiles(
             ]);
             resolve({ file: { ...file, ...fileMetadata }, data: data as string });
             sem.leave();
-          } catch (error) {
+          } catch {
             sem.leave();
             console.error(`failed to load file from ${apiName}: ${file.path}`);
             resolve({ error: true });
@@ -237,7 +237,7 @@ async function fetchFiles(
         }),
       ),
     );
-  });
+  }
   return Promise.all(promises).then(loadedEntries =>
     loadedEntries.filter(loadedEntry => !(loadedEntry as { error: boolean }).error),
   ) as Promise<ImplementationEntry[]>;
@@ -268,20 +268,20 @@ export async function unpublishedEntries(listEntriesKeys: () => Promise<string[]
     return keys;
   } catch (error) {
     if (error.message === 'Not Found') {
-      return Promise.resolve([]);
+      return [];
     }
     throw error;
   }
 }
 
 export function blobToFileObj(name: string, blob: Blob) {
-  const options = name.match(/.svg$/) ? { type: 'image/svg+xml' } : {};
+  const options = /.svg$/.test(name) ? { type: 'image/svg+xml' } : {};
   return new File([blob], name, options);
 }
 
 export async function getMediaAsBlob(path: string, id: string | null, readFile: ReadFile) {
   let blob: Blob;
-  if (path.match(/.svg$/)) {
+  if (/.svg$/.test(path)) {
     const text = (await readFile(path, id, { parseText: true })) as string;
     blob = new Blob([text], { type: 'image/svg+xml' });
   } else {
@@ -415,8 +415,7 @@ async function getDiffFromLocalTree({
             path: d.oldPath,
             name: basename(d.oldPath),
             deleted: true,
-          });
-          acc.push({
+          }, {
             path: d.newPath,
             name: basename(d.newPath),
             deleted: false,
@@ -444,11 +443,11 @@ async function getDiffFromLocalTree({
 
   const diffFilesWithIds = await Promise.all(
     diffFiles.map(async file => {
-      if (!file.deleted) {
+      if (file.deleted) {
+        return { ...file, id: '' };
+      } else {
         const id = await getFileId(file.path);
         return { ...file, id };
-      } else {
-        return { ...file, id: '' };
       }
     }),
   );
@@ -527,8 +526,8 @@ export async function allEntriesByFolder({
         getDifferences,
         getFileId,
         filterFile,
-      }).catch(e => {
-        console.log('Failed getting diff from local tree:', e);
+      }).catch(error => {
+        console.log('Failed getting diff from local tree:', error);
         return null;
       });
 

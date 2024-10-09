@@ -6,20 +6,20 @@ import './extensions';
 /**
  * Load Decap CMS automatically if `window.CMS_MANUAL_INIT` is set.
  */
-if (!window.CMS_MANUAL_INIT) {
-  CMS.init();
-} else {
+if (globalThis.CMS_MANUAL_INIT) {
   console.log('`window.CMS_MANUAL_INIT` flag set, skipping automatic initialization.');
+} else {
+  CMS.init();
 }
 
 /**
  * Add extension hooks to global scope.
  */
-if (typeof window !== 'undefined') {
-  window.CMS = CMS;
-  window.initCMS = CMS.init;
-  window.createClass = window.createClass || createReactClass;
-  window.h = window.h || React.createElement;
+if (typeof globalThis !== 'undefined') {
+  globalThis.CMS = CMS;
+  globalThis.initCMS = CMS.init;
+  globalThis.createClass = globalThis.createClass || createReactClass;
+  globalThis.h = globalThis.h || React.createElement;
   /**
    * Log the version number.
    */
@@ -31,4 +31,6 @@ if (typeof window !== 'undefined') {
 export const DecapCms = {
   ...CMS,
 };
-export default CMS;
+
+
+export {DecapCmsApp as default} from 'decap-cms-app';

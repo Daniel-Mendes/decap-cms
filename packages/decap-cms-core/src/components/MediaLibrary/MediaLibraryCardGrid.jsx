@@ -72,9 +72,9 @@ function VirtualizedGrid(props) {
     <CardGridContainer ref={setScrollContainerRef}>
       <AutoSizer>
         {({ height, width }) => {
-          const cardWidth = parseInt(props.cardWidth, 10);
-          const cardHeight = parseInt(props.cardHeight, 10);
-          const gutter = parseInt(props.cardMargin, 10);
+          const cardWidth = Number.parseInt(props.cardWidth, 10);
+          const cardHeight = Number.parseInt(props.cardHeight, 10);
+          const gutter = Number.parseInt(props.cardMargin, 10);
           const columnWidth = cardWidth + gutter;
           const rowHeight = cardHeight + gutter;
           const columnCount = Math.floor(width / columnWidth);
@@ -136,11 +136,11 @@ function PaginatedGrid({
             isViewableImage={file.isViewableImage}
           />
         ))}
-        {!canLoadMore ? null : <Waypoint onEnter={onLoadMore} />}
+        {canLoadMore ? <Waypoint onEnter={onLoadMore} /> : null}
       </CardGrid>
-      {!isPaginating ? null : (
+      {isPaginating ? (
         <PaginatingMessage isPrivate={isPrivate}>{paginatingMessage}</PaginatingMessage>
-      )}
+      ) : null}
     </CardGridContainer>
   );
 }

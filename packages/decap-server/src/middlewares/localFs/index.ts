@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import { defaultSchema, joi } from '../joi';
 import { pathTraversal } from '../joi/customValidators';
@@ -79,12 +79,12 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
             ),
           );
           if (dataFiles.every(dataFile => dataFile.newPath)) {
-            dataFiles.forEach(async dataFile => {
+            for (const dataFile of dataFiles) {
               await move(
                 path.join(repoPath, dataFile.path),
                 path.join(repoPath, dataFile.newPath!),
               );
-            });
+            }
           }
           res.json({ message: 'entry persisted' });
           break;
@@ -134,10 +134,10 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
           break;
         }
       }
-    } catch (e) {
+    } catch (error) {
       logger.error(
         `Error handling ${JSON.stringify(req.body)}: ${
-          e instanceof Error ? e.message : 'Unknown error'
+          error instanceof Error ? error.message : 'Unknown error'
         }`,
       );
       res.status(500).json({ error: 'Unknown error' });

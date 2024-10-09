@@ -208,7 +208,7 @@ export default class ListControl extends React.Component {
     super(props);
     const { field, value } = props;
     const listCollapsed = field.get('collapsed', true);
-    const itemsCollapsed = (value && Array(value.size).fill(listCollapsed)) || [];
+    const itemsCollapsed = (value && new Array(value.size).fill(listCollapsed)) || [];
     const keys = (value && Array.from({ length: value.size }, () => uuid())) || [];
 
     this.state = {
@@ -231,7 +231,7 @@ export default class ListControl extends React.Component {
       );
       stringValue = String(value);
     }
-    return stringValue.replace(/,([^\s]|$)/g, ', $1');
+    return stringValue.replaceAll(/,([^\s]|$)/g, ', $1');
   };
 
   getValueType = () => {
@@ -263,7 +263,7 @@ export default class ListControl extends React.Component {
     const oldValue = this.state.value;
     const newValue = e.target.value.trim();
     const listValue = newValue ? newValue.split(',') : [];
-    if (newValue.match(/,$/) && oldValue.match(/, $/)) {
+    if (newValue.endsWith(',') && oldValue.endsWith(', ')) {
       listValue.pop();
     }
 
@@ -280,7 +280,7 @@ export default class ListControl extends React.Component {
     const listValue = e.target.value
       .split(',')
       .map(el => el.trim())
-      .filter(el => el);
+      .filter(Boolean);
     this.setState({ value: this.valueToString(listValue) });
     this.props.setInactiveStyle();
   };
@@ -373,9 +373,9 @@ export default class ListControl extends React.Component {
 
   validate = () => {
     if (this.getValueType()) {
-      this.validations.forEach(item => {
+      for (const item of this.validations) {
         item.validate();
-      });
+      }
     } else {
       this.props.validate();
     }
@@ -480,11 +480,11 @@ export default class ListControl extends React.Component {
       let updatedItemsCollapsed = itemsCollapsed;
       // Only allow collapsing all items in this mode but not opening all at once
       if (!listCollapsed || !listCollapsedByDefault) {
-        updatedItemsCollapsed = Array(value.size).fill(!listCollapsed);
+        updatedItemsCollapsed = new Array(value.size).fill(!listCollapsed);
       }
       this.setState({ listCollapsed: !listCollapsed, itemsCollapsed: updatedItemsCollapsed });
     } else {
-      this.setState({ itemsCollapsed: Array(value.size).fill(!allItemsCollapsed) });
+      this.setState({ itemsCollapsed: new Array(value.size).fill(!allItemsCollapsed) });
     }
   };
 
@@ -742,10 +742,6 @@ export default class ListControl extends React.Component {
   }
 
   render() {
-    if (this.getValueType() !== null) {
-      return this.renderListControl();
-    } else {
-      return this.renderInput();
-    }
+    return this.getValueType() === null ? this.renderInput() : this.renderListControl();
   }
 }

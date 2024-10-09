@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { dirname, sep } from 'path';
+import { dirname, sep } from 'node:path';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 import { Icon, colors, components } from 'decap-cms-ui-default';
 import PropTypes from 'prop-types';
@@ -151,16 +151,14 @@ export function getTreeData(collection, entries) {
     while (!acc[dir] && dir && dir !== rootFolder) {
       const parts = dir.split(sep);
       acc[dir] = parts.pop();
-      dir = parts.length && parts.join(sep);
+      dir = parts.length > 0 && parts.join(sep);
     }
     return acc;
   }, {});
 
-  if (collection.getIn(['nested', 'summary'])) {
-    collection = collection.set('summary', collection.getIn(['nested', 'summary']));
-  } else {
-    collection = collection.delete('summary');
-  }
+  collection = collection.getIn(['nested', 'summary'])
+    ? collection.set('summary', collection.getIn(['nested', 'summary']))
+    : collection.delete('summary');
 
   const flatData = [
     {
@@ -231,7 +229,7 @@ export function updateNode(treeData, node, callback) {
         return nodes;
       }
     }
-    nodes.forEach(node => updater(node.children));
+    for (const node of nodes) updater(node.children);
     return nodes;
   }
 

@@ -23,7 +23,7 @@ export default function createEditorComponent(config) {
   } = config;
 
   return {
-    id: id || label.replace(/[^A-Z0-9]+/gi, '_'),
+    id: id || label.replaceAll(/[^A-Z0-9]+/gi, '_'),
     label,
     type,
     icon,

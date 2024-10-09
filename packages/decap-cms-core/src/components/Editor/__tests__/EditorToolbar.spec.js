@@ -55,7 +55,7 @@ describe('EditorToolbar', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  [false, true].forEach(useOpenAuthoring => {
+  for (const useOpenAuthoring of [false, true]) {
     it(`should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=true,useOpenAuthoring=${useOpenAuthoring}`, () => {
       const { asFragment } = render(
         <EditorToolbar
@@ -98,7 +98,7 @@ describe('EditorToolbar', () => {
       expect(asFragment()).toMatchSnapshot();
     });
 
-    ['draft', 'pending_review', 'pending_publish'].forEach(status => {
+    for (const status of ['draft', 'pending_review', 'pending_publish']) {
       it(`should render with status=${status},useOpenAuthoring=${useOpenAuthoring}`, () => {
         const { asFragment } = render(
           <EditorToolbar
@@ -110,11 +110,11 @@ describe('EditorToolbar', () => {
         );
         expect(asFragment()).toMatchSnapshot();
       });
-    });
+    }
 
     it(`should render normal save button`, () => {
       const { asFragment } = render(<EditorToolbar {...props} hasChanged={true} />);
       expect(asFragment()).toMatchSnapshot();
     });
-  });
+  }
 });

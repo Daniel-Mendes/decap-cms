@@ -186,7 +186,7 @@ Object {
     function withEscapedLessThanChar() {
       if (this.Compiler) {
         this.Compiler.prototype.visitors.text = node => {
-          return node.value.replace(/</g, '&lt;');
+          return node.value.replaceAll('<', '&lt;');
         };
       }
     }

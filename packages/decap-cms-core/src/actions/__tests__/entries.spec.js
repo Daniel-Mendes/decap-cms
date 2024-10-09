@@ -532,7 +532,7 @@ describe('entries', () => {
 
     it('should not return error on non existing path for new entry', () => {
       selectCustomPath.mockReturnValue('non-existing-path');
-      selectEntryByPath.mockReturnValue(undefined);
+      selectEntryByPath.mockReturnValue();
       expect(
         validateMetaField(
           {

@@ -64,9 +64,9 @@ export function checkBackendStatus() {
         return dispatch(statusSuccess(status));
       } else if (status.api.status === true && previousBackendDownNotifications.length > 0) {
         // If backend is up, clear all the danger messages
-        previousBackendDownNotifications.forEach(notification => {
+        for (const notification of previousBackendDownNotifications) {
           dispatch(dismissNotification(notification.id));
-        });
+        }
       }
 
       const authError = status.auth.status === false;

@@ -13,7 +13,7 @@ function withShortcodes(editor) {
   editor.normalizeNode = entry => {
     const [node] = entry;
 
-    if (Editor.isEditor(node) && node.children.length == 0) {
+    if (Editor.isEditor(node) && node.children.length === 0) {
       Transforms.insertNodes(editor, defaultEmptyBlock());
     }
 

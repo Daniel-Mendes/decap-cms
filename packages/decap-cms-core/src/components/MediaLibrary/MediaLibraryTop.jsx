@@ -102,11 +102,11 @@ function MediaLibraryTop({
           <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
             {deleteButtonLabel}
           </DeleteButton>
-          {!canInsert ? null : (
+          {canInsert ? (
             <InsertButton onClick={onInsert} disabled={!hasSelection}>
               {insertButtonLabel}
             </InsertButton>
-          )}
+          ) : null}
         </ButtonsContainer>
       </RowContainer>
     </LibraryTop>

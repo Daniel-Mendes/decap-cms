@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 
 import GitGatewayAuthenticationPage from '../AuthenticationPage';
 
-window.netlifyIdentity = {
+globalThis.netlifyIdentity = {
   currentUser: jest.fn(),
   on: jest.fn(),
   close: jest.fn(),
@@ -29,7 +29,7 @@ describe('GitGatewayAuthenticationPage', () => {
     function TestComponent() {
       const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
 
-      const errorCallback = window.netlifyIdentity.on.mock.calls.find(
+      const errorCallback = globalThis.netlifyIdentity.on.mock.calls.find(
         call => call[0] === 'error',
       )[1];
 

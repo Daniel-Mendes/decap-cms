@@ -35,7 +35,7 @@ describe('implementation', () => {
       const readFile = jest.fn().mockResolvedValue(blob);
       const semaphore = { take: jest.fn(callback => callback()), leave: jest.fn() };
 
-      global.URL.createObjectURL = jest
+      globalThis.URL.createObjectURL = jest
         .fn()
         .mockResolvedValue('blob:http://localhost:8080/blob-id');
 
@@ -51,8 +51,8 @@ describe('implementation', () => {
         parseText: false,
       });
 
-      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(1);
-      expect(global.URL.createObjectURL).toHaveBeenCalledWith(blob);
+      expect(globalThis.URL.createObjectURL).toHaveBeenCalledTimes(1);
+      expect(globalThis.URL.createObjectURL).toHaveBeenCalledWith(blob);
     });
   });
 });

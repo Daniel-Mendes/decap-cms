@@ -487,21 +487,19 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
       const mediaFiles = entry.mediaFiles || [];
       const assetProxies: AssetProxy[] = await Promise.all(
         mediaFiles.map(file => {
-          if (file.file || file.url) {
-            return createAssetProxy({
-              path: file.path,
-              file: file.file,
-              url: file.url,
-              field: file.field,
-            });
-          } else {
-            return getAsset({
-              collection,
-              entry: fromJS(entry),
-              path: file.path,
-              field: file.field,
-            })(dispatch, getState);
-          }
+          return file.file || file.url
+            ? createAssetProxy({
+                path: file.path,
+                file: file.file,
+                url: file.url,
+                field: file.field,
+              })
+            : getAsset({
+                collection,
+                entry: fromJS(entry),
+                path: file.path,
+                field: file.field,
+              })(dispatch, getState);
         }),
       );
       dispatch(addAssets(assetProxies));
@@ -585,7 +583,7 @@ export function loadEntries(collection: Collection, page = 0) {
     const provider = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
       : backend;
-    const append = !!(page && !isNaN(page) && page > 0);
+    const append = !!(page && !Number.isNaN(page) && page > 0);
     dispatch(entriesLoading(collection));
 
     try {
@@ -627,18 +625,18 @@ export function loadEntries(collection: Collection, page = 0) {
           append,
         ),
       );
-    } catch (err) {
+    } catch (error) {
       dispatch(
         addNotification({
           message: {
-            details: err,
+            details: error,
             key: 'ui.toast.onFailToLoadEntries',
           },
           type: 'error',
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err)));
+      return Promise.reject(dispatch(entriesFailed(collection, error)));
     }
   };
 }
@@ -678,30 +676,30 @@ export function traverseCollectionCursor(collection: Collection, action: string)
       return dispatch(
         entriesLoaded(collection, entries, pagination, addAppendActionsToCursor(newCursor), append),
       );
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       dispatch(
         addNotification({
           message: {
-            details: err,
+            details: error,
             key: 'ui.toast.onFailToLoadEntries',
           },
           type: 'error',
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err)));
+      return Promise.reject(dispatch(entriesFailed(collection, error)));
     }
   };
 }
 
 function escapeHtml(unsafe: string) {
   return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
 function processValue(unsafe: string) {
@@ -726,11 +724,11 @@ function getMetaFields(fields: EntryFields) {
 export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const params = new URLSearchParams(search);
-    params.forEach((value, key) => {
+    for (const [key, value] of params.entries()) {
       collection = updateFieldByKey(collection, key, field =>
         field.set('default', processValue(value)),
       );
-    });
+    }
 
     const fields = collection.get('fields', List());
 
@@ -901,7 +899,7 @@ export function persistEntry(collection: Collection) {
         );
       }
 
-      return Promise.reject();
+      throw undefined;
     }
 
     const backend = currentBackend(state.config);
@@ -957,7 +955,7 @@ export function persistEntry(collection: Collection) {
             dismissAfter: 8000,
           }),
         );
-        return Promise.reject(dispatch(entryPersistFail(collection, serializedEntry, error)));
+        throw dispatch(entryPersistFail(collection, serializedEntry, error));
       });
   };
 }
@@ -985,7 +983,7 @@ export function deleteEntry(collection: Collection, slug: string) {
           }),
         );
         console.error(error);
-        return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
+        throw dispatch(entryDeleteFail(collection, slug, error));
       });
   };
 }

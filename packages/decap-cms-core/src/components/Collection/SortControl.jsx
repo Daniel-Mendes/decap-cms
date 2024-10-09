@@ -7,12 +7,15 @@ import { ControlButton } from './ControlButton';
 
 function nextSortDirection(direction) {
   switch (direction) {
-    case SortDirection.Ascending:
+    case SortDirection.Ascending: {
       return SortDirection.Descending;
-    case SortDirection.Descending:
+    }
+    case SortDirection.Descending: {
       return SortDirection.None;
-    default:
+    }
+    default: {
       return SortDirection.Ascending;
+    }
   }
 }
 

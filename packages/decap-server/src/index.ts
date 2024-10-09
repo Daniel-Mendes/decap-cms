@@ -11,29 +11,28 @@ const app = express();
 const port = process.env.PORT || 8081;
 const level = process.env.LOG_LEVEL || 'info';
 
-(async () => {
-  const logger = createLogger({ level });
-  const options = {
-    logger,
-  };
+const logger = createLogger({ level });
+const options = {
+  logger,
+};
 
-  registerCommonMiddlewares(app, options);
+registerCommonMiddlewares(app, options);
 
-  try {
-    const mode = process.env.MODE || 'fs';
-    if (mode === 'fs') {
-      registerLocalFs(app, options);
-    } else if (mode === 'git') {
-      registerLocalGit(app, options);
-    } else {
-      throw new Error(`Unknown proxy mode '${mode}'`);
-    }
-  } catch (e) {
-    logger.error(e instanceof Error ? e.message : 'Unknown error');
-    process.exit(1);
+try {
+  const mode = process.env.MODE || 'fs';
+  if (mode === 'fs') {
+    registerLocalFs(app, options);
+  } else if (mode === 'git') {
+    registerLocalGit(app, options);
+  } else {
+    throw new Error(`Unknown proxy mode '${mode}'`);
   }
+} catch (error) {
+  logger.error(error instanceof Error ? error.message : 'Unknown error');
+  // eslint-disable-next-line unicorn/no-process-exit
+  process.exit(1);
+}
 
-  return app.listen(port, () => {
-    logger.info(`Decap CMS Proxy Server listening on port ${port}`);
-  });
-})();
+app.listen(port, () => {
+  logger.info(`Decap CMS Proxy Server listening on port ${port}`);
+});

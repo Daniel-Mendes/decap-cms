@@ -47,7 +47,7 @@ class EntriesSearch extends React.Component {
   getCursor = () => {
     const { page } = this.props;
     return Cursor.create({
-      actions: isNaN(page) ? [] : ['append_next'],
+      actions: Number.isNaN(page) ? [] : ['append_next'],
     });
   };
 

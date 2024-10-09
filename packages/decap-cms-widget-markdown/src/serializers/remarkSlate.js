@@ -63,7 +63,7 @@ export function mergeAdjacentTexts(children) {
   if (isMerging) {
     mergedChildren.push(current);
   } else {
-    mergedChildren.push(children[children.length - 1]);
+    mergedChildren.push(children.at(-1));
   }
 
   return mergedChildren;
@@ -87,7 +87,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
     let children =
       !['strong', 'emphasis', 'delete'].includes(node.type) &&
       !isEmpty(node.children) &&
-      flatMap(node.children, transformNode).filter(val => val);
+      flatMap(node.children, transformNode).filter(Boolean);
 
     if (Array.isArray(children)) {
       // Merge adjacent text nodes with the same marks to conform to slate schema
@@ -154,8 +154,9 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        * `marks` array should apply to that specific text.
        */
       case 'html':
-      case 'text':
+      case 'text': {
         return { ...convertNode(childNode), marks };
+      }
 
       /**
        * MDAST inline code nodes don't have children, just a text value, similar
@@ -174,8 +175,9 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        */
       case 'strong':
       case 'emphasis':
-      case 'delete':
+      case 'delete': {
         return processMarkNode(childNode, marks);
+      }
 
       case 'link': {
         const nodes = map(childNode.children, child =>
@@ -189,8 +191,9 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        * Remaining nodes simply need mark data added to them, and to then be
        * added into the cumulative children array.
        */
-      default:
+      default: {
         return transformNode({ ...childNode, data: { ...childNode.data, marks } });
+      }
     }
   }
 
@@ -213,9 +216,9 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
 
   function normalizeMarks(node) {
     if (node.marks) {
-      node.marks.forEach(mark => {
+      for (const mark of node.marks) {
         node[mark.type] = true;
-      });
+      }
     }
 
     return node;

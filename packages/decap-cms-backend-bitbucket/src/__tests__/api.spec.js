@@ -1,6 +1,6 @@
 import API from '../API';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+globalThis.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('bitbucket API', () => {
   beforeEach(() => {

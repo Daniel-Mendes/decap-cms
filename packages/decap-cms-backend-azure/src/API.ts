@@ -19,7 +19,7 @@ import {
   readFileMetadata,
   branchFromContentKey,
 } from 'decap-cms-lib-util';
-import { dirname, basename } from 'path';
+import { dirname, basename } from 'node:path';
 
 import type { ApiRequest, AssetProxy, PersistOptions, DataFile } from 'decap-cms-lib-util';
 import type { Map } from 'immutable';
@@ -165,7 +165,7 @@ function delay(ms: number) {
 
 function getChangeItem(item: AzureCommitItem) {
   switch (item.action) {
-    case AzureCommitChangeType.ADD:
+    case AzureCommitChangeType.ADD: {
       return {
         changeType: AzureCommitChangeType.ADD,
         item: { path: item.path },
@@ -174,7 +174,8 @@ function getChangeItem(item: AzureCommitItem) {
           contentType: AzureItemContentType.BASE64,
         },
       };
-    case AzureCommitChangeType.EDIT:
+    }
+    case AzureCommitChangeType.EDIT: {
       return {
         changeType: AzureCommitChangeType.EDIT,
         item: { path: item.path },
@@ -183,19 +184,23 @@ function getChangeItem(item: AzureCommitItem) {
           contentType: AzureItemContentType.BASE64,
         },
       };
-    case AzureCommitChangeType.DELETE:
+    }
+    case AzureCommitChangeType.DELETE: {
       return {
         changeType: AzureCommitChangeType.DELETE,
         item: { path: item.path },
       };
-    case AzureCommitChangeType.RENAME:
+    }
+    case AzureCommitChangeType.RENAME: {
       return {
         changeType: AzureCommitChangeType.RENAME,
         item: { path: item.path },
         sourceServerItem: item.oldPath,
       };
-    default:
+    }
+    default: {
       return {};
+    }
   }
 }
 
@@ -277,8 +282,8 @@ export default class API {
   request = (req: ApiRequest): Promise<Response> => {
     try {
       return requestWithBackoff(this, req);
-    } catch (err) {
-      throw new APIError(err.message, null, API_NAME);
+    } catch (error) {
+      throw new APIError(error.message, null, API_NAME);
     }
   };
 
@@ -333,7 +338,7 @@ export default class API {
           author: commit.author.name || commit.author.email,
           updatedOn: commit.author.date,
         };
-      } catch (error) {
+      } catch {
         return { author: '', updatedOn: '' };
       }
     };
@@ -377,12 +382,12 @@ export default class API {
           name: basename(file.path),
         }));
       return files;
-    } catch (err) {
-      if (err && err.status === 404) {
+    } catch (error) {
+      if (error && error.status === 404) {
         console.log('This 404 was expected and handled appropriately.');
         return [];
       } else {
-        throw err;
+        throw error;
       }
     }
   };
@@ -461,7 +466,7 @@ export default class API {
     const labelName = label && label.name ? label.name : this.cmsLabelPrefix;
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
     // Uses creationDate, as we do not have direct access to the updated date
-    const updatedAt = pullRequest.closedDate ? pullRequest.closedDate : pullRequest.creationDate;
+    const updatedAt = pullRequest.closedDate || pullRequest.creationDate;
     const pullRequestAuthor =
       pullRequest.createdBy?.displayName || pullRequest.createdBy?.uniqueName;
     return {
@@ -511,7 +516,7 @@ export default class API {
         const path = file.newPath || file.path;
         const oldPath = file.path;
         const renameOrEdit =
-          path !== oldPath ? AzureCommitChangeType.RENAME : AzureCommitChangeType.EDIT;
+          path === oldPath ? AzureCommitChangeType.EDIT : AzureCommitChangeType.RENAME;
 
         const action = fileExists ? renameOrEdit : AzureCommitChangeType.ADD;
         return {
@@ -528,15 +533,13 @@ export default class API {
       const sourceDir = dirname(item.oldPath as string);
       const destDir = dirname(item.path);
       const children = await this.listFiles(sourceDir, true, branch);
-      children
-        .filter(file => file.path !== item.oldPath)
-        .forEach(file => {
-          items.push({
-            action: AzureCommitChangeType.RENAME,
-            path: file.path.replace(sourceDir, destDir),
-            oldPath: file.path,
-          });
+      for (const file of children.filter(file => file.path !== item.oldPath)) {
+        items.push({
+          action: AzureCommitChangeType.RENAME,
+          path: file.path.replace(sourceDir, destDir),
+          oldPath: file.path,
         });
+      }
     }
 
     return items;
@@ -674,7 +677,10 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
 
-    if (!unpublished) {
+    if (unpublished) {
+      const items = await this.getCommitItems(files, branch);
+      await this.uploadAndCommit(items, options.commitMessage, branch, false);
+    } else {
       const items = await this.getCommitItems(files, this.branch);
 
       await this.uploadAndCommit(items, options.commitMessage, branch, true);
@@ -683,9 +689,6 @@ export default class API {
         options.commitMessage,
         options.status || this.initialWorkflowStatus,
       );
-    } else {
-      const items = await this.getCommitItems(files, branch);
-      await this.uploadAndCommit(items, options.commitMessage, branch, false);
     }
   }
 

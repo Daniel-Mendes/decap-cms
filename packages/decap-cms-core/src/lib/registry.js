@@ -13,9 +13,9 @@ const allowedEvents = [
   'postSave',
 ];
 const eventHandlers = {};
-allowedEvents.forEach(e => {
+for (const e of allowedEvents) {
   eventHandlers[e] = [];
-});
+}
 
 /**
  * Global Registry Object
@@ -93,13 +93,13 @@ export function getPreviewTemplate(name) {
  */
 export function registerWidget(name, control, preview, schema = {}) {
   if (Array.isArray(name)) {
-    name.forEach(widget => {
-      if (typeof widget !== 'object') {
-        console.error(`Cannot register widget: ${widget}`);
-      } else {
+    for (const widget of name) {
+      if (typeof widget === 'object') {
         registerWidget(widget);
+      } else {
+        console.error(`Cannot register widget: ${widget}`);
       }
-    });
+    }
   } else if (typeof name === 'string') {
     // A registered widget control can be reused by a new widget, allowing
     // multiple copies with different previews.
@@ -122,7 +122,7 @@ export function registerWidget(name, control, preview, schema = {}) {
       `);
     }
     if (!control) {
-      throw Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
+      throw new Error(`Widget "${widgetName}" registered without \`controlComponent\`.`);
     }
     registry.widgets[widgetName] = {
       control,
@@ -219,7 +219,7 @@ export function getBackend(name) {
  * Media Libraries
  */
 export function registerMediaLibrary(mediaLibrary, options) {
-  if (registry.mediaLibraries.find(ml => mediaLibrary.name === ml.name)) {
+  if (registry.mediaLibraries.some(ml => mediaLibrary.name === ml.name)) {
     throw new Error(`A media library named ${mediaLibrary.name} has already been registered.`);
   }
   registry.mediaLibraries.push({ ...mediaLibrary, options });
@@ -262,13 +262,9 @@ export async function invokeEvent({ name, data }) {
 
 export function removeEventListener({ name, handler }) {
   validateEventName(name);
-  if (handler) {
-    registry.eventHandlers[name] = registry.eventHandlers[name].filter(
+  registry.eventHandlers[name] = handler ? registry.eventHandlers[name].filter(
       item => item.handler !== handler,
-    );
-  } else {
-    registry.eventHandlers[name] = [];
-  }
+    ) : [];
 }
 
 /**

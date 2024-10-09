@@ -33,7 +33,7 @@ const IMAGE_EXTENSIONS_VIEWABLE = [
   'svg',
   'avif',
 ];
-const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
+const IMAGE_EXTENSIONS = new Set(IMAGE_EXTENSIONS_VIEWABLE);
 
 class MediaLibrary extends React.Component {
   static propTypes = {
@@ -125,7 +125,7 @@ class MediaLibrary extends React.Component {
   filterImages = files => {
     return files.filter(file => {
       const ext = fileExtension(file.name).toLowerCase();
-      return IMAGE_EXTENSIONS.includes(ext);
+      return IMAGE_EXTENSIONS.has(ext);
     });
   };
 
@@ -147,7 +147,7 @@ class MediaLibrary extends React.Component {
           queryOrder,
           displayURL,
           draft,
-          isImage: IMAGE_EXTENSIONS.includes(ext),
+          isImage: IMAGE_EXTENSIONS.has(ext),
           isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
         };
       });
@@ -157,8 +157,8 @@ class MediaLibrary extends React.Component {
      * `queryOrder` sort as the lowest priority sort order.
      */
     const { sortFields } = this.state;
-    const fieldNames = map(sortFields, 'fieldName').concat('queryOrder');
-    const directions = map(sortFields, 'direction').concat('asc');
+    const fieldNames = [...map(sortFields, 'fieldName'), 'queryOrder'];
+    const directions = [...map(sortFields, 'direction'), 'asc'];
     return orderBy(tableData, fieldNames, directions);
   };
 
@@ -193,7 +193,7 @@ class MediaLibrary extends React.Component {
     const maxFileSize = config.get('max_file_size');
 
     if (maxFileSize && file.size > maxFileSize) {
-      window.alert(
+      globalThis.alert(
         t('mediaLibrary.mediaLibrary.fileTooLarge', {
           size: Math.floor(maxFileSize / 1000),
         }),
@@ -227,7 +227,7 @@ class MediaLibrary extends React.Component {
   handleDelete = () => {
     const { selectedFile } = this.state;
     const { files, deleteMedia, privateUpload, t } = this.props;
-    if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
+    if (!globalThis.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
     const file = files.find(file => selectedFile.key === file.key);
@@ -254,11 +254,11 @@ class MediaLibrary extends React.Component {
     element.setAttribute('download', filename);
 
     element.style.display = 'none';
-    document.body.appendChild(element);
+    document.body.append(element);
 
     element.click();
 
-    document.body.removeChild(element);
+    element.remove();
     this.setState({ selectedFile: {} });
   };
 
@@ -306,7 +306,7 @@ class MediaLibrary extends React.Component {
      * potential matches, so we strip them all out internally before running the
      * query.
      */
-    const strippedQuery = query.replace(/ /g, '');
+    const strippedQuery = query.replaceAll(' ', '');
     const matches = fuzzy.filter(strippedQuery, files, { extract: file => file.name });
     const matchFiles = matches.map((match, queryIndex) => {
       const file = files[match.index];

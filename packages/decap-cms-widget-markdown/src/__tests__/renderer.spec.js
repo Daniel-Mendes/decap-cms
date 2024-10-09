@@ -52,7 +52,7 @@ Text with **bold** & _em_ elements
     });
 
     describe('Headings', () => {
-      for (const heading of [...Array(6).keys()]) {
+      for (const heading of Array.from({length: 6}).keys()) {
         it(`should render Heading ${heading + 1}`, async () => {
           const value = padStart(' Title', heading + 7, '#');
           const html = await markdownToHtml(value);

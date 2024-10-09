@@ -49,8 +49,9 @@ const defaultState: Search = {
 
 const search = produce((state: Search, action: SearchAction) => {
   switch (action.type) {
-    case SEARCH_CLEAR:
+    case SEARCH_CLEAR: {
       return defaultState;
+    }
 
     case SEARCH_ENTRIES_REQUEST: {
       const { page, searchTerm, searchCollections } = action.payload;
@@ -67,7 +68,7 @@ const search = produce((state: Search, action: SearchAction) => {
       state.isFetching = false;
       state.page = page;
       state.entryIds =
-        !page || isNaN(page) || page === 0 ? entryIds : state.entryIds.concat(entryIds);
+        !page || Number.isNaN(page) || page === 0 ? entryIds : state.entryIds.concat(entryIds);
       break;
     }
 

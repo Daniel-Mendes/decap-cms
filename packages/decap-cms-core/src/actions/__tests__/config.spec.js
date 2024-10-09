@@ -769,8 +769,8 @@ describe('config', () => {
 
   describe('detectProxyServer', () => {
     function assetFetchCalled(url = 'http://localhost:8081/api/v1') {
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith(url, {
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+      expect(globalThis.fetch).toHaveBeenCalledWith(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'info' }),
@@ -778,28 +778,28 @@ describe('config', () => {
     }
 
     beforeEach(() => {
-      delete window.location;
+      delete globalThis.location;
     });
 
     it('should return empty object when not on localhost', async () => {
-      window.location = { hostname: 'www.netlify.com' };
-      global.fetch = jest.fn();
+      globalThis.location = { hostname: 'www.netlify.com' };
+      globalThis.fetch = jest.fn();
       await expect(detectProxyServer()).resolves.toEqual({});
 
-      expect(global.fetch).toHaveBeenCalledTimes(0);
+      expect(globalThis.fetch).toHaveBeenCalledTimes(0);
     });
 
     it('should return empty object when fetch returns an error', async () => {
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn().mockRejectedValue(new Error());
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest.fn().mockRejectedValue(new Error());
       await expect(detectProxyServer(true)).resolves.toEqual({});
 
       assetFetchCalled();
     });
 
     it('should return empty object when fetch returns an invalid response', async () => {
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest
         .fn()
         .mockResolvedValue({ json: jest.fn().mockResolvedValue({ repo: [] }) });
       await expect(detectProxyServer(true)).resolves.toEqual({});
@@ -808,8 +808,8 @@ describe('config', () => {
     });
 
     it('should return result object when fetch returns a valid response', async () => {
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest.fn().mockResolvedValue({
         json: jest.fn().mockResolvedValue({
           repo: 'test-repo',
           publish_modes: ['simple', 'editorial_workflow'],
@@ -827,8 +827,8 @@ describe('config', () => {
 
     it('should use local_backend url', async () => {
       const url = 'http://localhost:8082/api/v1';
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest.fn().mockResolvedValue({
         json: jest.fn().mockResolvedValue({
           repo: 'test-repo',
           publish_modes: ['simple', 'editorial_workflow'],
@@ -846,8 +846,8 @@ describe('config', () => {
 
     it('should use local_backend allowed_hosts', async () => {
       const allowed_hosts = ['192.168.0.1'];
-      window.location = { hostname: '192.168.0.1' };
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.location = { hostname: '192.168.0.1' };
+      globalThis.fetch = jest.fn().mockResolvedValue({
         json: jest.fn().mockResolvedValue({
           repo: 'test-repo',
           publish_modes: ['simple', 'editorial_workflow'],
@@ -866,12 +866,12 @@ describe('config', () => {
 
   describe('handleLocalBackend', () => {
     beforeEach(() => {
-      delete window.location;
+      delete globalThis.location;
     });
 
     it('should not replace backend config when proxy is not detected', async () => {
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn().mockRejectedValue(new Error());
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest.fn().mockRejectedValue(new Error());
 
       const config = { local_backend: true, backend: { name: 'github' } };
       const actual = await handleLocalBackend(config);
@@ -880,8 +880,8 @@ describe('config', () => {
     });
 
     it('should replace backend config when proxy is detected', async () => {
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest.fn().mockResolvedValue({
         json: jest.fn().mockResolvedValue({
           repo: 'test-repo',
           publish_modes: ['simple', 'editorial_workflow'],
@@ -899,8 +899,8 @@ describe('config', () => {
     });
 
     it('should replace publish mode when not supported by proxy', async () => {
-      window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.location = { hostname: 'localhost' };
+      globalThis.fetch = jest.fn().mockResolvedValue({
         json: jest.fn().mockResolvedValue({
           repo: 'test-repo',
           publish_modes: ['simple'],
@@ -926,21 +926,21 @@ describe('config', () => {
   describe('loadConfig', () => {
     beforeEach(() => {
       document.querySelector = jest.fn();
-      global.fetch = jest.fn();
+      globalThis.fetch = jest.fn();
     });
 
     test(`should fetch default 'config.yml'`, async () => {
       const dispatch = jest.fn();
 
-      global.fetch.mockResolvedValue({
+      globalThis.fetch.mockResolvedValue({
         status: 200,
         text: () => Promise.resolve(dump({ backend: { repo: 'test-repo' } })),
         headers: new Headers(),
       });
       await loadConfig()(dispatch);
 
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith('config.yml', { credentials: 'same-origin' });
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+      expect(globalThis.fetch).toHaveBeenCalledWith('config.yml', { credentials: 'same-origin' });
 
       expect(dispatch).toHaveBeenCalledTimes(2);
       expect(dispatch).toHaveBeenCalledWith({ type: 'CONFIG_REQUEST' });
@@ -960,7 +960,7 @@ describe('config', () => {
       const dispatch = jest.fn();
 
       document.querySelector.mockReturnValue({ type: 'text/yaml', href: 'custom-config.yml' });
-      global.fetch.mockResolvedValue({
+      globalThis.fetch.mockResolvedValue({
         status: 200,
         text: () => Promise.resolve(dump({ backend: { repo: 'github' } })),
         headers: new Headers(),
@@ -970,8 +970,8 @@ describe('config', () => {
       expect(document.querySelector).toHaveBeenCalledTimes(1);
       expect(document.querySelector).toHaveBeenCalledWith('link[rel="cms-config-url"]');
 
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith('custom-config.yml', {
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+      expect(globalThis.fetch).toHaveBeenCalledWith('custom-config.yml', {
         credentials: 'same-origin',
       });
 
@@ -992,7 +992,7 @@ describe('config', () => {
     test(`should throw on failure to fetch 'config.yml'`, async () => {
       const dispatch = jest.fn();
 
-      global.fetch.mockRejectedValue(new Error('Failed to fetch'));
+      globalThis.fetch.mockRejectedValue(new Error('Failed to fetch'));
       await expect(() => loadConfig()(dispatch)).rejects.toEqual(
         new Error('Failed to load config.yml (Failed to fetch)'),
       );

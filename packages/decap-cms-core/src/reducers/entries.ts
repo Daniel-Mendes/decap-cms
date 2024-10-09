@@ -1,5 +1,5 @@
 import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
-import { dirname, join } from 'path';
+import path from 'node:path';
 import { isAbsolutePath, basename } from 'decap-cms-lib-util';
 import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 import { stringTemplate } from 'decap-cms-lib-widgets';
@@ -84,14 +84,14 @@ const loadSort = once(() => {
       let map = Map() as Sort;
       Object.entries(sort).forEach(([collection, sort]) => {
         let orderedMap = OrderedMap() as SortMap;
-        sortBy(Object.values(sort), ['index']).forEach(value => {
+        for (const value of sortBy(Object.values(sort), ['index'])) {
           const { key, direction } = value;
           orderedMap = orderedMap.set(key, fromJS({ key, direction }));
-        });
+        }
         map = map.set(collection, orderedMap);
       });
       return map;
-    } catch (e) {
+    } catch {
       return Map() as Sort;
     }
   }
@@ -105,16 +105,16 @@ function clearSort() {
 function persistSort(sort: Sort | undefined) {
   if (sort) {
     const storageSort: StorageSort = {};
-    sort.keySeq().forEach(key => {
+    for (const key of sort.keySeq()) {
       const collection = key as string;
       const sortObjects = (sort.get(collection).valueSeq().toJS() as SortObject[]).map(
         (value, index) => ({ ...value, index }),
       );
 
-      sortObjects.forEach(value => {
+      for (const value of sortObjects) {
         set(storageSort, [collection, value.key], value);
-      });
-    });
+      }
+    }
     localStorage.setItem(storageSortKey, JSON.stringify(storageSort));
   } else {
     clearSort();
@@ -182,12 +182,11 @@ function entries(
       append = payload.append;
       page = payload.page;
       return state.withMutations(map => {
-        loadedEntries.forEach(entry =>
-          map.setIn(
+        for (const entry of loadedEntries) map.setIn(
             ['entities', `${collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
-          ),
-        );
+          )
+        ;
 
         const ids = List(loadedEntries.map(entry => entry.slug));
         map.setIn(
@@ -199,8 +198,9 @@ function entries(
         );
       });
     }
-    case ENTRIES_FAILURE:
+    case ENTRIES_FAILURE: {
       return state.setIn(['pages', action.meta.collection, 'isFetching'], false);
+    }
 
     case ENTRY_FAILURE: {
       const payload = action.payload as EntryFailurePayload;
@@ -217,12 +217,11 @@ function entries(
       const payload = action.payload as EntriesSuccessPayload;
       loadedEntries = payload.entries;
       return state.withMutations(map => {
-        loadedEntries.forEach(entry =>
-          map.setIn(
+        for (const entry of loadedEntries) map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
-          ),
-        );
+          )
+        ;
       });
     }
 
@@ -256,12 +255,11 @@ function entries(
       const { collection, entries } = payload;
       loadedEntries = entries;
       const newState = state.withMutations(map => {
-        loadedEntries.forEach(entry =>
-          map.setIn(
+        for (const entry of loadedEntries) map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
-          ),
-        );
+          )
+        ;
         map.setIn(['pages', collection, 'isFetching'], false);
         const ids = List(loadedEntries.map(entry => entry.slug));
         map.setIn(
@@ -343,8 +341,9 @@ function entries(
       return newState;
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 }
 
@@ -467,8 +466,8 @@ function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
       if (matched) {
         value = matched[0];
       }
-    } catch (e) {
-      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
+    } catch (error) {
+      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, error);
     }
     return {
       id: `${label}${value}`,
@@ -571,7 +570,7 @@ function traverseFields(
   fields: EntryField[],
   currentFolder: string,
 ): string | null {
-  const matchedField = fields.filter(f => f === field)[0];
+  const matchedField = fields.find(f => f === field);
   if (matchedField) {
     return folderFormatter(
       matchedField.has(folderKey) ? matchedField.get(folderKey)! : `{{${folderKey}}}`,
@@ -628,7 +627,7 @@ function traverseFields(
         folder,
       );
     }
-    if (fieldFolder != null) {
+    if (fieldFolder != undefined) {
       return fieldFolder;
     }
   }
@@ -742,12 +741,12 @@ export function selectMediaFolder(
     const folder = evaluateFolder(name, config, collection!, entryMap, field);
     if (folder.startsWith('/')) {
       // return absolute paths as is
-      mediaFolder = join(folder);
+      mediaFolder = path.join(folder);
     } else {
       const entryPath = entryMap?.get('path');
       mediaFolder = entryPath
-        ? join(dirname(entryPath), folder)
-        : join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
+        ? path.join(path.dirname(entryPath), folder)
+        : path.join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
     }
   }
 
@@ -767,7 +766,7 @@ export function selectMediaFilePath(
 
   const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
 
-  return join(mediaFolder, basename(mediaPath));
+  return path.join(mediaFolder, path.basename(mediaPath));
 }
 
 export function selectMediaFilePublicPath(
@@ -791,10 +790,10 @@ export function selectMediaFilePublicPath(
   }
 
   if (isAbsolutePath(publicFolder)) {
-    return joinUrlPath(publicFolder, basename(mediaPath));
+    return joinUrlPath(publicFolder, path.basename(mediaPath));
   }
 
-  return join(publicFolder, basename(mediaPath));
+  return path.join(publicFolder, path.basename(mediaPath));
 }
 
 export function selectEditingDraft(state: EntryDraft) {

@@ -1,7 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 import { v4 as uuid } from 'uuid';
 import { get } from 'lodash';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import {
   DRAFT_CREATE_FROM_ENTRY,
@@ -44,7 +44,7 @@ const initialState = Map({
 
 function entryDraftReducer(state = Map(), action) {
   switch (action.type) {
-    case DRAFT_CREATE_FROM_ENTRY:
+    case DRAFT_CREATE_FROM_ENTRY: {
       // Existing Entry
       return state.withMutations(state => {
         state.set('entry', fromJS(action.payload.entry));
@@ -54,7 +54,8 @@ function entryDraftReducer(state = Map(), action) {
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
-    case DRAFT_CREATE_EMPTY:
+    }
+    case DRAFT_CREATE_EMPTY: {
       // New Entry
       return state.withMutations(state => {
         state.set('entry', fromJS(action.payload));
@@ -64,7 +65,8 @@ function entryDraftReducer(state = Map(), action) {
         state.set('hasChanged', false);
         state.set('key', uuid());
       });
-    case DRAFT_CREATE_FROM_LOCAL_BACKUP:
+    }
+    case DRAFT_CREATE_FROM_LOCAL_BACKUP: {
       // Local Backup
       return state.withMutations(state => {
         const backupDraftEntry = state.get('localBackup');
@@ -77,7 +79,8 @@ function entryDraftReducer(state = Map(), action) {
         state.set('hasChanged', true);
         state.set('key', uuid());
       });
-    case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
+    }
+    case DRAFT_CREATE_DUPLICATE_FROM_ENTRY: {
       // Duplicate Entry
       return state.withMutations(state => {
         state.set('entry', fromJS(action.payload));
@@ -87,8 +90,10 @@ function entryDraftReducer(state = Map(), action) {
         state.set('fieldsErrors', Map());
         state.set('hasChanged', true);
       });
-    case DRAFT_DISCARD:
+    }
+    case DRAFT_DISCARD: {
       return initialState;
+    }
     case DRAFT_LOCAL_BACKUP_RETRIEVED: {
       const { entry } = action.payload;
       const newState = new Map({
@@ -121,12 +126,11 @@ function entryDraftReducer(state = Map(), action) {
         );
       });
     }
-    case DRAFT_VALIDATION_ERRORS:
-      if (action.payload.errors.length === 0) {
-        return state.deleteIn(['fieldsErrors', action.payload.uniquefieldId]);
-      } else {
-        return state.setIn(['fieldsErrors', action.payload.uniquefieldId], action.payload.errors);
-      }
+    case DRAFT_VALIDATION_ERRORS: {
+      return action.payload.errors.length === 0
+        ? state.deleteIn(['fieldsErrors', action.payload.uniquefieldId])
+        : state.setIn(['fieldsErrors', action.payload.uniquefieldId], action.payload.errors);
+    }
 
     case DRAFT_CLEAR_ERRORS: {
       return state.set('fieldsErrors', Map());
@@ -142,22 +146,26 @@ function entryDraftReducer(state = Map(), action) {
       return state.deleteIn(['entry', 'isPersisting']);
     }
 
-    case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST: {
       return state.setIn(['entry', 'isUpdatingStatus'], true);
+    }
 
     case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
-    case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS: {
       return state.deleteIn(['entry', 'isUpdatingStatus']);
+    }
 
-    case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
+    case UNPUBLISHED_ENTRY_PUBLISH_REQUEST: {
       return state.setIn(['entry', 'isPublishing'], true);
+    }
 
     case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
-    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
+    case UNPUBLISHED_ENTRY_PUBLISH_FAILURE: {
       return state.deleteIn(['entry', 'isPublishing']);
+    }
 
     case ENTRY_PERSIST_SUCCESS:
-    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
+    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS: {
       return state.withMutations(state => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);
@@ -165,12 +173,14 @@ function entryDraftReducer(state = Map(), action) {
           state.setIn(['entry', 'slug'], action.payload.slug);
         }
       });
+    }
 
-    case ENTRY_DELETE_SUCCESS:
+    case ENTRY_DELETE_SUCCESS: {
       return state.withMutations(state => {
         state.deleteIn(['entry', 'isPersisting']);
         state.set('hasChanged', false);
       });
+    }
 
     case ADD_DRAFT_ENTRY_MEDIA_FILE: {
       return state.withMutations(state => {
@@ -198,8 +208,9 @@ function entryDraftReducer(state = Map(), action) {
       });
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 }
 

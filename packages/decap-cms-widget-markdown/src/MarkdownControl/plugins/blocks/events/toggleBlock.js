@@ -22,7 +22,7 @@ function toggleBlock(editor, type) {
   if (
     !isActive &&
     listType &&
-    focus.path[focus.path.length - 3] != anchor.path[anchor.path.length - 3]
+    focus.path.at(-3) != anchor.path.at(-3)
   ) {
     return wrapListItemsInBlock(editor, type, listType);
   }

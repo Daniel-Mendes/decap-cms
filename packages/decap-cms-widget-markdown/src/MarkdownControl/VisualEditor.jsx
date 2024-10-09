@@ -255,7 +255,7 @@ function Editor(props) {
                   `,
                 )}
               >
-                {editorValue.length !== 0 && (
+                {editorValue.length > 0 && (
                   <Editable
                     className={css`
                       padding: 16px 20px 0;

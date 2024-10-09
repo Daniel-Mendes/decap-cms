@@ -1,5 +1,5 @@
 import Joi from '@hapi/joi';
-import path from 'path';
+import path from 'node:path';
 
 export function pathTraversal(repoPath: string) {
   return Joi.extend({

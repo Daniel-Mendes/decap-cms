@@ -2,8 +2,8 @@ import uploadcare from 'uploadcare-widget';
 import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
 import { Iterable } from 'immutable';
 
-window.UPLOADCARE_LIVE = false;
-window.UPLOADCARE_MANUAL_START = true;
+globalThis.UPLOADCARE_LIVE = false;
+globalThis.UPLOADCARE_MANUAL_START = true;
 
 const USER_AGENT = 'DecapCMS-Uploadcare-MediaLibrary';
 const CDN_BASE_URL = 'https://ucarecdn.com';
@@ -121,7 +121,7 @@ async function init({ options = { config: {}, settings: {} }, handleInsert } = {
   const { publicKey, ...globalConfig } = options.config;
   const baseConfig = { ...defaultConfig, ...globalConfig };
 
-  window.UPLOADCARE_PUBLIC_KEY = publicKey;
+  globalThis.UPLOADCARE_PUBLIC_KEY = publicKey;
 
   /**
    * Register the effects tab by default because the effects tab is awesome. Can
@@ -144,23 +144,19 @@ async function init({ options = { config: {}, settings: {} }, handleInsert } = {
        * Resolve the promise only if it's ours. Only the jQuery promise objects
        * from the Uploadcare library will have a `state` method.
        */
-      if (files && !files.state) {
-        return files.then(result =>
+      return files && !files.state ? files.then(result =>
           openDialog({
             files: result,
             config: resolvedConfig,
             settings: options.settings,
             handleInsert,
           }),
-        );
-      } else {
-        return openDialog({
+        ) : openDialog({
           files,
           config: resolvedConfig,
           settings: options.settings,
           handleInsert,
         });
-      }
     },
 
     /**

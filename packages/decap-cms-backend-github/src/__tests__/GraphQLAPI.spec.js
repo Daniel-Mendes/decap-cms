@@ -1,6 +1,6 @@
 import GraphQLAPI from '../GraphQLAPI';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+globalThis.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('github GraphQL API', () => {
   beforeEach(() => {

@@ -96,9 +96,9 @@ function MediaLibraryModal({
   const filteredFiles = forImage ? handleFilter(files) : files;
   const queriedFiles = !dynamicSearch && query ? handleQuery(query, filteredFiles) : filteredFiles;
   const tableData = toTableData(queriedFiles);
-  const hasFiles = files && !!files.length;
-  const hasFilteredFiles = filteredFiles && !!filteredFiles.length;
-  const hasSearchResults = queriedFiles && !!queriedFiles.length;
+  const hasFiles = files && files.length > 0;
+  const hasFilteredFiles = filteredFiles && filteredFiles.length > 0;
+  const hasSearchResults = queriedFiles && queriedFiles.length > 0;
   const hasMedia = hasSearchResults;
   const shouldShowEmptyMessage = !hasMedia;
   const emptyMessage =
@@ -131,9 +131,9 @@ function MediaLibraryModal({
         isDeleting={isDeleting}
         selectedFile={selectedFile}
       />
-      {!shouldShowEmptyMessage ? null : (
+      {shouldShowEmptyMessage ? (
         <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
-      )}
+      ) : null}
       <MediaLibraryCardGrid
         setScrollContainerRef={setScrollContainerRef}
         mediaItems={tableData}

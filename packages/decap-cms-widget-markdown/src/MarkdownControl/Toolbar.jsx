@@ -117,7 +117,7 @@ export default class Toolbar extends React.Component {
       t,
     } = this.props;
     const isVisible = this.isVisible;
-    const showEditorComponents = !editorComponents || editorComponents.size >= 1;
+    const showEditorComponents = !editorComponents || editorComponents.size > 0;
 
     function showPlugin({ id }) {
       return editorComponents ? editorComponents.includes(id) : true;

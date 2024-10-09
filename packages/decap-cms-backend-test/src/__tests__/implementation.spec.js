@@ -7,7 +7,7 @@ describe('test backend implementation', () => {
 
   describe('getEntry', () => {
     it('should get entry by path', async () => {
-      window.repoFiles = {
+      globalThis.repoFiles = {
         posts: {
           'some-post.md': {
             content: 'post content',
@@ -24,7 +24,7 @@ describe('test backend implementation', () => {
     });
 
     it('should get entry by nested path', async () => {
-      window.repoFiles = {
+      globalThis.repoFiles = {
         posts: {
           dir1: {
             dir2: {
@@ -47,7 +47,7 @@ describe('test backend implementation', () => {
 
   describe('persistEntry', () => {
     it('should persist entry', async () => {
-      window.repoFiles = {};
+      globalThis.repoFiles = {};
 
       const backend = new TestBackend({});
 
@@ -57,7 +57,7 @@ describe('test backend implementation', () => {
       };
       await backend.persistEntry(entry, { newEntry: true });
 
-      expect(window.repoFiles).toEqual({
+      expect(globalThis.repoFiles).toEqual({
         posts: {
           'some-post.md': {
             content: 'content',
@@ -68,7 +68,7 @@ describe('test backend implementation', () => {
     });
 
     it('should persist entry and keep existing unrelated entries', async () => {
-      window.repoFiles = {
+      globalThis.repoFiles = {
         pages: {
           'other-page.md': {
             content: 'content',
@@ -89,7 +89,7 @@ describe('test backend implementation', () => {
       };
       await backend.persistEntry(entry, { newEntry: true });
 
-      expect(window.repoFiles).toEqual({
+      expect(globalThis.repoFiles).toEqual({
         pages: {
           'other-page.md': {
             content: 'content',
@@ -108,7 +108,7 @@ describe('test backend implementation', () => {
     });
 
     it('should persist nested entry', async () => {
-      window.repoFiles = {};
+      globalThis.repoFiles = {};
 
       const backend = new TestBackend({});
 
@@ -117,7 +117,7 @@ describe('test backend implementation', () => {
       const entry = { dataFiles: [{ path, raw: 'content', slug }], assets: [] };
       await backend.persistEntry(entry, { newEntry: true });
 
-      expect(window.repoFiles).toEqual({
+      expect(globalThis.repoFiles).toEqual({
         posts: {
           dir1: {
             dir2: {
@@ -132,7 +132,7 @@ describe('test backend implementation', () => {
     });
 
     it('should update existing nested entry', async () => {
-      window.repoFiles = {
+      globalThis.repoFiles = {
         posts: {
           dir1: {
             dir2: {
@@ -152,7 +152,7 @@ describe('test backend implementation', () => {
       const entry = { dataFiles: [{ path, raw: 'new content', slug }], assets: [] };
       await backend.persistEntry(entry, { newEntry: false });
 
-      expect(window.repoFiles).toEqual({
+      expect(globalThis.repoFiles).toEqual({
         posts: {
           dir1: {
             dir2: {
@@ -169,7 +169,7 @@ describe('test backend implementation', () => {
 
   describe('deleteFiles', () => {
     it('should delete entry by path', async () => {
-      window.repoFiles = {
+      globalThis.repoFiles = {
         posts: {
           'some-post.md': {
             content: 'post content',
@@ -180,13 +180,13 @@ describe('test backend implementation', () => {
       const backend = new TestBackend({});
 
       await backend.deleteFiles(['posts/some-post.md']);
-      expect(window.repoFiles).toEqual({
+      expect(globalThis.repoFiles).toEqual({
         posts: {},
       });
     });
 
     it('should delete entry by nested path', async () => {
-      window.repoFiles = {
+      globalThis.repoFiles = {
         posts: {
           dir1: {
             dir2: {
@@ -201,7 +201,7 @@ describe('test backend implementation', () => {
       const backend = new TestBackend({});
 
       await backend.deleteFiles(['posts/dir1/dir2/some-post.md']);
-      expect(window.repoFiles).toEqual({
+      expect(globalThis.repoFiles).toEqual({
         posts: {
           dir1: {
             dir2: {},

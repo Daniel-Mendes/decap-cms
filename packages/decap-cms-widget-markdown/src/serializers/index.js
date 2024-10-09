@@ -85,10 +85,11 @@ export function markdownToRemark(markdown, remarkPlugins) {
  * Remove named tokenizers from the parser, effectively deactivating them.
  */
 function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
-  inlineTokenizers &&
-    inlineTokenizers.forEach(tokenizer => {
+  if (inlineTokenizers) {
+    for (const tokenizer of inlineTokenizers) {
       delete this.Parser.prototype.inlineTokenizers[tokenizer];
-    });
+    }
+  }
 }
 
 /**
@@ -143,7 +144,7 @@ export function remarkToMarkdown(obj, remarkPlugins) {
   /**
    * Serialize the MDAST to markdown.
    */
-  const markdown = processor.stringify(processedMdast).replace(/\r?/g, '');
+  const markdown = processor.stringify(processedMdast).replaceAll(/\r?/g, '');
 
   /**
    * Return markdown with trailing whitespace removed.

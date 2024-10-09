@@ -332,7 +332,7 @@ class ConfigError extends Error {
         const dotPath = instancePath
           .slice(1)
           .split('/')
-          .map(seg => (seg.match(/^\d+$/) ? `[${seg}]` : `.${seg}`))
+          .map(seg => (/^\d+$/.test(seg) ? `[${seg}]` : `.${seg}`))
           .join('')
           .slice(1);
         return `${dotPath ? `'${dotPath}'` : 'config'} ${message}`;
@@ -389,8 +389,9 @@ export function validateConfig(config) {
           }
           return newError;
         }
-        default:
+        default: {
           return e;
+        }
       }
     });
     console.error('Config Errors', errors);

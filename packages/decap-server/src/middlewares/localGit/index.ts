@@ -1,5 +1,5 @@
-import path from 'path';
-import { promises as fs } from 'fs';
+import path from 'node:path';
+import { promises as fs } from 'node:fs';
 import {
   branchFromContentKey,
   generateContentKey,
@@ -96,9 +96,9 @@ async function commitEntry(
     assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
-    dataFiles.forEach(async dataFile => {
+    for (const dataFile of dataFiles) {
       await move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!));
-    });
+    }
   }
 
   // commits files
@@ -161,7 +161,7 @@ export async function validateRepo({ repoPath }: { repoPath: string }) {
   const git = simpleGit(repoPath);
   const isRepo = await git.checkIsRepo();
   if (!isRepo) {
-    throw Error(`${repoPath} is not a valid git repository`);
+    throw new Error(`${repoPath} is not a valid git repository`);
   }
 }
 
@@ -255,7 +255,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
                       diffs.map(({ newPath }) => getUpdateDate(repoPath, newPath)),
                     );
                     return dates.reduce((a, b) => {
-                      return a > b ? a : b;
+                      return Math.max(a, b);
                     });
                   })
                 : new Date();
@@ -311,22 +311,14 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
             options,
           } = body.params as PersistEntryParams;
 
-          if (!options.useWorkflow) {
-            await runOnBranch(git, branch, async () => {
-              await commitEntry(git, repoPath, dataFiles, assets, options.commitMessage);
-            });
-          } else {
+          if (options.useWorkflow) {
             const slug = dataFiles[0].slug;
             const collection = options.collectionName as string;
             const contentKey = generateContentKey(collection, slug);
             const cmsBranch = branchFromContentKey(contentKey);
             await runOnBranch(git, branch, async () => {
               const branchExists = await isBranchExists(git, cmsBranch);
-              if (branchExists) {
-                await git.checkout(cmsBranch);
-              } else {
-                await git.checkoutLocalBranch(cmsBranch);
-              }
+              await (branchExists ? git.checkout(cmsBranch) : git.checkoutLocalBranch(cmsBranch));
               await rebase(git, branch);
               const diffs = await getDiffs(git, branch, cmsBranch);
               // delete media files that have been removed from the entry
@@ -341,6 +333,10 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
                 const description = statusToLabel(options.status, cmsLabelPrefix || '');
                 await git.addConfig(branchDescription(cmsBranch), description);
               }
+            });
+          } else {
+            await runOnBranch(git, branch, async () => {
+              await commitEntry(git, repoPath, dataFiles, assets, options.commitMessage);
             });
           }
           res.json({ message: 'entry persisted' });
@@ -436,10 +432,10 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
           break;
         }
       }
-    } catch (e) {
+    } catch (error) {
       logger.error(
         `Error handling ${JSON.stringify(req.body)}: ${
-          e instanceof Error ? e.message : 'Unknown error'
+          error instanceof Error ? error.message : 'Unknown error'
         }`,
       );
       res.status(500).json({ error: 'Unknown error' });

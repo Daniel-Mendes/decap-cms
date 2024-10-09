@@ -86,14 +86,14 @@ function AuthenticationPage({
     <StyledAuthenticationPage>
       {renderPageLogo(logoUrl)}
       {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
-      {!renderPageContent
-        ? null
-        : renderPageContent({ LoginButton, TextButton, showAbortButton: !siteUrl })}
-      {!renderButtonContent ? null : (
+      {renderPageContent
+        ? renderPageContent({ LoginButton, TextButton, showAbortButton: !siteUrl })
+        : null}
+      {renderButtonContent ? (
         <LoginButton disabled={loginDisabled} onClick={onLogin}>
           {renderButtonContent()}
         </LoginButton>
-      )}
+      ) : null}
       {siteUrl && <GoBackButton href={siteUrl} t={t} />}
       {logoUrl ? <NetlifyCreditIcon size="100px" type="decap-cms" /> : null}
     </StyledAuthenticationPage>

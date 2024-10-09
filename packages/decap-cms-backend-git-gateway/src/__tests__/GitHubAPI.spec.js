@@ -4,7 +4,7 @@ describe('github API', () => {
   describe('request', () => {
     beforeEach(() => {
       const fetch = jest.fn();
-      global.fetch = fetch;
+      globalThis.fetch = fetch;
     });
 
     afterEach(() => {

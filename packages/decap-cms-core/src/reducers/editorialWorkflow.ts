@@ -33,32 +33,35 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
       }
       return state;
     }
-    case UNPUBLISHED_ENTRY_REQUEST:
+    case UNPUBLISHED_ENTRY_REQUEST: {
       return state.setIn(
         ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isFetching'],
         true,
       );
+    }
 
-    case UNPUBLISHED_ENTRY_REDIRECT:
+    case UNPUBLISHED_ENTRY_REDIRECT: {
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
+    }
 
-    case UNPUBLISHED_ENTRY_SUCCESS:
+    case UNPUBLISHED_ENTRY_SUCCESS: {
       return state.setIn(
         ['entities', `${action.payload!.collection}.${action.payload!.entry.slug}`],
         fromJS(action.payload!.entry),
       );
+    }
 
-    case UNPUBLISHED_ENTRIES_REQUEST:
+    case UNPUBLISHED_ENTRIES_REQUEST: {
       return state.setIn(['pages', 'isFetching'], true);
+    }
 
-    case UNPUBLISHED_ENTRIES_SUCCESS:
+    case UNPUBLISHED_ENTRIES_SUCCESS: {
       return state.withMutations(map => {
-        action.payload!.entries.forEach(entry =>
+        for (const entry of action.payload!.entries)
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
             fromJS(entry).set('isFetching', false),
-          ),
-        );
+          );
         map.set(
           'pages',
           Map({
@@ -67,6 +70,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           }),
         );
       });
+    }
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       return state.setIn(
@@ -75,7 +79,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
       );
     }
 
-    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS:
+    case UNPUBLISHED_ENTRY_PERSIST_SUCCESS: {
       // Update Optimistically
       return state.withMutations(map => {
         map.setIn(
@@ -91,21 +95,24 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           list.push(action.payload!.entry.get('slug')),
         );
       });
+    }
 
-    case UNPUBLISHED_ENTRY_PERSIST_FAILURE:
+    case UNPUBLISHED_ENTRY_PERSIST_FAILURE: {
       return state.setIn(
         ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isPersisting'],
         false,
       );
+    }
 
-    case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST:
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_REQUEST: {
       // Update Optimistically
       return state.setIn(
         ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isUpdatingStatus'],
         true,
       );
+    }
 
-    case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS:
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_SUCCESS: {
       return state.withMutations(map => {
         map.setIn(
           ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'status'],
@@ -116,28 +123,34 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           false,
         );
       });
+    }
 
-    case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE:
+    case UNPUBLISHED_ENTRY_STATUS_CHANGE_FAILURE: {
       return state.setIn(
         ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isUpdatingStatus'],
         false,
       );
+    }
 
-    case UNPUBLISHED_ENTRY_PUBLISH_REQUEST:
+    case UNPUBLISHED_ENTRY_PUBLISH_REQUEST: {
       return state.setIn(
         ['entities', `${action.payload!.collection}.${action.payload!.slug}`, 'isPublishing'],
         true,
       );
+    }
 
-    case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS:
+    case UNPUBLISHED_ENTRY_PUBLISH_SUCCESS: {
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
+    }
 
-    case UNPUBLISHED_ENTRY_DELETE_SUCCESS:
+    case UNPUBLISHED_ENTRY_DELETE_SUCCESS: {
       return state.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
+    }
 
     case UNPUBLISHED_ENTRY_PUBLISH_FAILURE:
-    default:
+    default: {
       return state;
+    }
   }
 }
 

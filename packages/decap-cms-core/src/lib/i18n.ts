@@ -66,7 +66,7 @@ export function getLocaleDataPath(locale: string) {
 }
 
 export function getDataPath(locale: string, defaultLocale: string) {
-  const dataPath = locale !== defaultLocale ? getLocaleDataPath(locale) : ['data'];
+  const dataPath = locale === defaultLocale ? ['data'] : getLocaleDataPath(locale);
   return dataPath;
 }
 
@@ -78,13 +78,16 @@ export function getFilePath(
   locale: string,
 ) {
   switch (structure) {
-    case I18N_STRUCTURE.MULTIPLE_FOLDERS:
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
       return path.replace(`/${slug}`, `/${locale}/${slug}`);
-    case I18N_STRUCTURE.MULTIPLE_FILES:
+    }
+    case I18N_STRUCTURE.MULTIPLE_FILES: {
       return path.replace(new RegExp(`${escapeRegExp(extension)}$`), `${locale}.${extension}`);
+    }
     case I18N_STRUCTURE.SINGLE_FILE:
-    default:
+    default: {
       return path;
+    }
   }
 }
 
@@ -102,8 +105,9 @@ export function getLocaleFromPath(structure: I18N_STRUCTURE, extension: string, 
       return parts.split('.').pop();
     }
     case I18N_STRUCTURE.SINGLE_FILE:
-    default:
+    default: {
       return '';
+    }
   }
 }
 
@@ -128,13 +132,16 @@ export function getFilePaths(
 
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
-    case I18N_STRUCTURE.MULTIPLE_FOLDERS:
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
       return path.replace(`${locale}/`, '');
-    case I18N_STRUCTURE.MULTIPLE_FILES:
+    }
+    case I18N_STRUCTURE.MULTIPLE_FILES: {
       return path.replace(`.${locale}`, '');
+    }
     case I18N_STRUCTURE.SINGLE_FILE:
-    default:
+    default: {
       return path;
+    }
   }
 }
 
@@ -346,11 +353,7 @@ export function getI18nDataFiles(
   const dataFiles = paths.reduce(
     (acc, path) => {
       const dataFile = diffFiles.find(file => file.path === path);
-      if (dataFile) {
-        return [...acc, dataFile];
-      } else {
-        return [...acc, { path, id: '', newFile: false }];
-      }
+      return dataFile ? [...acc, dataFile] : [...acc, { path, id: '', newFile: false }];
     },
     [] as { path: string; id: string; newFile: boolean }[],
   );
@@ -380,32 +383,31 @@ export function duplicateI18nFields(
 ) {
   const value = entryDraft.getIn(['entry', 'data', ...fieldPath]);
   if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
-    locales
-      .filter(l => l !== defaultLocale)
-      .forEach(l => {
+    for (const l of locales
+      .filter(l => l !== defaultLocale)) {
         entryDraft = entryDraft.setIn(
           ['entry', ...getDataPath(l, defaultLocale), ...fieldPath],
           value,
         );
-      });
+      }
   }
 
   if (field.has('field') && !List.isList(value)) {
     const fields = [field.get('field') as EntryField];
-    fields.forEach(field => {
+    for (const field of fields) {
       entryDraft = duplicateI18nFields(entryDraft, field, locales, defaultLocale, [
         ...fieldPath,
         field.get('name'),
       ]);
-    });
+    }
   } else if (field.has('fields') && !List.isList(value)) {
     const fields = field.get('fields')!.toArray() as EntryField[];
-    fields.forEach(field => {
+    for (const field of fields) {
       entryDraft = duplicateI18nFields(entryDraft, field, locales, defaultLocale, [
         ...fieldPath,
         field.get('name'),
       ]);
-    });
+    }
   }
 
   return entryDraft;
@@ -426,12 +428,11 @@ export function serializeI18n(
 ) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  locales
-    .filter(locale => locale !== defaultLocale)
-    .forEach(locale => {
+  for (const locale of locales
+    .filter(locale => locale !== defaultLocale)) {
       const dataPath = getLocaleDataPath(locale);
       entry = entry.setIn(dataPath, serializeValues(entry.getIn(dataPath)));
-    });
+    }
 
   return entry;
 }

@@ -165,7 +165,7 @@ export class Editor extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.localBackup && this.props.localBackup) {
-      const confirmLoadBackup = window.confirm(this.props.t('editor.editor.confirmLoadBackup'));
+      const confirmLoadBackup = globalThis.confirm(this.props.t('editor.editor.confirmLoadBackup'));
       if (confirmLoadBackup) {
         this.props.loadLocalBackup();
       } else {
@@ -205,7 +205,7 @@ export class Editor extends React.Component {
     const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus, t } =
       this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
+      globalThis.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
       return;
     }
     const newStatus = status.get(newStatusName);
@@ -255,12 +255,12 @@ export class Editor extends React.Component {
       t,
     } = this.props;
     if (currentStatus !== status.last()) {
-      window.alert(t('editor.editor.onPublishingNotReady'));
+      globalThis.alert(t('editor.editor.onPublishingNotReady'));
       return;
     } else if (entryDraft.get('hasChanged')) {
-      window.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
+      globalThis.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
       return;
-    } else if (!window.confirm(t('editor.editor.onPublishing'))) {
+    } else if (!globalThis.confirm(t('editor.editor.onPublishing'))) {
       return;
     }
 
@@ -277,7 +277,7 @@ export class Editor extends React.Component {
 
   handleUnpublishEntry = async () => {
     const { unpublishPublishedEntry, collection, slug, t } = this.props;
-    if (!window.confirm(t('editor.editor.onUnpublishing'))) return;
+    if (!globalThis.confirm(t('editor.editor.onUnpublishing'))) return;
 
     await unpublishPublishedEntry(collection, slug);
 
@@ -294,10 +294,10 @@ export class Editor extends React.Component {
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (!window.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
+      if (!globalThis.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
         return;
       }
-    } else if (!window.confirm(t('editor.editor.onDeletePublishedEntry'))) {
+    } else if (!globalThis.confirm(t('editor.editor.onDeletePublishedEntry'))) {
       return;
     }
     if (newEntry) {
@@ -316,10 +316,10 @@ export class Editor extends React.Component {
       this.props;
     if (
       entryDraft.get('hasChanged') &&
-      !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
+      !globalThis.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
     ) {
       return;
-    } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
+    } else if (!globalThis.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);
@@ -367,7 +367,7 @@ export class Editor extends React.Component {
         </div>
       );
     } else if (
-      entryDraft == null ||
+      entryDraft == undefined ||
       entryDraft.get('entry') === undefined ||
       (entry && entry.get('isFetching'))
     ) {

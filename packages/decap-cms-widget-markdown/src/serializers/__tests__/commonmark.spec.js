@@ -7,7 +7,7 @@ import { markdownToSlate, slateToMarkdown } from '../index.js';
 const skips = [
   {
     number: [456],
-    reason: 'Remark ¯\\_(ツ)_/¯',
+    reason: String.raw`Remark ¯\_(ツ)_/¯`,
   },
   {
     number: [416, 417, 424, 425, 426, 431, 457, 460, 462, 464, 467],
@@ -70,7 +70,7 @@ describe.skip('Commonmark support', function () {
     onlys.length > 0
       ? commonmarkSpec.filter(({ number }) => onlys.includes(number))
       : commonmarkSpec;
-  specs.forEach(spec => {
+  for (const spec of specs) {
     const skip = skips.find(({ number }) => {
       return Array.isArray(number) ? number.includes(spec.number) : number === spec.number;
     });
@@ -106,5 +106,5 @@ ${spec.html}
     testFn(description, () => {
       expect(commonmarkParsedHtml).toEqual(spec.html);
     });
-  });
+  }
 });

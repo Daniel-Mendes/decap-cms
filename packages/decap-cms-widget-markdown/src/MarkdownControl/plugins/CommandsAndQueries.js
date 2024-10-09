@@ -113,10 +113,12 @@ function CommandsAndQueries({ defaultType }) {
           case 'heading-three':
           case 'heading-four':
           case 'heading-five':
-          case 'heading-six':
+          case 'heading-six': {
             return editor.setBlocks(editor.everyBlock(type) ? defaultType : type);
-          case 'quote':
+          }
+          case 'quote': {
             return editor.toggleQuoteBlock();
+          }
           case 'numbered-list':
           case 'bulleted-list': {
             return editor.toggleList(type);
@@ -125,14 +127,14 @@ function CommandsAndQueries({ defaultType }) {
       },
       unwrapBlockChildren(editor, block) {
         if (!block || block.object !== 'block') {
-          throw Error(`Expected block but received ${block}.`);
+          throw new Error(`Expected block but received ${block}.`);
         }
         const index = editor.value.document.getPath(block.key).last();
         const parent = editor.value.document.getParent(block.key);
         editor.withoutNormalizing(() => {
-          block.nodes.forEach((node, idx) => {
+          for (const [idx, node] of block.nodes.entries()) {
             editor.moveNodeByKey(node.key, parent.key, index + idx);
-          });
+          }
           editor.removeNodeByKey(block.key);
         });
       },

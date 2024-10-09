@@ -12,7 +12,7 @@ export function validateMinMax(value, min, max, field, t) {
   let error;
 
   switch (true) {
-    case value !== '' && min !== false && max !== false && (value < min || value > max):
+    case value !== '' && min !== false && max !== false && (value < min || value > max): {
       error = {
         type: ValidationErrorTypes.RANGE,
         message: t('editor.editorControlPane.widget.range', {
@@ -22,7 +22,8 @@ export function validateMinMax(value, min, max, field, t) {
         }),
       };
       break;
-    case value !== '' && min !== false && value < min:
+    }
+    case value !== '' && min !== false && value < min: {
       error = {
         type: ValidationErrorTypes.RANGE,
         message: t('editor.editorControlPane.widget.min', {
@@ -31,7 +32,8 @@ export function validateMinMax(value, min, max, field, t) {
         }),
       };
       break;
-    case value !== '' && max !== false && value > max:
+    }
+    case value !== '' && max !== false && value > max: {
       error = {
         type: ValidationErrorTypes.RANGE,
         message: t('editor.editorControlPane.widget.max', {
@@ -40,9 +42,11 @@ export function validateMinMax(value, min, max, field, t) {
         }),
       };
       break;
-    default:
+    }
+    default: {
       error = null;
       break;
+    }
   }
 
   return error;
@@ -71,12 +75,15 @@ export default class NumberControl extends React.Component {
   handleChange = e => {
     const valueType = this.props.field.get('value_type');
     const { onChange } = this.props;
-    const value = valueType === 'float' ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
+    const value =
+      valueType === 'float'
+        ? Number.parseFloat(e.target.value)
+        : Number.parseInt(e.target.value, 10);
 
-    if (!isNaN(value)) {
-      onChange(value);
-    } else {
+    if (Number.isNaN(value)) {
       onChange('');
+    } else {
+      onChange(value);
     }
   };
 

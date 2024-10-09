@@ -31,13 +31,15 @@ const defaultState: NotificationsState = {
 
 const notifications = produce((state: NotificationsState, action: NotificationsAction) => {
   switch (action.type) {
-    case NOTIFICATIONS_CLEAR:
+    case NOTIFICATIONS_CLEAR: {
       state.notifications = [];
       break;
-    case NOTIFICATION_DISMISS:
+    }
+    case NOTIFICATION_DISMISS: {
       state.notifications = state.notifications.filter(n => n.id !== action.id);
       break;
-    case NOTIFICATION_SEND:
+    }
+    case NOTIFICATION_SEND: {
       state.notifications = [
         ...state.notifications,
         {
@@ -46,6 +48,7 @@ const notifications = produce((state: NotificationsState, action: NotificationsA
         },
       ];
       break;
+    }
   }
 }, defaultState);
 

@@ -22,7 +22,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { v4 as uuid } from 'uuid';
 
 function arrayMove(array, from, to) {
-  const slicedArray = array.slice();
+  const slicedArray = [...array];
   slicedArray.splice(to < 0 ? array.length + to : to, 0, slicedArray.splice(from, 1)[0]);
   return slicedArray;
 }
@@ -144,7 +144,7 @@ function getSelectedOptions(value) {
 }
 
 function uniqOptions(initial, current) {
-  return uniqBy(initial.concat(current), o => o.value);
+  return uniqBy([...initial, ...current], o => o.value);
 }
 
 function getFieldArray(field) {
@@ -326,7 +326,7 @@ export default class RelationControl extends React.Component {
   parseNestedFields = (hit, field) => {
     const { locale } = this.props;
     const hitData =
-      locale != null && hit.i18n != null && hit.i18n[locale] != null
+      locale != undefined && hit.i18n != undefined && hit.i18n[locale] != undefined
         ? hit.i18n[locale].data
         : hit.data;
     const templateVars = stringTemplate.extractTemplateVars(field);
@@ -355,9 +355,9 @@ export default class RelationControl extends React.Component {
           // check if the value for the (nested) filter field is in the filter values
           const fieldKeys = filter.field.split('.');
           let value = hit.data;
-          for (let i = 0; i < fieldKeys.length; i++) {
-            if (Object.prototype.hasOwnProperty.call(value, fieldKeys[i])) {
-              value = value[fieldKeys[i]];
+          for (const fieldKey of fieldKeys) {
+            if (Object.prototype.hasOwnProperty.call(value, fieldKey)) {
+              value = value[fieldKey];
             } else {
               return false;
             }
@@ -366,7 +366,7 @@ export default class RelationControl extends React.Component {
         })
       ) {
         const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
-        for (let i = 0; i < valuesPaths.length; i++) {
+        for (const [i, valuesPath] of valuesPaths.entries()) {
           const label = displayField
             .toJS()
             .map(key => {
@@ -374,7 +374,7 @@ export default class RelationControl extends React.Component {
               return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
             })
             .join(' ');
-          const value = this.parseNestedFields(hit, valuesPaths[i]);
+          const value = this.parseNestedFields(hit, valuesPath);
           acc.push({ data: hit.data, value, label });
         }
       }

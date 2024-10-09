@@ -81,7 +81,7 @@ function setup({ field, defaultValue }) {
 
 function clickClearButton(container) {
   const allSvgs = container.querySelectorAll('svg');
-  const clear = allSvgs[allSvgs.length - 2];
+  const clear = allSvgs.at(-2);
 
   fireEvent.mouseDown(clear, {
     button: 0,

@@ -247,8 +247,9 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       try {
         const { entries, pagination } = await backend.unpublishedEntries(state.collections);
         dispatch(unpublishedEntriesLoaded(entries, pagination));
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch {
+        /* empty */
+      }
     }
 
     dispatch(unpublishedEntryLoading(collection, slug));
@@ -350,7 +351,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
           }),
         );
       }
-      return Promise.reject();
+      throw undefined;
     }
 
     const backend = currentBackend(state.config);

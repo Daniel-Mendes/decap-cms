@@ -55,26 +55,30 @@ const parsers = {
 
 function inferFrontmatterFormat(str: string) {
   const lineEnd = str.indexOf('\n');
-  const firstLine = str.slice(0, lineEnd !== -1 ? lineEnd : 0).trim();
+  const firstLine = str.slice(0, lineEnd === -1 ? 0 : lineEnd).trim();
   if (firstLine.length > 3 && firstLine.slice(0, 3) === '---') {
     // No need to infer, `gray-matter` will handle things like `---toml` for us.
     return;
   }
   switch (firstLine) {
-    case '---':
+    case '---': {
       return getFormatOpts(Languages.YAML);
-    case '+++':
+    }
+    case '+++': {
       return getFormatOpts(Languages.TOML);
-    case '{':
+    }
+    case '{': {
       return getFormatOpts(Languages.JSON);
-    default:
+    }
+    default: {
       console.warn('Unrecognized front-matter format.');
+    }
   }
 }
 
 export function getFormatOpts(format?: Language, customDelimiter?: Delimiter) {
   if (!format) {
-    return undefined;
+    return;
   }
 
   const formats: { [key in Language]: Format } = {

@@ -7,4 +7,8 @@ export const DecapCmsBackendAzure = {
   API,
   AuthenticationPage,
 };
-export { AzureBackend, API, AuthenticationPage };
+
+
+export {default as AzureBackend} from './implementation.ts';
+export {default as API} from './API.ts';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

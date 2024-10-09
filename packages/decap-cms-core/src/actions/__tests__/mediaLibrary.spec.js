@@ -70,7 +70,7 @@ describe('mediaLibrary', () => {
   currentBackend.mockReturnValue(backend);
 
   describe('persistMedia', () => {
-    global.URL = { createObjectURL: jest.fn().mockReturnValue('displayURL') };
+    globalThis.URL = { createObjectURL: jest.fn().mockReturnValue('displayURL') };
 
     beforeEach(() => {
       jest.clearAllMocks();

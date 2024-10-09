@@ -2,7 +2,7 @@ import { Base64 } from 'js-base64';
 
 import API from '../API';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+globalThis.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('github API', () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe('github API', () => {
 
   function mockAPI(api, responses) {
     api.request = jest.fn().mockImplementation((path, options = {}) => {
-      const normalizedPath = path.indexOf('?') !== -1 ? path.slice(0, path.indexOf('?')) : path;
+      const normalizedPath = path.includes('?') ? path.slice(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
       return typeof response === 'function'
         ? Promise.resolve(response(options))
@@ -127,7 +127,7 @@ describe('github API', () => {
   describe('request', () => {
     beforeEach(() => {
       const fetch = jest.fn();
-      global.fetch = fetch;
+      globalThis.fetch = fetch;
     });
 
     afterEach(() => {
@@ -336,7 +336,7 @@ describe('github API', () => {
       expect(api.editorialWorkflowGit).toHaveBeenCalledTimes(1);
 
       expect(api.editorialWorkflowGit).toHaveBeenCalledWith(
-        entry.assets.concat(entry.dataFiles),
+        [...entry.assets, ...entry.dataFiles],
         entry.dataFiles[0].slug,
         [
           { path: 'static/media/image-1.png', sha: 'image-1.png' },

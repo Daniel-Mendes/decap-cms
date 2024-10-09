@@ -29,7 +29,7 @@ import {
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 
 const NO_CACHE = 'no-cache';
 import * as queries from './queries';
@@ -288,8 +288,8 @@ export default class API {
   request = async (req: ApiRequest): Promise<Response> => {
     try {
       return requestWithBackoff(this, req);
-    } catch (err) {
-      throw new APIError(err.message, null, API_NAME);
+    } catch (error) {
+      throw new APIError(error.message, null, API_NAME);
     }
   };
 
@@ -332,8 +332,8 @@ export default class API {
           if (branch.developers_can_merge && branch.developers_can_push) {
             return true;
           }
-        } catch (e) {
-          console.log('Failed getting default branch', e);
+        } catch (error) {
+          console.log('Failed getting default branch', error);
         }
       }
     }
@@ -370,7 +370,7 @@ export default class API {
           author: commit.author_name || commit.author_email,
           updatedOn: commit.authored_date,
         };
-      } catch (e) {
+      } catch {
         return { author: '', updatedOn: '' };
       }
     };
@@ -379,10 +379,10 @@ export default class API {
   }
 
   getCursorFromHeaders = (headers: Headers) => {
-    const page = parseInt(headers.get('X-Page') as string, 10);
-    const pageCount = parseInt(headers.get('X-Total-Pages') as string, 10);
-    const pageSize = parseInt(headers.get('X-Per-Page') as string, 10);
-    const count = parseInt(headers.get('X-Total') as string, 10);
+    const page = Number.parseInt(headers.get('X-Page') as string, 10);
+    const pageCount = Number.parseInt(headers.get('X-Total-Pages') as string, 10);
+    const pageSize = Number.parseInt(headers.get('X-Per-Page') as string, 10);
+    const count = Number.parseInt(headers.get('X-Total') as string, 10);
     const links = parseLinkHeader(headers.get('Link'));
     const actions = Map(links)
       .keySeq()
@@ -420,11 +420,11 @@ export default class API {
       p =>
         Promise.all([
           p.then(this.getCursor),
-          p.then(this.responseToJSON).catch((e: FetchError) => {
-            if (e.status === 404) {
+          p.then(this.responseToJSON).catch((error: FetchError) => {
+            if (error.status === 404) {
               return [];
             } else {
-              throw e;
+              throw error;
             }
           }),
         ]),
@@ -580,9 +580,9 @@ export default class API {
       action: item.action,
       file_path: item.path,
       ...(item.oldPath ? { previous_path: item.oldPath } : {}),
-      ...(item.base64Content !== undefined
-        ? { content: item.base64Content, encoding: 'base64' }
-        : {}),
+      ...(item.base64Content === undefined
+        ? {}
+        : { content: item.base64Content, encoding: 'base64' }),
     }));
 
     const commitParams: CommitsParams = {
@@ -624,7 +624,7 @@ export default class API {
 
         let action = CommitAction.CREATE;
         let path = trimStart(file.path, '/');
-        let oldPath = undefined;
+        let oldPath;
         if (fileExists) {
           oldPath = file.newPath && path;
           action =
@@ -646,15 +646,14 @@ export default class API {
       const sourceDir = dirname(item.oldPath as string);
       const destDir = dirname(item.path);
       const children = await this.listAllFiles(sourceDir, true, branch);
-      children
-        .filter(f => f.path !== item.oldPath)
-        .forEach(file => {
+      for (const file of children
+        .filter(f => f.path !== item.oldPath)) {
           items.push({
             action: CommitAction.MOVE,
             path: file.path.replace(sourceDir, destDir),
             oldPath: file.path,
           });
-        });
+        }
     }
 
     return items;
@@ -870,19 +869,7 @@ export default class API {
     const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
-    if (!unpublished) {
-      const items = await this.getCommitItems(files, this.branch);
-      await this.uploadAndCommit(items, {
-        commitMessage: options.commitMessage,
-        branch,
-        newBranch: true,
-      });
-      await this.createMergeRequest(
-        branch,
-        options.commitMessage,
-        options.status || this.initialWorkflowStatus,
-      );
-    } else {
+    if (unpublished) {
       const mergeRequest = await this.getBranchMergeRequest(branch);
       await this.rebaseMergeRequest(mergeRequest);
       const [items, diffs] = await Promise.all([
@@ -900,6 +887,18 @@ export default class API {
         commitMessage: options.commitMessage,
         branch,
       });
+    } else {
+      const items = await this.getCommitItems(files, this.branch);
+      await this.uploadAndCommit(items, {
+        commitMessage: options.commitMessage,
+        branch,
+        newBranch: true,
+      });
+      await this.createMergeRequest(
+        branch,
+        options.commitMessage,
+        options.status || this.initialWorkflowStatus,
+      );
     }
   }
 

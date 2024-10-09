@@ -81,9 +81,9 @@ Object {
         },
       };
       await uploadcareMediaLibrary.init({ options });
-      expect(window.UPLOADCARE_LIVE).toEqual(false);
-      expect(window.UPLOADCARE_MANUAL_START).toEqual(true);
-      expect(window.UPLOADCARE_PUBLIC_KEY).toEqual(TEST_PUBLIC_KEY);
+      expect(globalThis.UPLOADCARE_LIVE).toEqual(false);
+      expect(globalThis.UPLOADCARE_MANUAL_START).toEqual(true);
+      expect(globalThis.UPLOADCARE_PUBLIC_KEY).toEqual(TEST_PUBLIC_KEY);
     });
 
     it('registers the effects tab', async () => {

@@ -16,7 +16,7 @@ export function waitUntil({ predicate, run }: WaitActionArgs) {
 export async function waitUntilWithTimeout<T>(
   dispatch: ThunkDispatch<State, {}, AnyAction>,
   waitActionArgs: (resolve: (value?: T) => void) => WaitActionArgs,
-  timeout = 30000,
+  timeout = 30_000,
 ): Promise<T | null | void> {
   let waitDone = false;
 

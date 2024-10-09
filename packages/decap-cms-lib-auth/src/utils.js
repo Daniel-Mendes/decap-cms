@@ -2,14 +2,14 @@ import { v4 as uuid } from 'uuid';
 
 export function createNonce() {
   const nonce = uuid();
-  window.sessionStorage.setItem('decap-cms-auth', JSON.stringify({ nonce }));
+  globalThis.sessionStorage.setItem('decap-cms-auth', JSON.stringify({ nonce }));
   return nonce;
 }
 
 export function validateNonce(check) {
-  const auth = window.sessionStorage.getItem('decap-cms-auth');
+  const auth = globalThis.sessionStorage.getItem('decap-cms-auth');
   const valid = auth && JSON.parse(auth).nonce;
-  window.localStorage.removeItem('decap-cms-auth');
+  globalThis.localStorage.removeItem('decap-cms-auth');
   return check === valid;
 }
 

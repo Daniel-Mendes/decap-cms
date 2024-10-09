@@ -6,8 +6,8 @@ import { createNonce, validateNonce, isInsecureProtocol } from './utils';
 async function sha256(text) {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);
-  const digest = await window.crypto.subtle.digest('SHA-256', data);
-  const sha = String.fromCharCode(...new Uint8Array(digest));
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', data);
+  const sha = String.fromCodePoint(...new Uint8Array(digest));
   return sha;
 }
 
@@ -16,7 +16,7 @@ function generateVerifierCode() {
   // characters that can be used for codeVerifier
   // excludes _~ as if included would cause an uneven distribution as char.length would no longer be a factor of 256
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.';
-  const randomValues = Array.from(window.crypto.getRandomValues(new Uint8Array(128)));
+  const randomValues = [...globalThis.crypto.getRandomValues(new Uint8Array(128))];
   return randomValues
     .map(val => {
       return chars[val % chars.length];
@@ -27,23 +27,23 @@ function generateVerifierCode() {
 async function createCodeChallenge(codeVerifier) {
   const sha = await sha256(codeVerifier);
   // https://tools.ietf.org/html/rfc7636#appendix-A
-  return btoa(sha).split('=')[0].replace(/\+/g, '-').replace(/\//g, '_');
+  return btoa(sha).split('=')[0].replaceAll('+', '-').replaceAll('/', '_');
 }
 
 const CODE_VERIFIER_STORAGE_KEY = 'decap-cms-pkce-verifier-code';
 
 function createCodeVerifier() {
   const codeVerifier = generateVerifierCode();
-  window.sessionStorage.setItem(CODE_VERIFIER_STORAGE_KEY, codeVerifier);
+  globalThis.sessionStorage.setItem(CODE_VERIFIER_STORAGE_KEY, codeVerifier);
   return codeVerifier;
 }
 
 function getCodeVerifier() {
-  return window.sessionStorage.getItem(CODE_VERIFIER_STORAGE_KEY);
+  return globalThis.sessionStorage.getItem(CODE_VERIFIER_STORAGE_KEY);
 }
 
 function clearCodeVerifier() {
-  window.sessionStorage.removeItem(CODE_VERIFIER_STORAGE_KEY);
+  globalThis.sessionStorage.removeItem(CODE_VERIFIER_STORAGE_KEY);
 }
 
 export default class PkceAuthenticator {
@@ -87,7 +87,7 @@ export default class PkceAuthenticator {
     const params = new URLSearchParams(document.location.search);
 
     // Remove code from url
-    window.history.replaceState(null, '', document.location.pathname);
+    globalThis.history.replaceState(null, '', document.location.pathname);
 
     if (!params.has('code') && !params.has('error')) {
       return;
@@ -96,8 +96,8 @@ export default class PkceAuthenticator {
     let nonce;
     try {
       nonce = JSON.parse(params.get('state')).nonce;
-    } catch (SyntaxError) {
-      nonce = JSON.parse(params.get('state').replace(/\\"/g, '"')).nonce;
+    } catch {
+      nonce = JSON.parse(params.get('state').replaceAll(String.raw`\"`, '"')).nonce;
     }
 
     const validNonce = validateNonce(nonce);

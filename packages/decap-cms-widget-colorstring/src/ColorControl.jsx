@@ -161,7 +161,7 @@ export default class ColorControl extends React.Component {
             color: !allowInput && '#bbb',
           }}
           // make readonly and open color picker on click if set to allowInput: false
-          onClick={!allowInput ? this.handleClick : undefined}
+          onClick={allowInput ? undefined : this.handleClick}
           readOnly={!allowInput}
         />
       </>

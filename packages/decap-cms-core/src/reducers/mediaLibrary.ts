@@ -1,6 +1,6 @@
 import { Map, List } from 'immutable';
 import { v4 as uuid } from 'uuid';
-import { dirname } from 'path';
+import path from 'node:path';
 
 import {
   MEDIA_LIBRARY_OPEN,
@@ -57,11 +57,12 @@ const defaultState: {
 
 function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
   switch (action.type) {
-    case MEDIA_LIBRARY_CREATE:
+    case MEDIA_LIBRARY_CREATE: {
       return state.withMutations(map => {
         map.set('externalLibrary', action.payload);
         map.set('showMediaButton', action.payload.enableStandalone());
       });
+    }
 
     case MEDIA_LIBRARY_OPEN: {
       const { controlID, forImage, privateUpload, config, field, value, replaceIndex } =
@@ -96,8 +97,9 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       });
     }
 
-    case MEDIA_LIBRARY_CLOSE:
+    case MEDIA_LIBRARY_CLOSE: {
       return state.set('isVisible', false);
+    }
 
     case MEDIA_INSERT: {
       const { mediaPath } = action.payload;
@@ -129,11 +131,12 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state.setIn(['controlMedia', controlID], '');
     }
 
-    case MEDIA_LOAD_REQUEST:
+    case MEDIA_LOAD_REQUEST: {
       return state.withMutations(map => {
         map.set('isLoading', true);
         map.set('isPaginating', action.payload.page > 1);
       });
+    }
 
     case MEDIA_LOAD_SUCCESS: {
       const {
@@ -176,8 +179,9 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state.set('isLoading', false);
     }
 
-    case MEDIA_PERSIST_REQUEST:
+    case MEDIA_PERSIST_REQUEST: {
       return state.set('isPersisting', true);
+    }
 
     case MEDIA_PERSIST_SUCCESS: {
       const { file, privateUpload } = action.payload;
@@ -202,8 +206,9 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state.set('isPersisting', false);
     }
 
-    case MEDIA_DELETE_REQUEST:
+    case MEDIA_DELETE_REQUEST: {
       return state.set('isDeleting', true);
+    }
 
     case MEDIA_DELETE_SUCCESS: {
       const { file, privateUpload } = action.payload;
@@ -229,8 +234,9 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state.set('isDeleting', false);
     }
 
-    case MEDIA_DISPLAY_URL_REQUEST:
+    case MEDIA_DISPLAY_URL_REQUEST: {
       return state.setIn(['displayURLs', action.payload.key, 'isFetching'], true);
+    }
 
     case MEDIA_DISPLAY_URL_SUCCESS: {
       const displayURLPath = ['displayURLs', action.payload.key];
@@ -251,8 +257,9 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       );
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 }
 
@@ -270,7 +277,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
+      .filter(f => path.dirname(f.path) === mediaFolder)
       .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];

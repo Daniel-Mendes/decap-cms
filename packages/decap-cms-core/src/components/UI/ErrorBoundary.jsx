@@ -62,8 +62,8 @@ function buildIssueUrl({ title, config }) {
     params.append('labels', 'type: bug');
 
     return `${ISSUE_URL}${params.toString()}`;
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     return `${ISSUE_URL}template=bug_report.md`;
   }
 }
@@ -145,7 +145,7 @@ export class ErrorBoundary extends React.Component {
     console.error(error);
     return {
       hasError: true,
-      errorMessage: cleanStack(error.stack, { basePath: window.location.origin || '' }),
+      errorMessage: cleanStack(error.stack, { basePath: globalThis.location.origin || '' }),
       errorTitle: error.toString(),
     };
   }

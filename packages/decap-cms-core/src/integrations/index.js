@@ -5,19 +5,21 @@ import AssetStore from './providers/assetStore/implementation';
 
 export function resolveIntegrations(integrationsConfig, getToken) {
   let integrationInstances = Map({});
-  integrationsConfig.get('providers').forEach((providerData, providerName) => {
+  for (const [providerName, providerData] of integrationsConfig.get('providers').entries()) {
     switch (providerName) {
-      case 'algolia':
+      case 'algolia': {
         integrationInstances = integrationInstances.set('algolia', new Algolia(providerData));
         break;
-      case 'assetStore':
+      }
+      case 'assetStore': {
         integrationInstances = integrationInstances.set(
           'assetStore',
           new AssetStore(providerData, getToken),
         );
         break;
+      }
     }
-  });
+  }
   return integrationInstances;
 }
 

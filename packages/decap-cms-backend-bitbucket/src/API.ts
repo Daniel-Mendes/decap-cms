@@ -23,7 +23,7 @@ import {
   readFileMetadata,
   throwOnConflictingBranches,
 } from 'decap-cms-lib-util';
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
 
@@ -236,8 +236,8 @@ export default class API {
   request = (req: ApiRequest): Promise<Response> => {
     try {
       return requestWithBackoff(this, req);
-    } catch (err) {
-      throw new APIError(err.message, null, API_NAME);
+    } catch (error) {
+      throw new APIError(error.message, null, API_NAME);
     }
   };
 
@@ -254,7 +254,7 @@ export default class API {
   hasWriteAccess = async () => {
     const response = await this.request(this.repoURL);
     if (response.status === 404) {
-      throw Error('Repo not found');
+      throw new Error('Repo not found');
     }
     return response.ok;
   };
@@ -307,7 +307,7 @@ export default class API {
     { parseText = true, branch = this.branch, head = '' } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
-      const node = head ? head : await this.branchCommitSha(branch);
+      const node = head ?? (await this.branchCommitSha(branch));
       const content = await this.request({
         url: `${this.repoURL}/src/${node}/${path}`,
         cache: 'no-store',
@@ -332,7 +332,7 @@ export default class API {
             : commit.author.raw,
           updatedOn: commit.date,
         };
-      } catch (e) {
+      } catch {
         return { author: '', updatedOn: '' };
       }
     };
@@ -344,8 +344,8 @@ export default class API {
     const { values }: { values: BitBucketCommit[] } = await this.requestJSON({
       url: `${this.repoURL}/commits`,
       params: { include: branch, pagelen: 100 },
-    }).catch(e => {
-      console.log(`Failed getting commits for branch '${branch}'`, e);
+    }).catch(error => {
+      console.log(`Failed getting commits for branch '${branch}'`, error);
       return [];
     });
 
@@ -435,7 +435,7 @@ export default class API {
   ) {
     const formData = new FormData();
     const toMove: { from: string; to: string; contentBlob: Blob }[] = [];
-    files.forEach(file => {
+    for (const file of files) {
       if (file.delete) {
         // delete the file
         formData.append('files', file.path);
@@ -448,7 +448,7 @@ export default class API {
         // Third param is filename header, in case path is `message`, `branch`, etc.
         formData.append(file.path, contentBlob, basename(file.path));
       }
-    });
+    }
     for (const { from, to, contentBlob } of toMove) {
       const sourceDir = dirname(from);
       const destDir = dirname(to);
@@ -598,19 +598,7 @@ export default class API {
     const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
-    if (!unpublished) {
-      const defaultBranchSha = await this.branchCommitSha(this.branch);
-      await this.uploadFiles(files, {
-        commitMessage: options.commitMessage,
-        branch,
-        parentSha: defaultBranchSha,
-      });
-      await this.createPullRequest(
-        branch,
-        options.commitMessage,
-        options.status || this.initialWorkflowStatus,
-      );
-    } else {
+    if (unpublished) {
       // mark files for deletion
       const diffs = await this.getDifferences(branch);
       const toDelete: DeleteEntry[] = [];
@@ -624,14 +612,26 @@ export default class API {
         commitMessage: options.commitMessage,
         branch,
       });
+    } else {
+      const defaultBranchSha = await this.branchCommitSha(this.branch);
+      await this.uploadFiles(files, {
+        commitMessage: options.commitMessage,
+        branch,
+        parentSha: defaultBranchSha,
+      });
+      await this.createPullRequest(
+        branch,
+        options.commitMessage,
+        options.status || this.initialWorkflowStatus,
+      );
     }
   }
 
   deleteFiles = (paths: string[], message: string) => {
     const body = new FormData();
-    paths.forEach(path => {
+    for (const path of paths) {
       body.append('files', path);
-    });
+    }
     body.append('branch', this.branch);
     if (message) {
       body.append('message', message);

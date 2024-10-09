@@ -53,7 +53,7 @@ const MAX_CONCURRENT_DOWNLOADS = 10;
 
 const STATUS_PAGE = 'https://bitbucket.status.atlassian.com';
 const BITBUCKET_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
-const BITBUCKET_OPERATIONAL_UNITS = ['API', 'Authentication and user management', 'Git LFS'];
+const BITBUCKET_OPERATIONAL_UNITS = new Set(['API', 'Authentication and user management', 'Git LFS']);
 type BitbucketStatusComponent = {
   id: string;
   name: string;
@@ -139,14 +139,14 @@ export default class BitbucketBackend implements Implementation {
       .then(res => {
         return res['components']
           .filter((statusComponent: BitbucketStatusComponent) =>
-            BITBUCKET_OPERATIONAL_UNITS.includes(statusComponent.name),
+            BITBUCKET_OPERATIONAL_UNITS.has(statusComponent.name),
           )
           .every(
             (statusComponent: BitbucketStatusComponent) => statusComponent.status === 'operational',
           );
       })
-      .catch(e => {
-        console.warn('Failed getting BitBucket status', e);
+      .catch(error => {
+        console.warn('Failed getting BitBucket status', error);
         return true;
       });
 
@@ -157,8 +157,8 @@ export default class BitbucketBackend implements Implementation {
         (await this.api
           ?.user()
           .then(user => !!user)
-          .catch(e => {
-            console.warn('Failed getting Bitbucket user', e);
+          .catch(error => {
+            console.warn('Failed getting Bitbucket user', error);
             return false;
           })) || false;
     }
@@ -409,11 +409,11 @@ export default class BitbucketBackend implements Implementation {
       this._largeMediaClientPromise = (async (): Promise<GitLfsClient> => {
         const patterns = await this.api!.readFile('.gitattributes')
           .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
-          .catch((err: FetchError) => {
-            if (err.status === 404) {
+          .catch((error: FetchError) => {
+            if (error.status === 404) {
               console.log('This 404 was expected and handled appropriately.');
             } else {
-              console.error(err);
+              console.error(error);
             }
             return [];
           });
@@ -648,7 +648,7 @@ export default class BitbucketBackend implements Implementation {
       } else {
         return null;
       }
-    } catch (e) {
+    } catch {
       return null;
     }
   }

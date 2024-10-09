@@ -25,18 +25,14 @@ function generateEntries(path, length) {
       path: filePath,
       mode: '100644',
     })),
-    files: entries.reduce(
-      (acc, { id, filePath }) => ({
-        ...acc,
-        [filePath]: stripIndent`
+    files: Object.fromEntries(entries.map(
+      ( { id, filePath }) => [filePath, stripIndent`
         ---
         title: test ${id}
         ---
         # test ${id}
-      `,
-      }),
-      {},
-    ),
+      `],
+    )),
   };
 }
 
@@ -230,8 +226,8 @@ describe('gitlab backend', () => {
   }
 
   function createHeaders(backend, { basePath, path, page, perPage, pageCount, totalCount }) {
-    const pageNum = parseInt(page, 10);
-    const pageCountNum = parseInt(pageCount, 10);
+    const pageNum = Number.parseInt(page, 10);
+    const pageCountNum = Number.parseInt(pageCount, 10);
     const url = `${backend.implementation.apiRoot}${basePath}`;
 
     function link(linkPage) {
@@ -268,7 +264,7 @@ describe('gitlab backend', () => {
         if (path !== folder) {
           return false;
         }
-        if (expectedPage && page && parseInt(page, 10) !== parseInt(expectedPage, 10)) {
+        if (expectedPage && page && Number.parseInt(page, 10) !== Number.parseInt(expectedPage, 10)) {
           return false;
         }
         return true;
@@ -424,7 +420,7 @@ describe('gitlab backend', () => {
 
     it('returns entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionContentConfig.folder];
-      tree.forEach(file => interceptFiles(backend, file.path));
+      for (const file of tree) interceptFiles(backend, file.path);
 
       interceptCollection(backend, collectionContentConfig);
       const entries = await backend.listEntries(fromJS(collectionContentConfig));
@@ -442,7 +438,7 @@ describe('gitlab backend', () => {
     it('returns all entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
       interceptBranch(backend);
-      tree.forEach(file => interceptFiles(backend, file.path));
+      for (const file of tree) interceptFiles(backend, file.path);
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
       const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
@@ -455,7 +451,7 @@ describe('gitlab backend', () => {
 
     it('returns entries from file collection', async () => {
       const { files } = collectionFilesConfig;
-      files.forEach(file => interceptFiles(backend, file.file));
+      for (const file of files) interceptFiles(backend, file.file);
       const entries = await backend.listEntries(fromJS(collectionFilesConfig));
 
       expect(entries).toEqual({
@@ -470,7 +466,7 @@ describe('gitlab backend', () => {
     it('returns first page from paginated folder collection tree', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
       const pageTree = tree.slice(0, 20);
-      pageTree.forEach(file => interceptFiles(backend, file.path));
+      for (const file of pageTree) interceptFiles(backend, file.path);
       interceptCollection(backend, collectionManyEntriesConfig, { page: 1 });
       const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
 
@@ -486,12 +482,12 @@ describe('gitlab backend', () => {
 
     it('returns complete last page of paginated tree', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
-      tree.slice(0, 20).forEach(file => interceptFiles(backend, file.path));
+      for (const file of tree.slice(0, 20)) interceptFiles(backend, file.path);
       interceptCollection(backend, collectionManyEntriesConfig, { page: 1 });
       const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
 
       const nextPageTree = tree.slice(20, 40);
-      nextPageTree.forEach(file => interceptFiles(backend, file.path));
+      for (const file of nextPageTree) interceptFiles(backend, file.path);
       interceptCollection(backend, collectionManyEntriesConfig, { page: 2 });
       const nextPage = await backend.traverseCursor(entries.cursor, 'next');
 
@@ -503,7 +499,7 @@ describe('gitlab backend', () => {
       expect(nextPage.entries).toHaveLength(20);
 
       const lastPageTree = tree.slice(-20);
-      lastPageTree.forEach(file => interceptFiles(backend, file.path));
+      for (const file of lastPageTree) interceptFiles(backend, file.path);
       interceptCollection(backend, collectionManyEntriesConfig, { page: 25 });
       const lastPage = await backend.traverseCursor(nextPage.cursor, 'last');
       expect(lastPage.entries).toEqual(

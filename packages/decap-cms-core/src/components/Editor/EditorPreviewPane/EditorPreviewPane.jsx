@@ -45,7 +45,7 @@ export class PreviewPane extends React.Component {
     /**
      * Use an HOC to provide conditional updates for all previews.
      */
-    return !widget.preview ? null : (
+    return widget.preview ? (
       <PreviewHOC
         previewComponent={widget.preview}
         key={key}
@@ -57,7 +57,7 @@ export class PreviewPane extends React.Component {
         resolveWidget={resolveWidget}
         getRemarkPlugins={getRemarkPlugins}
       />
-    );
+    ) : null;
   };
 
   inferredFields = {};
@@ -116,7 +116,7 @@ export class PreviewPane extends React.Component {
       value = inferredField.defaultPreview(value);
     } else if (
       value &&
-      labelledWidgets.indexOf(field.get('widget')) !== -1 &&
+      labelledWidgets.includes(field.get('widget')) &&
       value.toString().length < 50
     ) {
       value = (
@@ -205,7 +205,7 @@ export class PreviewPane extends React.Component {
     const { state } = this.props;
     const selectedCollection = state.collections.get(collectionName);
 
-    if (typeof slug === 'undefined') {
+    if (slug === undefined) {
       const entries = await getAllEntries(state, selectedCollection);
       return entries.map(entry => Map().set('data', entry.data));
     }

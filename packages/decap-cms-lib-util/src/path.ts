@@ -1,7 +1,7 @@
 const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
 
 function normalizePath(path: string) {
-  return path.replace(/[\\/]+/g, '/');
+  return path.replaceAll(/[\\/]+/g, '/');
 }
 
 export function isAbsolutePath(path: string) {
@@ -28,11 +28,11 @@ export function basename(p: string, ext = '') {
   p = normalizePath(p);
   // Get the last part of the string.
   const sections = p.split('/');
-  const lastPart = sections[sections.length - 1];
+  const lastPart = sections.at(-1);
   // Special case: If it's empty, then we have a string like so: foo/
   // Meaning, 'foo' is guaranteed to be a directory.
   if (lastPart === '' && sections.length > 1) {
-    return sections[sections.length - 2];
+    return sections.at(-2);
   }
   // Remove the extension, if need be.
   if (ext.length > 0) {

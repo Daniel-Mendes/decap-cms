@@ -23,7 +23,7 @@ describe('cloudinary media library', () => {
      * Mock of the Cloudinary library itself, which is otherwise created by
      * their script (which isn't actually run during testing).
      */
-    window.cloudinary = {
+    globalThis.cloudinary = {
       createMediaLibrary: (config, { insertHandler }) => {
         cloudinaryConfig = config;
         cloudinaryInsertHandler = insertHandler;

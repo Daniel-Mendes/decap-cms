@@ -13,7 +13,7 @@ function keyDownTab(editor) {
   const { focus, anchor } = editor.selection;
 
   const pathLength =
-    focus.path.length > anchor.path.length ? anchor.path.length : focus.path.length;
+    Math.min(focus.path.length, anchor.path.length);
   const at = {
     anchor: {
       offset: 0,

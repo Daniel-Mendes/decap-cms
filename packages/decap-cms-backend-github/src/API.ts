@@ -24,7 +24,7 @@ import {
   unsentRequest,
   throwOnConflictingBranches,
 } from 'decap-cms-lib-util';
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 
 import type {
   AssetProxy,
@@ -152,9 +152,10 @@ function getTreeFiles(files: GitHubCompareFiles) {
         arr.push({ sha: null, path: file.filename });
       } else if (file.status === 'renamed') {
         // delete the previous file
-        arr.push({ sha: null, path: file.previous_filename as string });
-        // add the renamed file
-        arr.push({ sha: file.sha, path: file.filename });
+        arr.push(
+          { sha: null, path: file.previous_filename as string },
+          { sha: file.sha, path: file.filename },
+        );
       } else {
         // add the  file
         arr.push({ sha: file.sha, path: file.filename });
@@ -268,7 +269,7 @@ export default class API {
   parseJsonResponse(response: Response) {
     return response.json().then(json => {
       if (!response.ok) {
-        return Promise.reject(json);
+        throw json;
       }
 
       return json;
@@ -282,7 +283,7 @@ export default class API {
         params.push(`${key}=${encodeURIComponent(options.params[key] as string)}`);
       }
     }
-    if (params.length) {
+    if (params.length > 0) {
       path += `?${params.join('&')}`;
     }
     return this.apiRoot + path;
@@ -290,12 +291,12 @@ export default class API {
 
   parseResponse(response: Response) {
     const contentType = response.headers.get('Content-Type');
-    if (contentType && contentType.match(/json/)) {
+    if (contentType && /json/.test(contentType)) {
       return this.parseJsonResponse(response);
     }
     const textPromise = response.text().then(text => {
       if (!response.ok) {
-        return Promise.reject(text);
+        throw text;
       }
       return text;
     });
@@ -413,13 +414,13 @@ export default class API {
           const { sha } = await this.commit(`Updating “${key}” metadata`, changeTree);
           await this.patchRef('meta', '_decap_cms', sha);
           await localForage.setItem(`gh.meta.${key}`, {
-            expires: Date.now() + 300000, // In 5 minutes
+            expires: Date.now() + 300_000, // In 5 minutes
             data,
           });
           this._metadataSemaphore?.leave();
           resolve();
-        } catch (err) {
-          reject(err);
+        } catch (error) {
+          reject(error);
         }
       }),
     );
@@ -440,7 +441,7 @@ export default class API {
           await this.patchRef('meta', '_decap_cms', sha);
           this._metadataSemaphore?.leave();
           resolve();
-        } catch (err) {
+        } catch {
           this._metadataSemaphore?.leave();
           resolve();
         }
@@ -522,20 +523,9 @@ export default class API {
       throw new EditorialWorkflowError('content is not under editorial workflow', true);
     });
     // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
-    const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.sha)[0];
+    const pullRequest = pullRequests.find(pr => pr.head.sha === data.commit.sha);
     // if no pull request is found for the branch we return a mocked one
-    if (!pullRequest) {
-      try {
-        return {
-          head: { sha: data.commit.sha },
-          number: MOCK_PULL_REQUEST,
-          labels: [{ name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }],
-          state: PullRequestState.Open,
-        } as GitHubPull;
-      } catch (e) {
-        throw new EditorialWorkflowError('content is not under editorial workflow', true);
-      }
-    } else {
+    if (pullRequest) {
       pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix));
       const cmsLabel =
         pullRequest.state === PullRequestState.Closed
@@ -544,6 +534,17 @@ export default class API {
 
       pullRequest.labels.push(cmsLabel as Octokit.PullsGetResponseLabelsItem);
       return pullRequest;
+    } else {
+      try {
+        return {
+          head: { sha: data.commit.sha },
+          number: MOCK_PULL_REQUEST,
+          labels: [{ name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }],
+          state: PullRequestState.Open,
+        } as GitHubPull;
+      } catch {
+        throw new EditorialWorkflowError('content is not under editorial workflow', true);
+      }
     }
   }
 
@@ -571,8 +572,8 @@ export default class API {
         `${this.originRepoURL}/pulls/${number}/commits`,
       );
       return commits;
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
       return [];
     }
   }
@@ -648,7 +649,7 @@ export default class API {
           author: commit.author.name || commit.author.email,
           updatedOn: commit.author.date,
         };
-      } catch (e) {
+      } catch {
         return { author: '', updatedOn: '' };
       }
     };
@@ -670,7 +671,7 @@ export default class API {
       const content = Base64.atob(result.content);
       const byteArray = new Uint8Array(content.length);
       for (let i = 0; i < content.length; i++) {
-        byteArray[i] = content.charCodeAt(i);
+        byteArray[i] = content.codePointAt(i);
       }
       const blob = new Blob([byteArray]);
       return blob;
@@ -703,12 +704,12 @@ export default class API {
             size: file.size!,
           }))
       );
-    } catch (err) {
-      if (err && err.status === 404) {
+    } catch (error) {
+      if (error && error.status === 404) {
         console.log('This 404 was expected and handled appropriately.');
         return [];
       } else {
-        throw err;
+        throw error;
       }
     }
   }
@@ -728,7 +729,7 @@ export default class API {
       } else {
         return { branch, filter: true };
       }
-    } catch (e) {
+    } catch {
       return { branch, filter: false };
     }
   };
@@ -740,7 +741,7 @@ export default class API {
     const newBranchName = `cms/${newContentKey}`;
 
     // retrieve or create new branch and pull request in new format
-    const branch = await this.getBranch(newBranchName).catch(() => undefined);
+    const branch = await this.getBranch(newBranchName).catch(() => {});
     if (!branch) {
       await this.createBranch(newBranchName, pullRequest.head.sha as string);
     }
@@ -780,7 +781,7 @@ export default class API {
     const { number } = pullRequest;
     console.log(`Migrating Pull Request '${number}' (${countMessage})`);
     const contentKey = contentKeyFromBranch(pullRequest.head.ref);
-    let metadata = await this.retrieveMetadataOld(contentKey).catch(() => undefined);
+    let metadata = await this.retrieveMetadataOld(contentKey).catch(() => {});
 
     if (!metadata) {
       console.log(`Skipped migrating Pull Request '${number}' (${countMessage})`);
@@ -793,9 +794,9 @@ export default class API {
       // migrate branch from cms/slug to cms/collection/slug
       try {
         ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
-      } catch (e) {
+      } catch (error) {
         console.log(`Failed to migrate Pull Request '${number}' to version 1. See error below.`);
-        console.error(e);
+        console.error(error);
         return;
       }
       newNumber = pullRequest.number;
@@ -896,14 +897,7 @@ export default class API {
     const uploadPromises = files.map(file => this.uploadBlob(file));
     await Promise.all(uploadPromises);
 
-    if (!options.useWorkflow) {
-      return this.getDefaultBranch()
-        .then(branchData =>
-          this.updateTree(branchData.commit.sha, files as { sha: string; path: string }[]),
-        )
-        .then(changeTree => this.commit(options.commitMessage, changeTree))
-        .then(response => this.patchBranch(this.branch, response.sha));
-    } else {
+    if (options.useWorkflow) {
       const mediaFilesList = (mediaFiles as { sha: string; path: string }[]).map(
         ({ sha, path }) => ({
           path: trimStart(path, '/'),
@@ -912,6 +906,13 @@ export default class API {
       );
       const slug = dataFiles[0].slug;
       return this.editorialWorkflowGit(files as TreeFile[], slug, mediaFilesList, options);
+    } else {
+      return this.getDefaultBranch()
+        .then(branchData =>
+          this.updateTree(branchData.commit.sha, files as { sha: string; path: string }[]),
+        )
+        .then(changeTree => this.commit(options.commitMessage, changeTree))
+        .then(response => this.patchBranch(this.branch, response.sha));
     }
   }
 
@@ -939,7 +940,7 @@ export default class API {
 
   async deleteFiles(paths: string[], message: string) {
     if (this.useOpenAuthoring) {
-      return Promise.reject('Cannot delete published entries as an Open Authoring user!');
+      throw 'Cannot delete published entries as an Open Authoring user!';
     }
 
     const branchData = await this.getDefaultBranch();
@@ -982,22 +983,7 @@ export default class API {
     const contentKey = this.generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
-    if (!unpublished) {
-      const branchData = await this.getDefaultBranch();
-      const changeTree = await this.updateTree(branchData.commit.sha, files);
-      const commitResponse = await this.commit(options.commitMessage, changeTree);
-
-      if (this.useOpenAuthoring) {
-        await this.createBranch(branch, commitResponse.sha);
-      } else {
-        const pr = await this.createBranchAndPullRequest(
-          branch,
-          commitResponse.sha,
-          options.commitMessage,
-        );
-        await this.setPullRequestStatus(pr, options.status || this.initialWorkflowStatus);
-      }
-    } else {
+    if (unpublished) {
       // Entry is already on editorial review workflow - commit to existing branch
       const { files: diffFiles } = await this.getDifferences(
         this.branch,
@@ -1020,6 +1006,21 @@ export default class API {
       const commit = await this.commit(options.commitMessage, changeTree);
 
       return this.patchBranch(branch, commit.sha, { force: true });
+    } else {
+      const branchData = await this.getDefaultBranch();
+      const changeTree = await this.updateTree(branchData.commit.sha, files);
+      const commitResponse = await this.commit(options.commitMessage, changeTree);
+
+      if (this.useOpenAuthoring) {
+        await this.createBranch(branch, commitResponse.sha);
+      } else {
+        const pr = await this.createBranchAndPullRequest(
+          branch,
+          commitResponse.sha,
+          options.commitMessage,
+        );
+        await this.setPullRequestStatus(pr, options.status || this.initialWorkflowStatus);
+      }
     }
   }
 
@@ -1032,10 +1033,10 @@ export default class API {
           `${this.originRepoURL}/compare/${from}...${to}`,
         );
         return result;
-      } catch (e) {
+      } catch (error) {
         if (i === attempts) {
           console.warn(`Reached maximum number of attempts '${attempts}' for getDifferences`);
-          throw e;
+          throw error;
         }
         await new Promise(resolve => setTimeout(resolve, i * 500));
       }
@@ -1127,9 +1128,7 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
 
-    if (!this.useOpenAuthoring) {
-      await this.setPullRequestStatus(pullRequest, newStatus);
-    } else {
+    if (this.useOpenAuthoring) {
       if (status === 'pending_publish') {
         throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
       }
@@ -1149,6 +1148,8 @@ export default class API {
         const title = diff.commits[0]?.commit?.message || API.DEFAULT_COMMIT_MESSAGE;
         await this.createPR(title, branch);
       }
+    } else {
+      await this.setPullRequestStatus(pullRequest, newStatus);
     }
   }
 
@@ -1222,8 +1223,8 @@ export default class API {
         ),
         existingBranch.commit.sha,
       );
-    } catch (e) {
-      console.warn(e);
+    } catch (error) {
+      console.warn(error);
     }
   }
 
@@ -1231,8 +1232,8 @@ export default class API {
     try {
       const result = await this.createRef('heads', branchName, sha);
       return result;
-    } catch (e) {
-      const message = String(e.message || '');
+    } catch (error) {
+      const message = String(error.message || '');
       if (message === 'Reference update failed') {
         await throwOnConflictingBranches(branchName, name => this.getBranch(name), API_NAME);
       } else if (
@@ -1245,11 +1246,11 @@ export default class API {
           await this.backupBranch(branchName);
           const result = await this.patchBranch(branchName, sha, { force: true });
           return result;
-        } catch (e) {
-          console.log(e);
+        } catch (error_) {
+          console.log(error_);
         }
       }
-      throw e;
+      throw error;
     }
   }
 
@@ -1260,21 +1261,21 @@ export default class API {
   patchBranch(branchName: string, sha: string, opts: { force?: boolean } = {}) {
     const force = opts.force || false;
     if (force && !this.assertCmsBranch(branchName)) {
-      throw Error(`Only CMS branches can be force updated, cannot force update ${branchName}`);
+      throw new Error(`Only CMS branches can be force updated, cannot force update ${branchName}`);
     }
     return this.patchRef('heads', branchName, sha, { force });
   }
 
   deleteBranch(branchName: string) {
-    return this.deleteRef('heads', branchName).catch((err: Error) => {
+    return this.deleteRef('heads', branchName).catch((error: Error) => {
       // If the branch doesn't exist, then it has already been deleted -
       // deletion should be idempotent, so we can consider this a
       // success.
-      if (err.message === 'Reference does not exist') {
-        return Promise.resolve();
+      if (error.message === 'Reference does not exist') {
+        return;
       }
-      console.error(err);
-      return Promise.reject(err);
+      console.error(error);
+      throw error;
     });
   }
 
@@ -1353,9 +1354,9 @@ export default class API {
     const files = getTreeFiles(result.files as GitHubCompareFiles);
 
     let commitMessage = 'Automatically generated. Merged on Decap CMS\n\nForce merge of:';
-    files.forEach(file => {
+    for (const file of files) {
       commitMessage += `\n* "${file.path}"`;
-    });
+    }
     console.log(
       '%c Automatic merge not possible - Forcing merge.',
       'line-height: 30px;text-align: center;font-weight: bold',
@@ -1415,20 +1416,22 @@ export default class API {
       const destDir = dirname(to);
       const files = await this.listFiles(sourceDir, { branch, depth: 100 });
       for (const file of files) {
-        // delete current path
-        tree.push({
-          path: file.path,
-          mode: '100644',
-          type: 'blob',
-          sha: null,
-        });
-        // create in new path
-        tree.push({
-          path: file.path.replace(sourceDir, destDir),
-          mode: '100644',
-          type: 'blob',
-          sha: file.path === from ? sha : file.id,
-        });
+        tree.push(
+          // delete current path
+          {
+            path: file.path,
+            mode: '100644',
+            type: 'blob',
+            sha: null,
+          },
+          // create in new path
+          {
+            path: file.path.replace(sourceDir, destDir),
+            mode: '100644',
+            type: 'blob',
+            sha: file.path === from ? sha : file.id,
+          },
+        );
       }
     }
 

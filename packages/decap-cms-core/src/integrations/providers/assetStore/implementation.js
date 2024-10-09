@@ -8,7 +8,7 @@ const { fetchWithTimeout: fetch } = unsentRequest;
 export default class AssetStore {
   constructor(config, getToken) {
     this.config = config;
-    if (config.get('getSignedFormURL') == null) {
+    if (config.get('getSignedFormURL') == undefined) {
       throw 'The AssetStore integration needs the getSignedFormURL in the integration configuration.';
     }
     this.getToken = getToken;
@@ -20,7 +20,7 @@ export default class AssetStore {
   parseJsonResponse(response) {
     return response.json().then(json => {
       if (!response.ok) {
-        return Promise.reject(json);
+        throw json;
       }
 
       return json;
@@ -34,7 +34,7 @@ export default class AssetStore {
         params.push(`${key}=${encodeURIComponent(options.params[key])}`);
       }
     }
-    if (params.length) {
+    if (params.length > 0) {
       path += `?${params.join('&')}`;
     }
     return path;
@@ -128,7 +128,7 @@ export default class AssetStore {
       const { id, name, size, url } = response.asset;
 
       const formData = new FormData();
-      Object.keys(formFields).forEach(key => formData.append(key, formFields[key]));
+      for (const key of Object.keys(formFields)) formData.append(key, formFields[key]);
       formData.append('file', file, file.name);
 
       await this.request(formURL, { method: 'POST', body: formData });

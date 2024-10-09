@@ -5,4 +5,7 @@ export const DecapCmsBackendTest = {
   TestBackend,
   AuthenticationPage,
 };
-export { TestBackend, AuthenticationPage };
+
+
+export {default as TestBackend} from './implementation.ts';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

@@ -5,7 +5,7 @@ export type AsyncLock = { release: () => void; acquire: () => Promise<boolean> }
 export function asyncLock(): AsyncLock {
   let lock = semaphore(1);
 
-  function acquire(timeout = 15000) {
+  function acquire(timeout = 15_000) {
     const promise = new Promise<boolean>(resolve => {
       // this makes sure a caller doesn't gets stuck forever awaiting on the lock
       const timeoutId = setTimeout(() => {
@@ -27,14 +27,14 @@ export function asyncLock(): AsyncLock {
     try {
       // suppress too many calls to leave error
       lock.leave();
-    } catch (e) {
+    } catch (error) {
       // calling 'leave' too many times might not be good behavior
       // but there is no reason to completely fail on it
-      if (e.message !== 'leave called too many times.') {
-        throw e;
-      } else {
+      if (error.message === 'leave called too many times.') {
         console.warn('leave called too many times.');
         lock = semaphore(1);
+      } else {
+        throw error;
       }
     }
   }

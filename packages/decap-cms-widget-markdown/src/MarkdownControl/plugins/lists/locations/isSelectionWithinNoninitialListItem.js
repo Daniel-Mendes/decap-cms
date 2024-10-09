@@ -8,7 +8,7 @@ function isSelectionWithinNoninitialListItem(editor) {
     mode: 'lowest',
     at: Range.start(editor.selection),
   });
-  if (path && path.length > 0 && path[path.length - 1] > 0) return true;
+  if (path && path.length > 0 && path.at(-1) > 0) return true;
 }
 
 export default isSelectionWithinNoninitialListItem;

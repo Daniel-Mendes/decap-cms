@@ -24,16 +24,19 @@ const defaultState: Status = {
 
 const status = produce((state: Status, action: StatusAction) => {
   switch (action.type) {
-    case STATUS_REQUEST:
+    case STATUS_REQUEST: {
       state.isFetching = true;
       break;
-    case STATUS_SUCCESS:
+    }
+    case STATUS_SUCCESS: {
       state.isFetching = false;
       state.status = action.payload.status;
       break;
-    case STATUS_FAILURE:
+    }
+    case STATUS_FAILURE: {
       state.isFetching = false;
       state.error = action.payload.error;
+    }
   }
 }, defaultState);
 

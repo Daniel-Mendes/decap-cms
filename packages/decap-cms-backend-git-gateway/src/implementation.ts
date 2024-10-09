@@ -41,7 +41,7 @@ import type {
 
 const STATUS_PAGE = 'https://www.netlifystatus.com';
 const GIT_GATEWAY_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;
-const GIT_GATEWAY_OPERATIONAL_UNITS = ['Git Gateway'];
+const GIT_GATEWAY_OPERATIONAL_UNITS = new Set(['Git Gateway']);
 type GitGatewayStatus = {
   id: string;
   name: string;
@@ -84,12 +84,12 @@ function getEndpoint(endpoint: string, netlifySiteURL: string | null) {
   if (
     localHosts[document.location.host.split(':').shift() as string] &&
     netlifySiteURL &&
-    endpoint.match(/^\/\.netlify\//)
+    /^\/\.netlify\//.test(endpoint)
   ) {
     const parts = [];
     if (netlifySiteURL) {
       parts.push(netlifySiteURL);
-      if (!netlifySiteURL.match(/\/$/)) {
+      if (!/\/$/.test(netlifySiteURL)) {
         parts.push('/');
       }
     }
@@ -102,11 +102,11 @@ function getEndpoint(endpoint: string, netlifySiteURL: string | null) {
 // wait for identity widget to initialize
 // force init on timeout
 let initPromise = Promise.resolve() as Promise<unknown>;
-if (window.netlifyIdentity) {
+if (globalThis.netlifyIdentity) {
   let initialized = false;
   initPromise = Promise.race([
     new Promise<void>(resolve => {
-      window.netlifyIdentity?.on('init', () => {
+      globalThis.netlifyIdentity?.on('init', () => {
         initialized = true;
         resolve();
       });
@@ -114,7 +114,7 @@ if (window.netlifyIdentity) {
     new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
       if (!initialized) {
         console.log('Manually initializing identity widget');
-        window.netlifyIdentity?.init();
+        globalThis.netlifyIdentity?.init();
       }
     }),
   ]);
@@ -200,12 +200,12 @@ export default class GitGateway implements Implementation {
       .then(res => {
         return res['components']
           .filter((statusComponent: GitGatewayStatus) =>
-            GIT_GATEWAY_OPERATIONAL_UNITS.includes(statusComponent.name),
+            GIT_GATEWAY_OPERATIONAL_UNITS.has(statusComponent.name),
           )
           .every((statusComponent: GitGatewayStatus) => statusComponent.status === 'operational');
       })
-      .catch(e => {
-        console.warn('Failed getting Git Gateway status', e);
+      .catch(error => {
+        console.warn('Failed getting Git Gateway status', error);
         return true;
       });
 
@@ -215,8 +215,8 @@ export default class GitGateway implements Implementation {
       auth =
         (await this.tokenPromise?.()
           .then(token => !!token)
-          .catch(e => {
-            console.warn('Failed getting Identity token', e);
+          .catch(error => {
+            console.warn('Failed getting Identity token', error);
             return false;
           })) || false;
     }
@@ -229,12 +229,12 @@ export default class GitGateway implements Implementation {
       return this.authClient;
     }
     await initPromise;
-    if (window.netlifyIdentity) {
+    if (globalThis.netlifyIdentity) {
       this.authClient = {
-        logout: () => window.netlifyIdentity?.logout(),
-        currentUser: () => window.netlifyIdentity?.currentUser(),
+        logout: () => globalThis.netlifyIdentity?.logout(),
+        currentUser: () => globalThis.netlifyIdentity?.currentUser(),
         clearStore: () => {
-          const store = window.netlifyIdentity?.store;
+          const store = globalThis.netlifyIdentity?.store;
           if (store) {
             store.user = null;
             store.modal.page = 'login';
@@ -253,7 +253,7 @@ export default class GitGateway implements Implementation {
         },
         currentUser: () => goTrue.currentUser(),
         login: goTrue.login.bind(goTrue),
-        clearStore: () => undefined,
+        clearStore: () => {},
       };
     }
     return this.authClient;
@@ -301,7 +301,7 @@ export default class GitGateway implements Implementation {
 
             if (!res.ok) {
               throw new APIError(
-                `Git Gateway Error: ${body.message ? body.message : body}`,
+                `Git Gateway Error: ${body.message ?? body}`,
                 res.status,
                 'Git Gateway',
               );
@@ -344,19 +344,30 @@ export default class GitGateway implements Implementation {
         initialWorkflowStatus: this.options.initialWorkflowStatus,
       };
 
-      if (this.backendType === 'github') {
-        this.api = new GitHubAPI(apiConfig);
-        this.backend = new GitHubBackend(this.config, { ...this.options, API: this.api });
-      } else if (this.backendType === 'gitlab') {
-        this.api = new GitLabAPI(apiConfig);
-        this.backend = new GitLabBackend(this.config, { ...this.options, API: this.api });
-      } else if (this.backendType === 'bitbucket') {
-        this.api = new BitBucketAPI({
-          ...apiConfig,
-          requestFunction: this.requestFunction,
-          hasWriteAccess: async () => true,
-        });
-        this.backend = new BitbucketBackend(this.config, { ...this.options, API: this.api });
+      switch (this.backendType) {
+        case 'github': {
+          this.api = new GitHubAPI(apiConfig);
+          this.backend = new GitHubBackend(this.config, { ...this.options, API: this.api });
+
+          break;
+        }
+        case 'gitlab': {
+          this.api = new GitLabAPI(apiConfig);
+          this.backend = new GitLabBackend(this.config, { ...this.options, API: this.api });
+
+          break;
+        }
+        case 'bitbucket': {
+          this.api = new BitBucketAPI({
+            ...apiConfig,
+            requestFunction: this.requestFunction,
+            hasWriteAccess: async () => true,
+          });
+          this.backend = new BitbucketBackend(this.config, { ...this.options, API: this.api });
+
+          break;
+        }
+        // No default
       }
 
       if (!(await this.api!.hasWriteAccess())) {
@@ -372,7 +383,7 @@ export default class GitGateway implements Implementation {
   async restoreUser() {
     const client = await this.getAuthClient();
     const user = client.currentUser();
-    if (!user) return Promise.reject();
+    if (!user) throw undefined;
     return this.authenticate(user as Credentials);
   }
   authComponent() {
@@ -383,7 +394,7 @@ export default class GitGateway implements Implementation {
     const client = await this.getAuthClient();
     try {
       client.logout();
-    } catch (e) {
+    } catch {
       // due to a bug in the identity widget (gotrue-js actually) the store is not reset if logout fails
       // TODO: remove after https://github.com/netlify/gotrue-js/pull/83 is merged
       client.clearStore();
@@ -454,17 +465,17 @@ export default class GitGateway implements Implementation {
       .then(lfsURL => ({
         enabled: lfsURL.hostname.endsWith('netlify.com') || lfsURL.hostname.endsWith('netlify.app'),
       }))
-      .catch((err: Error) => ({ enabled: false, err }));
+      .catch((error: Error) => ({ enabled: false, err: error }));
 
     const lfsPatternsPromise = this.api!.readFile('.gitattributes')
       .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
       .then((patterns: string[]) => ({ err: null, patterns }))
-      .catch((err: Error) => {
-        if (err.message.includes('404')) {
+      .catch((error: Error) => {
+        if (error.message.includes('404')) {
           console.log('This 404 was expected and handled appropriately.');
           return { err: null, patterns: [] as string[] };
         } else {
-          return { err, patterns: [] as string[] };
+          return { err: error, patterns: [] as string[] };
         }
       });
 
@@ -604,7 +615,7 @@ export default class GitGateway implements Implementation {
           }
         }
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch {}
     }
     return preview;
   }

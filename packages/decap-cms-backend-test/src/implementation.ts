@@ -6,7 +6,7 @@ import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
 } from 'decap-cms-lib-util';
-import { extname, dirname } from 'path';
+import { extname, dirname } from 'node:path';
 
 import AuthenticationPage from './AuthenticationPage';
 
@@ -49,13 +49,13 @@ declare global {
   }
 }
 
-window.repoFiles = window.repoFiles || {};
-window.repoFilesUnpublished = window.repoFilesUnpublished || [];
+globalThis.repoFiles = globalThis.repoFiles || {};
+globalThis.repoFilesUnpublished = globalThis.repoFilesUnpublished || [];
 
 function getFile(path: string, tree: RepoTree) {
   const segments = path.split('/');
   let obj: RepoTree = tree;
-  while (obj && segments.length) {
+  while (obj && segments.length > 0) {
     obj = obj[segments.shift() as string] as RepoTree;
   }
   return (obj as unknown as RepoFile) || {};
@@ -109,7 +109,7 @@ export function getFolderFiles(
     return files;
   }
 
-  Object.keys(tree[folder] || {}).forEach(key => {
+  for (const key of Object.keys(tree[folder] || {})) {
     if (extname(key)) {
       const file = (tree[folder] as RepoTree)[key] as RepoFile;
       if (!extension || key.endsWith(`.${extension}`)) {
@@ -117,9 +117,10 @@ export function getFolderFiles(
       }
     } else {
       const subTree = tree[folder] as RepoTree;
-      return getFolderFiles(subTree, key, extension, depth - 1, files, `${path}/${key}`);
+      getFolderFiles(subTree, key, extension, depth - 1, files, `${path}/${key}`);
+      continue;
     }
-  });
+  }
 
   return files;
 }
@@ -185,7 +186,7 @@ export default class TestBackend implements Implementation {
       return 0;
     })();
     // TODO: stop assuming cursors are for collections
-    const allFiles = getFolderFiles(window.repoFiles, folder, extension, depth);
+    const allFiles = getFolderFiles(globalThis.repoFiles, folder, extension, depth);
     const allEntries = allFiles.map(f => ({
       data: f.content as string,
       file: { path: f.path, id: f.path },
@@ -196,7 +197,7 @@ export default class TestBackend implements Implementation {
   }
 
   entriesByFolder(folder: string, extension: string, depth: number) {
-    const files = folder ? getFolderFiles(window.repoFiles, folder, extension, depth) : [];
+    const files = folder ? getFolderFiles(globalThis.repoFiles, folder, extension, depth) : [];
     const entries = files.map(f => ({
       data: f.content as string,
       file: { path: f.path, id: f.path },
@@ -213,7 +214,7 @@ export default class TestBackend implements Implementation {
     return Promise.all(
       files.map(file => ({
         file,
-        data: getFile(file.path, window.repoFiles).content as string,
+        data: getFile(file.path, globalThis.repoFiles).content as string,
       })),
     );
   }
@@ -221,12 +222,12 @@ export default class TestBackend implements Implementation {
   getEntry(path: string) {
     return Promise.resolve({
       file: { path, id: null },
-      data: getFile(path, window.repoFiles).content as string,
+      data: getFile(path, globalThis.repoFiles).content as string,
     });
   }
 
   unpublishedEntries() {
-    return Promise.resolve(Object.keys(window.repoFilesUnpublished));
+    return Promise.resolve(Object.keys(globalThis.repoFilesUnpublished));
   }
 
   unpublishedEntry({ id, collection, slug }: { id?: string; collection?: string; slug?: string }) {
@@ -235,7 +236,7 @@ export default class TestBackend implements Implementation {
       collection = parts[0];
       slug = parts[1];
     }
-    const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
+    const entry = globalThis.repoFilesUnpublished[`${collection}/${slug}`];
     if (!entry) {
       return Promise.reject(
         new EditorialWorkflowError('content is not under editorial workflow', true),
@@ -246,19 +247,19 @@ export default class TestBackend implements Implementation {
   }
 
   async unpublishedEntryDataFile(collection: string, slug: string, path: string) {
-    const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
+    const entry = globalThis.repoFilesUnpublished[`${collection}/${slug}`];
     const file = entry.diffs.find(d => d.path === path);
     return file?.content as string;
   }
 
   async unpublishedEntryMediaFile(collection: string, slug: string, path: string) {
-    const entry = window.repoFilesUnpublished[`${collection}/${slug}`];
+    const entry = globalThis.repoFilesUnpublished[`${collection}/${slug}`];
     const file = entry.diffs.find(d => d.path === path);
     return this.normalizeAsset(file?.content as AssetProxy);
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {
-    delete window.repoFilesUnpublished[`${collection}/${slug}`];
+    delete globalThis.repoFilesUnpublished[`${collection}/${slug}`];
     return Promise.resolve();
   }
 
@@ -271,20 +272,22 @@ export default class TestBackend implements Implementation {
     status: string,
   ) {
     const diffs: Diff[] = [];
-    dataFiles.forEach(dataFile => {
+    for (const dataFile of dataFiles) {
       const { path, newPath, raw } = dataFile;
-      const currentDataFile = window.repoFilesUnpublished[key]?.diffs.find(d => d.path === path);
+      const currentDataFile = globalThis.repoFilesUnpublished[key]?.diffs.find(
+        d => d.path === path,
+      );
       const originalPath = currentDataFile ? currentDataFile.originalPath : path;
       diffs.push({
         originalPath,
         id: newPath || path,
         path: newPath || path,
-        newFile: isEmpty(getFile(originalPath as string, window.repoFiles)),
+        newFile: isEmpty(getFile(originalPath as string, globalThis.repoFiles)),
         status: 'added',
         content: raw,
       });
-    });
-    assetProxies.forEach(a => {
+    }
+    for (const a of assetProxies) {
       const asset = this.normalizeAsset(a);
       diffs.push({
         id: asset.id,
@@ -293,8 +296,8 @@ export default class TestBackend implements Implementation {
         status: 'added',
         content: asset,
       });
-    });
-    window.repoFilesUnpublished[key] = {
+    }
+    globalThis.repoFilesUnpublished[key] = {
       slug,
       collection,
       status,
@@ -307,7 +310,7 @@ export default class TestBackend implements Implementation {
     if (options.useWorkflow) {
       const slug = entry.dataFiles[0].slug;
       const key = `${options.collectionName}/${slug}`;
-      const currentEntry = window.repoFilesUnpublished[key];
+      const currentEntry = globalThis.repoFilesUnpublished[key];
       const status =
         currentEntry?.status || options.status || (this.options.initialWorkflowStatus as string);
 
@@ -319,32 +322,32 @@ export default class TestBackend implements Implementation {
         options.collectionName as string,
         status,
       );
-      return Promise.resolve();
+      return;
     }
 
-    entry.dataFiles.forEach(dataFile => {
+    for (const dataFile of entry.dataFiles) {
       const { path, raw } = dataFile;
-      writeFile(path, raw, window.repoFiles);
-    });
-    entry.assets.forEach(a => {
-      writeFile(a.path, a, window.repoFiles);
-    });
-    return Promise.resolve();
+      writeFile(path, raw, globalThis.repoFiles);
+    }
+    for (const a of entry.assets) {
+      writeFile(a.path, a, globalThis.repoFiles);
+    }
+    return;
   }
 
   updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
-    window.repoFilesUnpublished[`${collection}/${slug}`].status = newStatus;
+    globalThis.repoFilesUnpublished[`${collection}/${slug}`].status = newStatus;
     return Promise.resolve();
   }
 
   publishUnpublishedEntry(collection: string, slug: string) {
     const key = `${collection}/${slug}`;
-    const unpubEntry = window.repoFilesUnpublished[key];
+    const unpubEntry = globalThis.repoFilesUnpublished[key];
 
-    delete window.repoFilesUnpublished[key];
+    delete globalThis.repoFilesUnpublished[key];
 
-    const tree = window.repoFiles;
-    unpubEntry.diffs.forEach(d => {
+    const tree = globalThis.repoFiles;
+    for (const d of unpubEntry.diffs) {
       if (d.originalPath && !d.newFile) {
         const originalPath = d.originalPath;
         const sourceDir = dirname(originalPath);
@@ -352,27 +355,27 @@ export default class TestBackend implements Implementation {
         const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
           f.path.startsWith(sourceDir),
         );
-        toMove.forEach(f => {
+        for (const f of toMove) {
           deleteFile(f.path, tree);
           writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
-        });
+        }
       }
       writeFile(d.path, d.content, tree);
-    });
+    }
 
     return Promise.resolve();
   }
 
   getMedia(mediaFolder = this.mediaFolder) {
-    const files = getFolderFiles(window.repoFiles, mediaFolder.split('/')[0], '', 100).filter(f =>
-      f.path.startsWith(mediaFolder),
+    const files = getFolderFiles(globalThis.repoFiles, mediaFolder.split('/')[0], '', 100).filter(
+      f => f.path.startsWith(mediaFolder),
     );
     const assets = files.map(f => this.normalizeAsset(f.content as AssetProxy));
     return Promise.resolve(assets);
   }
 
   async getMediaFile(path: string) {
-    const asset = getFile(path, window.repoFiles).content as AssetProxy;
+    const asset = getFile(path, globalThis.repoFiles).content as AssetProxy;
 
     const url = asset.toString();
     const name = basename(path);
@@ -393,7 +396,7 @@ export default class TestBackend implements Implementation {
   normalizeAsset(assetProxy: AssetProxy) {
     const fileObj = assetProxy.fileObj as File;
     const { name, size } = fileObj;
-    const objectUrl = attempt(window.URL.createObjectURL, fileObj);
+    const objectUrl = attempt(globalThis.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
     const normalizedAsset = {
       id: uuid(),
@@ -411,15 +414,15 @@ export default class TestBackend implements Implementation {
   persistMedia(assetProxy: AssetProxy) {
     const normalizedAsset = this.normalizeAsset(assetProxy);
 
-    writeFile(assetProxy.path, assetProxy, window.repoFiles);
+    writeFile(assetProxy.path, assetProxy, globalThis.repoFiles);
 
     return Promise.resolve(normalizedAsset);
   }
 
   deleteFiles(paths: string[]) {
-    paths.forEach(path => {
-      deleteFile(path, window.repoFiles);
-    });
+    for (const path of paths) {
+      deleteFile(path, globalThis.repoFiles);
+    }
 
     return Promise.resolve();
   }

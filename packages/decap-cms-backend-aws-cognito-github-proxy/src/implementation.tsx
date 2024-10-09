@@ -32,7 +32,7 @@ export default class AwsCognitoGitHubProxyBackend extends GitHubBackend {
       }).then(async (res: Response): Promise<GitHubUser> => {
         if (res.status == 401) {
           this.logout();
-          return Promise.reject('Token expired');
+          throw 'Token expired';
         }
         const userInfo = await res.json();
         const owner = this.originRepo.split('/')[1];

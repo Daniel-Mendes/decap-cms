@@ -5,4 +5,7 @@ export const DecapCmsBackendProxy = {
   ProxyBackend,
   AuthenticationPage,
 };
-export { ProxyBackend, AuthenticationPage };
+
+
+export {default as ProxyBackend} from './implementation.ts';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

@@ -29,8 +29,8 @@ describe('getAllResponses', () => {
   }
 
   function createLinkHeaders({ page, pageCount }) {
-    const pageNum = parseInt(page, 10);
-    const pageCountNum = parseInt(pageCount, 10);
+    const pageNum = Number.parseInt(page, 10);
+    const pageCountNum = Number.parseInt(pageCount, 10);
     const url = 'https://api.github.com/pulls';
 
     function link(linkPage) {

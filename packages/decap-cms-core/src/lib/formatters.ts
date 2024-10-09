@@ -48,23 +48,29 @@ export function commitMessageFormatter(
   { slug, path, collection, authorLogin, authorName }: Options,
   isOpenAuthoring?: boolean,
 ) {
-  const templates = { ...commitMessageTemplates, ...(config.backend.commit_messages || {}) };
+  const templates = { ...commitMessageTemplates, ...config.backend.commit_messages };
 
-  const commitMessage = templates[type].replace(variableRegex, (_, variable) => {
+  const commitMessage = templates[type].replaceAll(variableRegex, (_, variable) => {
     switch (variable) {
-      case 'slug':
+      case 'slug': {
         return slug || '';
-      case 'path':
+      }
+      case 'path': {
         return path || '';
-      case 'collection':
+      }
+      case 'collection': {
         return collection ? collection.get('label_singular') || collection.get('label') : '';
-      case 'author-login':
+      }
+      case 'author-login': {
         return authorLogin || '';
-      case 'author-name':
+      }
+      case 'author-name': {
         return authorName || '';
-      default:
+      }
+      default: {
         console.warn(`Ignoring unknown variable “${variable}” in commit message template.`);
         return '';
+      }
     }
   });
 
@@ -72,17 +78,21 @@ export function commitMessageFormatter(
     return commitMessage;
   }
 
-  const message = templates.openAuthoring.replace(variableRegex, (_, variable) => {
+  const message = templates.openAuthoring.replaceAll(variableRegex, (_, variable) => {
     switch (variable) {
-      case 'message':
+      case 'message': {
         return commitMessage;
-      case 'author-login':
+      }
+      case 'author-login': {
         return authorLogin || '';
-      case 'author-name':
+      }
+      case 'author-name': {
         return authorName || '';
-      default:
+      }
+      default: {
         console.warn(`Ignoring unknown variable “${variable}” in open authoring message template.`);
         return '';
+      }
     }
   });
 
@@ -97,10 +107,10 @@ export function prepareSlug(slug: string) {
       .toLocaleLowerCase()
 
       // Remove single quotes.
-      .replace(/[']/g, '')
+      .replaceAll(/[']/g, '')
 
       // Replace periods with dashes.
-      .replace(/[.]/g, '-')
+      .replaceAll(/[.]/g, '-')
   );
 }
 
@@ -108,7 +118,7 @@ export function getProcessSegment(slugConfig?: CmsSlug, ignoreValues?: string[])
   return (value: string) =>
     ignoreValues && ignoreValues.includes(value)
       ? value
-      : flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
+      : flow([String, prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
 }
 
 export function slugFormatter(
@@ -129,13 +139,13 @@ export function slugFormatter(
   const date = new Date();
   const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
 
-  if (!collection.has('path')) {
-    return slug;
-  } else {
+  if (collection.has('path')) {
     const pathTemplate = prepareSlug(collection.get('path') as string);
     return compileStringTemplate(pathTemplate, date, slug, entryData, (value: string) =>
       value === slug ? value : processSegment(value),
     );
+  } else {
+    return slug;
   }
 }
 
@@ -193,18 +203,18 @@ export function previewUrlFormatter(
 
   try {
     compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
-  } catch (err) {
+  } catch (error) {
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to DayJs), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
-    if (err.name === SLUG_MISSING_REQUIRED_DATE) {
+    if (error.name === SLUG_MISSING_REQUIRED_DATE) {
       console.error(stripIndent`
         Collection "${collection.get('name')}" configuration error:
           \`preview_path_date_field\` must be a field with a valid date. Ignoring \`preview_path\`.
       `);
       return basePath;
     }
-    throw err;
+    throw error;
   }
 
   const previewPath = trimStart(compiledPath, ' /');

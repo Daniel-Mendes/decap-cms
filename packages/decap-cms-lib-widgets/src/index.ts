@@ -5,4 +5,7 @@ export const DecapCmsLibWidgets = {
   stringTemplate,
   validations,
 };
-export { stringTemplate, validations };
+
+
+export * as stringTemplate from './stringTemplate';
+export * as validations from './validations';

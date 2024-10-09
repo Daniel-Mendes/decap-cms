@@ -31,7 +31,7 @@ export const parsePointerFile: (data: string) => PointerFile = flow([
   map(splitIntoWords),
   fromPairs,
   ({ size, oid, ...rest }) => ({
-    size: parseInt(size),
+    size: Number.parseInt(size),
     sha: oid?.split(':')[1],
     ...rest,
   }),

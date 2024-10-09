@@ -310,7 +310,7 @@ export default function withFileControl({ forImage } = {}) {
     handleUrl = subject => e => {
       e.preventDefault();
 
-      const url = window.prompt(this.props.t(`editor.editorWidgets.${subject}.promptUrl`));
+      const url = globalThis.prompt(this.props.t(`editor.editorWidgets.${subject}.promptUrl`));
 
       if (url) {
         return this.props.onChange(url);

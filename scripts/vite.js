@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import { resolve } from 'node:path';
+import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { toGlobalName, externals, globals } from './externals.js';
@@ -12,7 +12,7 @@ import { version as appVersion } from '../packages/decap-cms-app/package.json';
 // Import package.json using dynamic import
 async function getPackageJson() {
   // Use a valid file URL for package.json
-  const pkgPath = pathToFileURL(resolve(process.cwd(), 'package.json')).href;
+  const pkgPath = pathToFileURL(path.resolve(process.cwd(), 'package.json')).href;
 
   // Dynamically import package.json using the file URL
   const pkg = await import(pkgPath, { with: { type: 'json' } }); // Use dynamic import

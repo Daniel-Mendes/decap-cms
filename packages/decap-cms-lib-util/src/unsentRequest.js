@@ -4,8 +4,8 @@ import flow from 'lodash/flow';
 import isString from 'lodash/isString';
 
 function isAbortControllerSupported() {
-  if (typeof window !== 'undefined') {
-    return !!window.AbortController;
+  if (typeof globalThis !== 'undefined') {
+    return !!globalThis.AbortController;
   }
   return false;
 }
@@ -23,11 +23,11 @@ function fetchWithTimeout(input, init) {
       clearTimeout(timeoutId);
       return res;
     })
-    .catch(e => {
-      if (e.name === 'AbortError' || e.name === 'DOMException') {
+    .catch(error => {
+      if (error.name === 'AbortError' || error.name === 'DOMException') {
         throw new Error(`Request timed out after ${timeout} seconds`);
       }
-      throw e;
+      throw error;
     });
 }
 
@@ -112,7 +112,7 @@ const withRoot = getCurriedRequestProcessor((root, req) =>
     if (absolutePath.test(p)) {
       return p;
     }
-    return root && p && p[0] !== '/' && root[root.length - 1] !== '/'
+    return root && p && p[0] !== '/' && root.at(-1) !== '/'
       ? `${root}/${p}`
       : `${root}${p}`;
   }),

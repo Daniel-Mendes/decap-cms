@@ -57,10 +57,10 @@ export default class GitHubAuthenticationPage extends React.Component {
     this.setState({ findingFork: true });
     return backend
       .authenticateWithFork({ userData: data, getPermissionToFork: this.getPermissionToFork })
-      .catch(err => {
+      .catch(error => {
         this.setState({ findingFork: false });
-        console.error(err);
-        throw err;
+        console.error(error);
+        throw error;
       });
   }
 

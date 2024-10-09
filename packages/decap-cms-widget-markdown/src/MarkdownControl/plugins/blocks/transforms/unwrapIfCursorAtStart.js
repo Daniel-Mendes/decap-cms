@@ -7,7 +7,7 @@ function unwrapIfCursorAtStart(editor, mergeWithPrevious = false) {
 
   let [node, path] = Editor.above(editor, lowestMatchedAncestor(editor, 'non-default'));
 
-  if (path.length == 0) return false;
+  if (path.length === 0) return false;
 
   const isHeading = `${node.type}`.startsWith('heading-');
   if (isHeading) {

@@ -138,7 +138,7 @@ export function searchEntries(searchTerm: string, searchCollections: string[], p
         )
       : backend.search(
           state.collections
-            .filter((_, key: string) => allCollections.indexOf(key) !== -1)
+            .filter((_, key: string) => allCollections.includes(key))
             .valueSeq()
             .toArray(),
           searchTerm,
@@ -173,7 +173,7 @@ export function query(
 
     dispatch(clearRequests());
 
-    const queryIdentifier = `${collectionName}-${searchFields.join()}-${searchTerm}-${file}-${limit}`;
+    const queryIdentifier = `${collectionName}-${searchFields.join(',')}-${searchTerm}-${file}-${limit}`;
 
     const queuedQueryPromise = state.search.requests.find(({ id }) => id == queryIdentifier);
 
@@ -194,7 +194,7 @@ export function query(
           ? undefined
           : {
               id: queryIdentifier,
-              expires: new Date(new Date().getTime() + 10 * 1000),
+              expires: new Date(Date.now() + 10 * 1000),
               queryResponse: queryPromise,
             },
       ),

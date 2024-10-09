@@ -7,4 +7,8 @@ export const DecapCmsBackendBitbucket = {
   API,
   AuthenticationPage,
 };
-export { BitbucketBackend, API, AuthenticationPage };
+
+
+export {default as BitbucketBackend} from './implementation.ts';
+export {default as API} from './API.ts';
+export {default as AuthenticationPage} from './AuthenticationPage.jsx';

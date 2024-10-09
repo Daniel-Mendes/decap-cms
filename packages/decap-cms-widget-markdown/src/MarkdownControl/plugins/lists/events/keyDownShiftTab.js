@@ -6,7 +6,7 @@ import matchedAncestors from '../../matchers/matchedAncestors';
 function keyDownShiftTab(editor) {
   if (!editor.selection) return;
 
-  if (Array.from(Editor.nodes(editor, matchedAncestors(editor, 'list'))).length < 2) {
+  if ([...Editor.nodes(editor, matchedAncestors(editor, 'list'))].length < 2) {
     return;
   }
 
