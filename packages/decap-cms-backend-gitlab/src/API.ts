@@ -451,7 +451,7 @@ export default class API {
     };
   };
 
-  listAllFilesGraphQL = async (path: string, recursive: boolean, branch: String) => {
+  listAllFilesGraphQL = async (path: string, recursive: boolean, branch: string) => {
     const files: FileEntry[] = [];
     let blobsPaths;
     let cursor;
