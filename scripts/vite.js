@@ -39,6 +39,10 @@ export async function getConfig() {
       },
     },
 
+    optimizeDeps: {
+      include: ['codemirror', 'ol'],
+    },
+
     plugins: [
       nodePolyfills({
         include: ['stream', 'buffer', 'path'],

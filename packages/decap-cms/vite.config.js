@@ -33,11 +33,26 @@ export default defineConfig({
       allow: ['..'],
     },
     // warmup: {
-    //   clientFiles: ['src/**/*.js'],
+    //   clientFiles: [
+    //     '../packages/decap-cms-core/src/*.js',
+    //     '../packages/decap-cms-widget-markdown/src/*.js',
+    //     '../packages/decap-cms-widget-map/src/*.js',
+    //     '../packages/decap-cms-widget-code/src/*.js',
+    //   ],
     // },
     hmr: {
       overlay: false,
     },
+  },
+
+  resolve: {
+    alias: {
+      'decap-cms': `${process.cwd()}/src/index.js`,
+    },
+  },
+
+  optimizeDeps: {
+    include: ['codemirror', 'ol'],
   },
 
   plugins: [

@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "develop": "vite ",
+    "develop": "vite",
     "preview": "vite preview"
   },
   "keywords": [
