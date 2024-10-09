@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import { resolve } from 'node:path';
 
 /**
  * Takes a dash [-] separated name and makes it camel-cased
@@ -8,17 +8,17 @@ import path from 'path';
  */
 export function toGlobalName(name) {
   return `${name}`
-    .replace(new RegExp(/[-_/]+/, 'g'), ' ')
-    .replace(new RegExp(/[^\w\s]/, 'g'), '')
-    .replace(
+    .replaceAll(new RegExp(/[-_/]+/, 'g'), ' ')
+    .replaceAll(new RegExp(/[^\w\s]/, 'g'), '')
+    .replaceAll(
       new RegExp(/\s+(.)(\w+)/, 'g'),
       ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`,
     )
-    .replace(new RegExp(/\s/, 'g'), '')
+    .replaceAll(new RegExp(/\s/, 'g'), '')
     .replace(new RegExp(/\w/), s => s.toUpperCase());
 }
 
-const packages = fs.readdirSync(path.resolve(__dirname, '../packages'));
+const packages = fs.readdirSync(resolve(import.meta.dirname, '../packages'));
 
 export const externals = [
   ...packages,
@@ -35,9 +35,9 @@ export const externals = [
 ];
 
 export const globals = {
-  ...packages.reduce((acc, name) => {
-    acc[name] = toGlobalName(name);
-    return acc;
+  ...packages.reduce((accumulator, name) => {
+    accumulator[name] = toGlobalName(name);
+    return accumulator;
   }, {}),
   lodash: 'Lodash',
   '@emotion/react': 'EmotionCore',

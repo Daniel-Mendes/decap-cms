@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import { resolve } from 'path';
-import { pathToFileURL } from 'url';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import { toGlobalName, externals, globals } from './externals.js';
 import { version as coreVersion } from '../packages/decap-cms-core/package.json';
