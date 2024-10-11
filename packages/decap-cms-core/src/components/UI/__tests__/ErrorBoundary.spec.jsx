@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { oneLineTrim } from 'common-tags';
 
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -8,10 +9,10 @@ function WithError() {
   throw new Error('Some unknown error');
 }
 
-jest.spyOn(console, 'error').mockImplementation(() => ({}));
+vi.spyOn(console, 'error').mockImplementation(() => ({}));
 
 Object.defineProperty(
-  window.navigator,
+  globalThis.navigator,
   'userAgent',
   (value => ({
     get() {
@@ -20,20 +21,20 @@ Object.defineProperty(
     set(v) {
       value = v;
     },
-  }))(window.navigator['userAgent']),
+  }))(globalThis.navigator['userAgent']),
 );
 
 describe('Editor', () => {
   const config = { backend: { name: 'github' } };
 
-  const props = { t: jest.fn(key => key), config };
+  const props = { t: vi.fn(key => key), config };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should match snapshot with issue URL', () => {
-    global.navigator.userAgent = 'Test User Agent';
+    globalThis.navigator.userAgent = 'Test User Agent';
     const { getByTestId } = render(
       <ErrorBoundary {...props}>
         <WithError />

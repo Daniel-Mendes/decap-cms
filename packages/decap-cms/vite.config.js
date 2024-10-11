@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 
 import { toGlobalName } from '../../scripts/externals';
 import { version as coreVersion } from '../decap-cms-core/package.json';
@@ -23,23 +23,15 @@ export default defineConfig({
       },
     },
     outDir: `${process.cwd()}/dist`,
+    emptyOutDir: true,
   },
 
   server: {
     open: true,
-
     fs: {
       strict: false,
       allow: ['..'],
     },
-    // warmup: {
-    //   clientFiles: [
-    //     '../packages/decap-cms-core/src/*.js',
-    //     '../packages/decap-cms-widget-markdown/src/*.js',
-    //     '../packages/decap-cms-widget-map/src/*.js',
-    //     '../packages/decap-cms-widget-code/src/*.js',
-    //   ],
-    // },
     hmr: {
       overlay: false,
     },
@@ -69,7 +61,19 @@ export default defineConfig({
     },
     react({
       jsxImportSource: '@emotion/react',
-      plugins: [['@swc/plugin-emotion', {}]],
+      babel: {
+        compact: false,
+        // presets: [
+        //   [
+        //     '@babel/preset-react',
+        //     {
+        //       runtime: 'automatic',
+        //       importSource: '@emotion/react',
+        //     },
+        //   ],
+        // ],
+        plugins: ['@emotion/babel-plugin'],
+      },
     }),
   ],
 

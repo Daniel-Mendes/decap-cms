@@ -1,10 +1,11 @@
 import React from 'react';
 import { fromJS } from 'immutable';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
+import { vi, describe, it, expect } from 'vitest';
 
-import { DecapCmsWidgetRelation } from '../';
+import { DecapCmsWidgetRelation } from '..';
 
-jest.mock('react-window', () => {
+vi.mock('react-window', () => {
   function FixedSizeList(props) {
     return props.itemData.options;
   }
@@ -240,13 +241,13 @@ class RelationController extends React.Component {
     this.mounted = false;
   }
 
-  handleOnChange = jest.fn(value => {
+  handleOnChange = vi.fn(value => {
     act(() => {
       this.setState({ ...this.state, value });
     });
   });
 
-  setQueryHits = jest.fn(queryHits => {
+  setQueryHits = vi.fn(queryHits => {
     if (this.mounted) {
       act(() => {
         this.setState({ ...this.state, queryHits });
@@ -254,7 +255,7 @@ class RelationController extends React.Component {
     }
   });
 
-  query = jest.fn((...args) => {
+  query = vi.fn((...args) => {
     const queryHits = generateHits(25);
 
     const [, collection, , term, file, optionsLength] = args;
@@ -265,15 +266,31 @@ class RelationController extends React.Component {
       hits = nestedFileCollectionHits;
     } else if (file === 'simple_file') {
       hits = simpleFileCollectionHits;
-    } else if (term === 'JSON post') {
-      hits = [queryHits[queryHits.length - 1]];
-    } else if (term === 'YAML' || term === 'YAML post') {
-      hits = [queryHits[queryHits.length - 2]];
-    } else if (term === 'Nested') {
-      hits = [queryHits[queryHits.length - 3]];
-    } else if (term === 'Deeply nested') {
-      hits = [queryHits[queryHits.length - 4]];
-    }
+    } else
+      switch (term) {
+        case 'JSON post': {
+          hits = [queryHits.at(-1)];
+
+          break;
+        }
+        case 'YAML':
+        case 'YAML post': {
+          hits = [queryHits.at(-2)];
+
+          break;
+        }
+        case 'Nested': {
+          hits = [queryHits.at(-3)];
+
+          break;
+        }
+        case 'Deeply nested': {
+          hits = [queryHits.at(-4)];
+
+          break;
+        }
+        // No default
+      }
 
     hits = hits.slice(0, optionsLength);
 
@@ -295,8 +312,8 @@ class RelationController extends React.Component {
 
 function setup({ field, value }) {
   let renderArgs;
-  const setActiveSpy = jest.fn();
-  const setInactiveSpy = jest.fn();
+  const setActiveSpy = vi.fn();
+  const setInactiveSpy = vi.fn();
 
   const helpers = render(
     <RelationController value={value}>
@@ -597,8 +614,7 @@ describe('Relation widget', () => {
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {
-          const expectedOption = expectedOptions[i];
+        for (const expectedOption of expectedOptions) {
           const optionFound = displayedOptions.some(
             option => option.textContent === expectedOption,
           );
@@ -622,8 +638,7 @@ describe('Relation widget', () => {
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {
-          const expectedOption = expectedOptions[i];
+        for (const expectedOption of expectedOptions) {
           const optionFound = displayedOptions.some(
             option => option.textContent === expectedOption,
           );
@@ -645,8 +660,7 @@ describe('Relation widget', () => {
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {
-          const expectedOption = expectedOptions[i];
+        for (const expectedOption of expectedOptions) {
           const optionFound = displayedOptions.some(
             option => option.textContent === expectedOption,
           );
@@ -669,8 +683,7 @@ describe('Relation widget', () => {
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {
-          const expectedOption = expectedOptions[i];
+        for (const expectedOption of expectedOptions) {
           const optionFound = displayedOptions.some(
             option => option.textContent === expectedOption,
           );

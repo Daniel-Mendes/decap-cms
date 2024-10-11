@@ -1,66 +1,67 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
 import { fromJS } from 'immutable';
 
 import { Editor } from '../Editor';
 
-jest.mock('lodash/debounce', () => {
-  const flush = jest.fn();
+vi.mock('lodash/debounce', () => {
+  const flush = vi.fn();
   return func => {
     func.flush = flush;
     return func;
   };
 });
 // eslint-disable-next-line react/display-name
-jest.mock('../EditorInterface', () => props => <mock-editor-interface {...props} />);
-jest.mock('decap-cms-ui-default', () => {
+vi.mock('../EditorInterface', () => props => <mock-editor-interface {...props} />);
+vi.mock('decap-cms-ui-default', () => {
   return {
     // eslint-disable-next-line react/display-name
     Loader: props => <mock-loader {...props} />,
   };
 });
-jest.mock('../../../routing/history');
+vi.mock('../../../routing/history');
 
 describe('Editor', () => {
   const props = {
-    boundGetAsset: jest.fn(),
-    changeDraftField: jest.fn(),
-    changeDraftFieldValidation: jest.fn(),
+    boundGetAsset: vi.fn(),
+    changeDraftField: vi.fn(),
+    changeDraftFieldValidation: vi.fn(),
     collection: fromJS({ name: 'posts' }),
-    createDraftDuplicateFromEntry: jest.fn(),
-    createEmptyDraft: jest.fn(),
-    discardDraft: jest.fn(),
+    createDraftDuplicateFromEntry: vi.fn(),
+    createEmptyDraft: vi.fn(),
+    discardDraft: vi.fn(),
     entry: fromJS({}),
     entryDraft: fromJS({}),
-    loadEntry: jest.fn(),
-    persistEntry: jest.fn(),
-    deleteEntry: jest.fn(),
+    loadEntry: vi.fn(),
+    persistEntry: vi.fn(),
+    deleteEntry: vi.fn(),
     showDelete: true,
     fields: fromJS([]),
     slug: 'slug',
     newEntry: true,
-    updateUnpublishedEntryStatus: jest.fn(),
-    publishUnpublishedEntry: jest.fn(),
-    deleteUnpublishedEntry: jest.fn(),
-    logoutUser: jest.fn(),
-    loadEntries: jest.fn(),
+    updateUnpublishedEntryStatus: vi.fn(),
+    publishUnpublishedEntry: vi.fn(),
+    deleteUnpublishedEntry: vi.fn(),
+    logoutUser: vi.fn(),
+    loadEntries: vi.fn(),
     deployPreview: fromJS({}),
-    loadDeployPreview: jest.fn(),
+    loadDeployPreview: vi.fn(),
     user: fromJS({}),
-    t: jest.fn(key => key),
+    t: vi.fn(key => key),
     localBackup: fromJS({}),
-    retrieveLocalBackup: jest.fn(),
-    persistLocalBackup: jest.fn(),
+    retrieveLocalBackup: vi.fn(),
+    persistLocalBackup: vi.fn(),
     location: { search: '?title=title' },
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render loader when entryDraft is null', () => {
     // suppress prop type error
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     const { asFragment } = render(<Editor {...props} entryDraft={null} />);
     expect(asFragment()).toMatchSnapshot();
     expect(console.error).toHaveBeenCalledTimes(1);
@@ -166,7 +167,7 @@ describe('Editor', () => {
   });
 
   it('should flush debounce createBackup, discard draft and remove exit blocker on umount', () => {
-    window.removeEventListener = jest.fn();
+    window.removeEventListener = vi.fn();
     const debounce = require('lodash/debounce');
 
     const flush = debounce({}).flush;
@@ -178,7 +179,7 @@ describe('Editor', () => {
       />,
     );
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     unmount();
 
     expect(flush).toHaveBeenCalledTimes(1);
@@ -203,7 +204,7 @@ describe('Editor', () => {
       />,
     );
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     rerender(
       <Editor
         {...props}

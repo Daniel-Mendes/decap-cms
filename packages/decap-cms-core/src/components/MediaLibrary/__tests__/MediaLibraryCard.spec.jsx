@@ -1,6 +1,7 @@
 import React from 'react';
 import { Map } from 'immutable';
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import MediaLibraryCard from '../MediaLibraryCard';
 
@@ -8,13 +9,13 @@ describe('MediaLibraryCard', () => {
   const props = {
     displayURL: Map({ url: 'url' }),
     text: 'image.png',
-    onClick: jest.fn(),
+    onClick: vi.fn(),
     draftText: 'Draft',
     width: '100px',
     height: '240px',
     margin: '10px',
     isViewableImage: true,
-    loadDisplayURL: jest.fn(),
+    loadDisplayURL: vi.fn(),
   };
 
   it('should match snapshot for non draft image', () => {
@@ -39,7 +40,7 @@ describe('MediaLibraryCard', () => {
   });
 
   it('should call loadDisplayURL on mount when url is empty', () => {
-    const loadDisplayURL = jest.fn();
+    const loadDisplayURL = vi.fn();
     render(
       <MediaLibraryCard {...props} loadDisplayURL={loadDisplayURL} displayURL={Map({ url: '' })} />,
     );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
@@ -9,7 +10,7 @@ import ConnectedEntriesCollection, {
   filterNestedEntries,
 } from '../EntriesCollection';
 
-jest.mock('../Entries', () => 'mock-entries');
+vi.mock('../Entries', () => 'mock-entries');
 
 const middlewares = [];
 const mockStore = configureStore(middlewares);
@@ -69,9 +70,9 @@ describe('filterNestedEntries', () => {
 describe('EntriesCollection', () => {
   const collection = fromJS({ name: 'pages', label: 'Pages', folder: 'src/pages' });
   const props = {
-    t: jest.fn(),
-    loadEntries: jest.fn(),
-    traverseCollectionCursor: jest.fn(),
+    t: vi.fn(),
+    loadEntries: vi.fn(),
+    traverseCollectionCursor: vi.fn(),
     isFetching: false,
     cursor: {},
     collection,

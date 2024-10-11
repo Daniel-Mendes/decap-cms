@@ -65,17 +65,19 @@ function MultiValueLabel(props) {
 function SortableSelect(props) {
   const { distance, value, onSortEnd, isMulti } = props;
 
+  const activationConstraint = { distance };
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
+  );
+
   if (!isMulti) {
     return <AsyncSelect {...props} />;
   }
 
   const keys = Array.isArray(value) ? value.map(({ data }) => data.id) : [];
 
-  const activationConstraint = { distance };
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint }),
-    useSensor(TouchSensor, { activationConstraint }),
-  );
+
 
   function handleSortEnd({ active, over }) {
     onSortEnd({

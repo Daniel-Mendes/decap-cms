@@ -4,7 +4,8 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
     "allowImportingTsExtensions": true,
-    "types": ["vite/client"],
+    "resolveJsonModule": true,
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
@@ -23,9 +24,12 @@
       "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
       "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],
       "decap-cms-lib-util": ["packages/decap-cms-lib-util/src"],
-      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"]
+      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"],
+      "decap-cms-locales": ["packages/decap-cms-locales/src"],
+      "decap-cms-ui-default": ["packages/decap-cms-ui-default/src"],
+      "decap-cms-widget-object": ["packages/decap-cms-widget-object/src"]
     }
   },
-  "include": ["**/src/**/*"],
+  "include": ["**/src/**/*", "scripts/vite.js", "scripts/vitest-setup.js"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

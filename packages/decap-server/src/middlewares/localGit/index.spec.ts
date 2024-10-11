@@ -3,11 +3,12 @@ import winston from 'winston';
 
 import { validateRepo, getSchema, localGitMiddleware } from '.';
 
+import { vi } from 'vitest';
 import type Joi from '@hapi/joi';
 import type express from 'express';
 
-jest.mock('decap-cms-lib-util', () => jest.fn());
-jest.mock('simple-git');
+vi.mock('decap-cms-lib-util', () => vi.fn());
+vi.mock('simple-git');
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
@@ -25,17 +26,17 @@ describe('localGitMiddleware', () => {
   const simpleGit = require('simple-git');
 
   const git = {
-    checkIsRepo: jest.fn(),
-    silent: jest.fn(),
-    branchLocal: jest.fn(),
-    checkout: jest.fn(),
+    checkIsRepo: vi.fn(),
+    silent: vi.fn(),
+    branchLocal: vi.fn(),
+    checkout: vi.fn(),
   };
   git.silent.mockReturnValue(git);
 
   simpleGit.mockReturnValue(git);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('validateRepo', () => {
@@ -123,8 +124,8 @@ describe('localGitMiddleware', () => {
   });
 
   describe('localGitMiddleware', () => {
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
+    const json = vi.fn();
+    const status = vi.fn(() => ({ json }));
     const res: express.Response = { status } as unknown as express.Response;
 
     const repoPath = '.';

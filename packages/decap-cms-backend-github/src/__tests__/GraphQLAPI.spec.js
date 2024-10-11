@@ -1,10 +1,11 @@
 import GraphQLAPI from '../GraphQLAPI';
+import { vi } from 'vitest';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+global.fetch = vi.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('github GraphQL API', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe('editorialWorkflowGit', () => {

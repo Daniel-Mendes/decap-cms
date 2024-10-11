@@ -1,25 +1,26 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import GitGatewayAuthenticationPage from '../AuthenticationPage';
 
 window.netlifyIdentity = {
-  currentUser: jest.fn(),
-  on: jest.fn(),
-  close: jest.fn(),
+  currentUser: vi.fn(),
+  on: vi.fn(),
+  close: vi.fn(),
 };
 
 describe('GitGatewayAuthenticationPage', () => {
   const props = {
     config: { logo_url: 'logo_url' },
-    t: jest.fn(key => key),
-    onLogin: jest.fn(),
+    t: vi.fn(key => key),
+    onLogin: vi.fn(),
     inProgress: false,
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
+    vi.clearAllMocks();
+    vi.resetModules();
   });
 
   it('should render with identity error', () => {

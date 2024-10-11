@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
 import component from '../index';
 
 function getAsset(path) {

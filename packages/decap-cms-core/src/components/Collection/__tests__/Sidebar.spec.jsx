@@ -1,27 +1,28 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render } from '@testing-library/react';
+import { vi, describe, it, expect } from 'vitest';
 import { fromJS } from 'immutable';
 
 import { Sidebar } from '../Sidebar';
 
-jest.mock('decap-cms-ui-default', () => {
-  const actual = jest.requireActual('decap-cms-ui-default');
+vi.mock('decap-cms-ui-default', async () => {
+  const actual = await vi.importActual('decap-cms-ui-default');
   return {
     ...actual,
     Icon: 'mocked-icon',
   };
 });
 
-jest.mock('../NestedCollection', () => 'nested-collection');
-jest.mock('../CollectionSearch', () => 'collection-search');
-jest.mock('../../../actions/collections');
+vi.mock('../NestedCollection', () => 'nested-collection');
+vi.mock('../CollectionSearch', () => 'collection-search');
+vi.mock('../../../actions/collections');
 
 describe('Sidebar', () => {
   const props = {
     searchTerm: '',
     isSearchEnabled: true,
-    t: jest.fn(key => key),
+    t: vi.fn(key => key),
   };
   it('should render sidebar with a simple collection', () => {
     const collections = fromJS([{ name: 'posts', label: 'Posts' }]).toOrderedMap();

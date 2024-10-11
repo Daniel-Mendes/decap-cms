@@ -1,8 +1,10 @@
+import { vi } from 'vitest';
+
 import TestBackend, { getFolderFiles } from '../implementation';
 
 describe('test backend implementation', () => {
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   describe('getEntry', () => {

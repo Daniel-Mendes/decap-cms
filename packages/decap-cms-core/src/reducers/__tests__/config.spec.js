@@ -1,5 +1,6 @@
 import { configLoaded, configLoading, configFailed } from '../../actions/config';
 import config, { selectLocale } from '../config';
+import { describe, it, expect } from 'vitest';
 
 describe('config', () => {
   it('should handle an empty state', () => {

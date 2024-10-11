@@ -1,5 +1,6 @@
 import React from 'react';
 import { create, act } from 'react-test-renderer';
+import { vi } from 'vitest';
 import { padStart } from 'lodash';
 import { Map } from 'immutable';
 
@@ -43,7 +44,7 @@ Text with **bold** & _em_ elements
         let root;
         await act(async () => {
           root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+            <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
           );
         });
 
@@ -60,7 +61,7 @@ Text with **bold** & _em_ elements
           let root;
           await act(async () => {
             root = create(
-              <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+              <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
             );
           });
 
@@ -87,7 +88,7 @@ Text with **bold** & _em_ elements
         let root;
         await act(async () => {
           root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+            <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
           );
         });
 
@@ -134,7 +135,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         let root;
         await act(async () => {
           root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+            <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
           );
         });
 
@@ -150,7 +151,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         let root;
         await act(async () => {
           root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+            <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
           );
         });
 
@@ -164,7 +165,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         let root;
         await act(async () => {
           root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+            <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
           );
         });
 
@@ -194,7 +195,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         let root;
         await act(async () => {
           root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+            <MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />,
           );
         });
 
@@ -210,9 +211,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 
       let root;
       await act(async () => {
-        root = create(
-          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-        );
+        root = create(<MarkdownPreview value={html} getAsset={vi.fn()} resolveWidget={vi.fn()} />);
       });
 
       expect(root.toJSON()).toMatchSnapshot();
@@ -229,8 +228,8 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         root = create(
           <MarkdownPreview
             value={value}
-            getAsset={jest.fn()}
-            resolveWidget={jest.fn()}
+            getAsset={vi.fn()}
+            resolveWidget={vi.fn()}
             field={field}
           />,
         );
@@ -248,8 +247,8 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         root = create(
           <MarkdownPreview
             value={value}
-            getAsset={jest.fn()}
-            resolveWidget={jest.fn()}
+            getAsset={vi.fn()}
+            resolveWidget={vi.fn()}
             field={field}
           />,
         );

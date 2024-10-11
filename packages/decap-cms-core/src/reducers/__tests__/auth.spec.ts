@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
 import { authenticating, authenticate, authError, logout } from '../../actions/auth';
 import auth, { defaultState } from '../auth';
 

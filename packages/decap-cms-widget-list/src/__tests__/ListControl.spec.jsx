@@ -1,10 +1,11 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { fromJS } from 'immutable';
 
-import ListControl from '../ListControl';
+import ListControl from '../ListControl.jsx';
 
-jest.mock('decap-cms-widget-object', () => {
+vi.mock('decap-cms-widget-object', () => {
   const React = require('react');
 
   class MockObjectControl extends React.Component {
@@ -14,11 +15,12 @@ jest.mock('decap-cms-widget-object', () => {
   }
 
   return {
+    default: MockObjectControl,
     controlComponent: MockObjectControl,
   };
 });
-jest.mock('decap-cms-ui-default', () => {
-  const actual = jest.requireActual('decap-cms-ui-default');
+vi.mock('decap-cms-ui-default', async () => {
+  const actual = await vi.importActual('decap-cms-ui-default');
 
   function ListItemTopBar(props) {
     return (
@@ -34,25 +36,31 @@ jest.mock('decap-cms-ui-default', () => {
     ListItemTopBar,
   };
 });
-jest.mock('uuid');
+vi.mock('uuid', () => {
+  let value = 0;
+
+  return {
+    v4: vi.fn(() => value++),
+  };
+});
 
 describe('ListControl', () => {
   const props = {
-    onChange: jest.fn(),
-    onChangeObject: jest.fn(),
-    onValidateObject: jest.fn(),
-    validate: jest.fn(),
+    onChange: vi.fn(),
+    onChangeObject: vi.fn(),
+    onValidateObject: vi.fn(),
+    validate: vi.fn(),
     mediaPaths: fromJS({}),
-    getAsset: jest.fn(),
-    onOpenMediaLibrary: jest.fn(),
-    onAddAsset: jest.fn(),
-    onRemoveInsertedMedia: jest.fn(),
+    getAsset: vi.fn(),
+    onOpenMediaLibrary: vi.fn(),
+    onAddAsset: vi.fn(),
+    onRemoveInsertedMedia: vi.fn(),
     classNameWrapper: 'classNameWrapper',
-    setActiveStyle: jest.fn(),
-    setInactiveStyle: jest.fn(),
-    editorControl: jest.fn(),
-    resolveWidget: jest.fn(),
-    clearFieldErrors: jest.fn(),
+    setActiveStyle: vi.fn(),
+    setInactiveStyle: vi.fn(),
+    editorControl: vi.fn(),
+    resolveWidget: vi.fn(),
+    clearFieldErrors: vi.fn(),
     fieldsErrors: fromJS({}),
     entry: fromJS({
       path: 'posts/index.md',
@@ -62,12 +70,7 @@ describe('ListControl', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    const uuid = require('uuid');
-    let id = 0;
-    uuid.v4.mockImplementation(() => {
-      return id++;
-    });
+    vi.clearAllMocks();
   });
   it('should render empty list', () => {
     const field = fromJS({ name: 'list', label: 'List' });
@@ -620,7 +623,7 @@ describe('ListControl', () => {
 
     let mock;
     try {
-      mock = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      mock = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const items = getAllByText('Remove');
       fireEvent.click(items[0]);

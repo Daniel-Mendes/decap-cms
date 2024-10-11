@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
 import { USE_OPEN_AUTHORING } from '../../actions/auth';
 import {
   DEPLOY_PREVIEW_REQUEST,

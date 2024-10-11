@@ -1,5 +1,6 @@
 import { defaultSchema, joi } from '.';
 
+import { vi, describe, it, expect } from 'vitest';
 import type express from 'express';
 import type Joi from '@hapi/joi';
 
@@ -578,7 +579,7 @@ describe('defaultSchema', () => {
 
 describe('joi', () => {
   it('should call next on valid schema', () => {
-    const next = jest.fn();
+    const next = vi.fn();
 
     const req = {
       body: {
@@ -593,15 +594,15 @@ describe('joi', () => {
   });
 
   it('should send error on invalid schema', () => {
-    const next = jest.fn();
+    const next = vi.fn();
 
     const req = {
       body: {
         action: 'entriesByFolder',
       },
     } as express.Request;
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
+    const json = vi.fn();
+    const status = vi.fn(() => ({ json }));
     const res: express.Response = { status } as unknown as express.Response;
 
     joi(defaultSchema())(req, res, next);

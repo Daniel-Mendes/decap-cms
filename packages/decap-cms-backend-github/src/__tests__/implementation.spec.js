@@ -1,8 +1,9 @@
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'decap-cms-lib-util';
+import { vi } from 'vitest';
 
 import GitHubImplementation from '../implementation';
 
-jest.spyOn(console, 'error').mockImplementation(() => {});
+vi.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('github backend implementation', () => {
   const config = {
@@ -13,7 +14,7 @@ describe('github backend implementation', () => {
     },
   };
 
-  const createObjectURL = jest.fn();
+  const createObjectURL = vi.fn();
   global.URL = {
     createObjectURL,
   };
@@ -21,15 +22,15 @@ describe('github backend implementation', () => {
   createObjectURL.mockReturnValue('displayURL');
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('forkExists', () => {
     it('should return true when repo is fork and parent matches originRepo', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
-      gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
+      gitHubImplementation.currentUser = vi.fn().mockResolvedValue({ login: 'login' });
 
-      global.fetch = jest.fn().mockResolvedValue({
+      global.fetch = vi.fn().mockResolvedValue({
         // matching should be case-insensitive
         json: () => ({ fork: true, parent: { full_name: 'OWNER/REPO' } }),
       });
@@ -50,9 +51,9 @@ describe('github backend implementation', () => {
 
     it('should return false when repo is not a fork', async () => {
       const gitHubImplementation = new GitHubImplementation(config);
-      gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
+      gitHubImplementation.currentUser = vi.fn().mockResolvedValue({ login: 'login' });
 
-      global.fetch = jest.fn().mockResolvedValue({
+      global.fetch = vi.fn().mockResolvedValue({
         // matching should be case-insensitive
         json: () => ({ fork: false }),
       });
@@ -63,9 +64,9 @@ describe('github backend implementation', () => {
 
     it("should return false when parent doesn't match originRepo", async () => {
       const gitHubImplementation = new GitHubImplementation(config);
-      gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
+      gitHubImplementation.currentUser = vi.fn().mockResolvedValue({ login: 'login' });
 
-      global.fetch = jest.fn().mockResolvedValue({
+      global.fetch = vi.fn().mockResolvedValue({
         json: () => ({ fork: true, parent: { full_name: 'owner/other_repo' } }),
       });
 
@@ -75,7 +76,7 @@ describe('github backend implementation', () => {
   });
 
   describe('persistMedia', () => {
-    const persistFiles = jest.fn();
+    const persistFiles = vi.fn();
     const mockAPI = {
       persistFiles,
     };
@@ -134,8 +135,8 @@ describe('github backend implementation', () => {
   });
 
   describe('unpublishedEntry', () => {
-    const generateContentKey = jest.fn();
-    const retrieveUnpublishedEntryData = jest.fn();
+    const generateContentKey = vi.fn();
+    const retrieveUnpublishedEntryData = vi.fn();
 
     const mockAPI = {
       generateContentKey,
@@ -175,9 +176,9 @@ describe('github backend implementation', () => {
   });
 
   describe('entriesByFolder', () => {
-    const listFiles = jest.fn();
-    const readFile = jest.fn();
-    const readFileMetadata = jest.fn(() => Promise.resolve({ author: '', updatedOn: '' }));
+    const listFiles = vi.fn();
+    const readFile = vi.fn();
+    const readFileMetadata = vi.fn(() => Promise.resolve({ author: '', updatedOn: '' }));
 
     const mockAPI = {
       listFiles,
@@ -225,9 +226,9 @@ describe('github backend implementation', () => {
   });
 
   describe('traverseCursor', () => {
-    const listFiles = jest.fn();
-    const readFile = jest.fn((path, id) => Promise.resolve(`${id}`));
-    const readFileMetadata = jest.fn(() => Promise.resolve({}));
+    const listFiles = vi.fn();
+    const readFile = vi.fn((path, id) => Promise.resolve(`${id}`));
+    const readFileMetadata = vi.fn(() => Promise.resolve({}));
 
     const mockAPI = {
       listFiles,

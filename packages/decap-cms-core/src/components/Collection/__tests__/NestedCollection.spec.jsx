@@ -1,6 +1,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
@@ -12,8 +13,8 @@ import ConnectedNestedCollection, {
   updateNode,
 } from '../NestedCollection';
 
-jest.mock('decap-cms-ui-default', () => {
-  const actual = jest.requireActual('decap-cms-ui-default');
+vi.mock('decap-cms-ui-default', async () => {
+  const actual = await vi.importActual('decap-cms-ui-default');
   return {
     ...actual,
     Icon: 'mocked-icon',
@@ -406,7 +407,7 @@ describe('NestedCollection', () => {
       ]);
 
       const treeData = getTreeData(collection, entries);
-      const callback = jest.fn();
+      const callback = vi.fn();
       walk(treeData, callback);
 
       expect(callback).toHaveBeenCalledTimes(6);
@@ -430,7 +431,7 @@ describe('NestedCollection', () => {
       const treeData = getTreeData(collection, entries);
       expect(treeData[0].children[0].children[0].expanded).toBeUndefined();
 
-      const callback = jest.fn(node => ({ ...node, expanded: true }));
+      const callback = vi.fn(node => ({ ...node, expanded: true }));
       const node = { path: '/dir1/index.md' };
       updateNode(treeData, node, callback);
 

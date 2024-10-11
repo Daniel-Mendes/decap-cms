@@ -1,8 +1,9 @@
 import { fromJS } from 'immutable';
+import { vi, describe, it, expect } from 'vitest';
 
 import * as i18n from '../i18n';
 
-jest.mock('../../reducers/collections', () => {
+vi.mock('../../reducers/collections', () => {
   return {
     selectEntrySlug: () => 'index',
   };
@@ -358,7 +359,7 @@ describe('i18n', () => {
           data: { title: 'fr_title' },
         },
       };
-      const getEntryValue = jest.fn(path =>
+      const getEntryValue = vi.fn(path =>
         data[path] ? Promise.resolve(data[path]) : Promise.reject('Not found'),
       );
 
@@ -400,7 +401,7 @@ describe('i18n', () => {
           data: { title: 'fr_title' },
         },
       };
-      const getEntryValue = jest.fn(path =>
+      const getEntryValue = vi.fn(path =>
         data[path] ? Promise.resolve(data[path]) : Promise.reject('Not found'),
       );
 
@@ -436,7 +437,7 @@ describe('i18n', () => {
           },
         },
       };
-      const getEntryValue = jest.fn(path => Promise.resolve(data[path]));
+      const getEntryValue = vi.fn(path => Promise.resolve(data[path]));
 
       await expect(
         i18n.getI18nEntry(
@@ -468,7 +469,7 @@ describe('i18n', () => {
           data: {},
         },
       };
-      const getEntryValue = jest.fn(path => Promise.resolve(data[path]));
+      const getEntryValue = vi.fn(path => Promise.resolve(data[path]));
 
       await expect(
         i18n.getI18nEntry(

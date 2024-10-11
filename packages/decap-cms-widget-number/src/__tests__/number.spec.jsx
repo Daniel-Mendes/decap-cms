@@ -1,8 +1,9 @@
 import React from 'react';
 import { fromJS } from 'immutable';
 import { render, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
-import { DecapCmsWidgetNumber } from '../';
+import { DecapCmsWidgetNumber } from '..';
 import { validateMinMax } from '../NumberControl';
 
 const NumberControl = DecapCmsWidgetNumber.controlComponent;
@@ -19,7 +20,7 @@ class NumberController extends React.Component {
     value: this.props.defaultValue,
   };
 
-  handleOnChange = jest.fn(value => {
+  handleOnChange = vi.fn(value => {
     this.setState({ value });
   });
 
@@ -37,9 +38,9 @@ class NumberController extends React.Component {
 
 function setup({ field, defaultValue }) {
   let renderArgs;
-  const stateChangeSpy = jest.fn();
-  const setActiveSpy = jest.fn();
-  const setInactiveSpy = jest.fn();
+  const stateChangeSpy = vi.fn();
+  const setActiveSpy = vi.fn();
+  const setInactiveSpy = vi.fn();
 
   const helpers = render(
     <NumberController defaultValue={defaultValue} onStateChange={stateChangeSpy}>
@@ -54,7 +55,7 @@ function setup({ field, defaultValue }) {
             classNameWrapper=""
             setActiveStyle={setActiveSpy}
             setInactiveStyle={setInactiveSpy}
-            t={jest.fn()}
+            t={vi.fn()}
           />
         );
       }}
@@ -144,13 +145,13 @@ describe('Number widget', () => {
   });
 
   describe('validateMinMax', () => {
-    const field = { get: jest.fn() };
+    const field = { get: vi.fn() };
     field.get.mockReturnValue('label');
-    const t = jest.fn();
+    const t = vi.fn();
     t.mockImplementation((_, params) => params);
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should return error when min max are defined and value is out of range', () => {

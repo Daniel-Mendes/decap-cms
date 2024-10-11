@@ -1,4 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
+import { vi, describe, beforeEach, it, expect } from 'vitest';
+import { localForage, asyncLock } from 'decap-cms-lib-util';
 
 import {
   resolveBackend,
@@ -8,20 +10,36 @@ import {
   mergeExpandedEntries,
 } from '../backend';
 import { getBackend } from '../lib/registry';
+import { sanitizeSlug } from '../lib/urlHelper';
 import { FOLDER, FILES } from '../constants/collectionTypes';
 
-jest.mock('../lib/registry');
-jest.mock('decap-cms-lib-util');
-jest.mock('../lib/urlHelper');
+vi.mock('../lib/registry', () => ({
+  getBackend: vi.fn().mockReturnValue({
+    init: vi.fn(),
+  }),
+}));
+vi.mock('../lib/urlHelper');
+vi.mock('decap-cms-lib-util', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    acquire: vi.fn(),
+    release: vi.fn(),
+    localForage: {
+     getItem: vi.fn(),
+    }
+  }
+});
+
 
 describe('Backend', () => {
   describe('filterEntries', () => {
     let backend;
 
     beforeEach(() => {
-      getBackend.mockReturnValue({
-        init: jest.fn(),
-      });
+      // getBackend.mockReturnValue({
+      //   init: vi.fn(),
+      // });
       backend = resolveBackend({
         backend: {
           name: 'git-gateway',
@@ -119,17 +137,13 @@ describe('Backend', () => {
   });
 
   describe('getLocalDraftBackup', () => {
-    const { localForage, asyncLock } = require('decap-cms-lib-util');
-
-    asyncLock.mockImplementation(() => ({ acquire: jest.fn(), release: jest.fn() }));
-
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should return empty object on no item', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
       };
 
       const backend = new Backend(implementation, { config: {}, backendName: 'github' });
@@ -138,8 +152,6 @@ describe('Backend', () => {
         name: 'posts',
       });
       const slug = 'slug';
-
-      localForage.getItem.mockReturnValue();
 
       const result = await backend.getLocalDraftBackup(collection, slug);
 
@@ -150,7 +162,7 @@ describe('Backend', () => {
 
     it('should return empty object on item with empty content', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
       };
       const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
@@ -159,7 +171,7 @@ describe('Backend', () => {
       });
       const slug = 'slug';
 
-      localForage.getItem.mockReturnValue({ raw: '' });
+      vi.spyOn(localForage, 'getItem').mockReturnValue({ raw: '' });
 
       const result = await backend.getLocalDraftBackup(collection, slug);
 
@@ -170,7 +182,7 @@ describe('Backend', () => {
 
     it('should return backup entry, empty media files and assets when only raw property was saved', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
       };
 
       const backend = new Backend(implementation, { config: {}, backendName: 'github' });
@@ -210,7 +222,7 @@ describe('Backend', () => {
 
     it('should return backup entry, media files and assets when all were backed up', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
       };
 
       const backend = new Backend(implementation, { config: {}, backendName: 'github' });
@@ -251,20 +263,18 @@ describe('Backend', () => {
   });
 
   describe('persistLocalDraftBackup', () => {
-    const { localForage } = require('decap-cms-lib-util');
-
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should not persist empty entry', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
       };
 
       const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
-      backend.entryToRaw = jest.fn().mockReturnValue('');
+      backend.entryToRaw = vi.fn().mockReturnValue('');
 
       const collection = Map({
         name: 'posts',
@@ -285,12 +295,12 @@ describe('Backend', () => {
 
     it('should persist non empty entry', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
       };
 
       const backend = new Backend(implementation, { config: {}, backendName: 'github' });
 
-      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.entryToRaw = vi.fn().mockReturnValue('content');
 
       const collection = Map({
         name: 'posts',
@@ -321,8 +331,8 @@ describe('Backend', () => {
   describe('persistEntry', () => {
     it('should update the draft with the new entry returned by preSave event', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
-        persistEntry: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
+        persistEntry: vi.fn(() => implementation),
       };
 
       const config = {
@@ -345,9 +355,9 @@ describe('Backend', () => {
       const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
-      backend.currentUser = jest.fn().mockResolvedValue(user);
-      backend.entryToRaw = jest.fn().mockReturnValue('content');
-      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(newEntry);
+      backend.currentUser = vi.fn().mockResolvedValue(user);
+      backend.entryToRaw = vi.fn().mockReturnValue('content');
+      backend.invokePreSaveEvent = vi.fn().mockReturnValueOnce(newEntry);
 
       await backend.persistEntry({ config, collection, entryDraft });
 
@@ -357,8 +367,8 @@ describe('Backend', () => {
 
     it('should update the draft with the new data returned by preSave event', async () => {
       const implementation = {
-        init: jest.fn(() => implementation),
-        persistEntry: jest.fn(() => implementation),
+        init: vi.fn(() => implementation),
+        persistEntry: vi.fn(() => implementation),
       };
 
       const config = {
@@ -382,9 +392,9 @@ describe('Backend', () => {
       const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: 'github' });
 
-      backend.currentUser = jest.fn().mockResolvedValue(user);
-      backend.entryToRaw = jest.fn().mockReturnValue('content');
-      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(newData);
+      backend.currentUser = vi.fn().mockResolvedValue(user);
+      backend.entryToRaw = vi.fn().mockReturnValue('content');
+      backend.invokePreSaveEvent = vi.fn().mockReturnValueOnce(newData);
 
       await backend.persistEntry({ config, collection, entryDraft });
 
@@ -397,14 +407,14 @@ describe('Backend', () => {
     it('should persist media', async () => {
       const persistMediaResult = {};
       const implementation = {
-        init: jest.fn(() => implementation),
-        persistMedia: jest.fn().mockResolvedValue(persistMediaResult),
+        init: vi.fn(() => implementation),
+        persistMedia: vi.fn().mockResolvedValue(persistMediaResult),
       };
       const config = { backend: { name: 'github' } };
 
       const backend = new Backend(implementation, { config, backendName: config.backend.name });
       const user = { login: 'login', name: 'name' };
-      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.currentUser = vi.fn().mockResolvedValue(user);
 
       const file = { path: 'static/media/image.png' };
 
@@ -424,12 +434,12 @@ describe('Backend', () => {
         diffs: [{ path: 'src/posts/index.md', newFile: false }, { path: 'netlify.png' }],
       };
       const implementation = {
-        init: jest.fn(() => implementation),
-        unpublishedEntry: jest.fn().mockResolvedValue(unpublishedEntryResult),
+        init: vi.fn(() => implementation),
+        unpublishedEntry: vi.fn().mockResolvedValue(unpublishedEntryResult),
         unpublishedEntryDataFile: jest
           .fn()
           .mockResolvedValueOnce('---\ntitle: "Hello World"\n---\n'),
-        unpublishedEntryMediaFile: jest.fn().mockResolvedValueOnce({ id: '1' }),
+        unpublishedEntryMediaFile: vi.fn().mockResolvedValueOnce({ id: '1' }),
       };
       const config = {
         media_folder: 'static/images',
@@ -473,16 +483,16 @@ describe('Backend', () => {
 
   describe('generateUniqueSlug', () => {
     beforeEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
 
     it("should return unique slug when entry doesn't exist", async () => {
-      const { sanitizeSlug } = require('../lib/urlHelper');
+
       sanitizeSlug.mockReturnValue('some-post-title');
 
       const implementation = {
-        init: jest.fn(() => implementation),
-        getEntry: jest.fn(() => Promise.resolve()),
+        init: vi.fn(() => implementation),
+        getEntry: vi.fn(() => Promise.resolve()),
       };
 
       const collection = fromJS({
@@ -510,13 +520,12 @@ describe('Backend', () => {
     });
 
     it('should return unique slug when entry exists', async () => {
-      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
       sanitizeSlug.mockReturnValue('some-post-title');
       sanitizeChar.mockReturnValue('-');
 
       const implementation = {
-        init: jest.fn(() => implementation),
-        getEntry: jest.fn(),
+        init: vi.fn(() => implementation),
+        getEntry: vi.fn(),
       };
 
       implementation.getEntry.mockResolvedValueOnce({ data: 'data' });
@@ -647,13 +656,13 @@ describe('Backend', () => {
     ];
 
     const implementation = {
-      init: jest.fn(() => implementation),
+      init: vi.fn(() => implementation),
     };
 
     let backend;
     beforeEach(() => {
       backend = new Backend(implementation, { config: {}, backendName: 'github' });
-      backend.listAllEntries = jest.fn(collection => {
+      backend.listAllEntries = vi.fn(collection => {
         if (collection.get('name') === 'posts') {
           return Promise.resolve(posts);
         }

@@ -1,15 +1,16 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 
 import ConnectedCollection, { Collection } from '../Collection';
 
-jest.mock('../Entries/EntriesCollection', () => 'mock-entries-collection');
-jest.mock('../CollectionTop', () => 'mock-collection-top');
-jest.mock('../CollectionControls', () => 'mock-collection-controls');
-jest.mock('../Sidebar', () => 'mock-sidebar');
+vi.mock('../Entries/EntriesCollection', () => 'mock-entries-collection');
+vi.mock('../CollectionTop', () => 'mock-collection-top');
+vi.mock('../CollectionControls', () => 'mock-collection-controls');
+vi.mock('../Sidebar', () => 'mock-sidebar');
 
 const middlewares = [];
 const mockStore = configureStore(middlewares);
@@ -33,8 +34,8 @@ describe('Collection', () => {
     collections: fromJS([collection]).toOrderedMap(),
     collection,
     collectionName: collection.get('name'),
-    t: jest.fn(key => key),
-    onSortClick: jest.fn(),
+    t: vi.fn(key => key),
+    onSortClick: vi.fn(),
   };
 
   it('should render with collection without create url', () => {

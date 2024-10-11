@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { vi, describe, expect, beforeEach, test } from 'vitest';
 import dayjs from 'dayjs';
 
 import DateTimeControl from '../DateTimeControl';
@@ -7,15 +8,15 @@ import DateTimeControl from '../DateTimeControl';
 function setup(propsOverrides = {}) {
   const props = {
     forID: 'test-datetime',
-    onChange: jest.fn(),
+    onChange: vi.fn(),
     classNameWrapper: 'classNameWrapper',
-    setActiveStyle: jest.fn(),
-    setInactiveStyle: jest.fn(),
+    setActiveStyle: vi.fn(),
+    setInactiveStyle: vi.fn(),
     value: '',
     t: key => key,
     isDisabled: false,
     field: {
-      get: jest.fn().mockReturnValue('DD.MM.YYYY'),
+      get: vi.fn().mockReturnValue('DD.MM.YYYY'),
     },
     ...propsOverrides,
   };
@@ -36,7 +37,7 @@ function setup(propsOverrides = {}) {
 
 describe('DateTimeControl', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renders the component with input, now button, and clear button', () => {

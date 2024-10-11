@@ -1,4 +1,5 @@
 import { Map, OrderedMap } from 'immutable';
+import { vi } from 'vitest';
 
 import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
 
@@ -15,7 +16,7 @@ function process(value, plugins, processEat = () => {}) {
   Parser.prototype.blockTokenizers.shortcode(eat, value);
 }
 
-function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
+function EditorComponent({ id = 'foo', fromBlock = vi.fn(), pattern }) {
   return {
     id,
     fromBlock,
@@ -74,7 +75,7 @@ describe('remarkParseShortcodes', () => {
   });
   describe('output', () => {
     it('should be a remark shortcode node', () => {
-      const processEat = jest.fn();
+      const processEat = vi.fn();
       const shortcodeData = { bar: 'baz' };
       const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
       const editorComponent = EditorComponent({ pattern: /bar/, fromBlock: () => shortcodeData });

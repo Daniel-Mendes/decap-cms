@@ -1,13 +1,15 @@
-jest.mock('decap-cms-core/src/backend');
 import { fromJS } from 'immutable';
 import { oneLine, stripIndent } from 'common-tags';
 import nock from 'nock';
 import { Cursor } from 'decap-cms-lib-util';
+import { vi } from 'vitest';
 
 import Gitlab from '../implementation';
 import AuthenticationPage from '../AuthenticationPage';
 
-const { Backend, LocalStorageAuthStore } = jest.requireActual('decap-cms-core/src/backend');
+vi.mock('decap-cms-core/src/backend');
+
+const { Backend, LocalStorageAuthStore } = await vi.importActual('decap-cms-core/src/backend');
 
 function generateEntries(path, length) {
   const entries = Array.from({ length }, (val, idx) => {

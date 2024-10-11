@@ -1,4 +1,5 @@
 import { Map, fromJS } from 'immutable';
+import { vi } from 'vitest';
 
 import { mediaDeleted } from '../../actions/mediaLibrary';
 import mediaLibrary, {
@@ -7,9 +8,9 @@ import mediaLibrary, {
   selectMediaDisplayURL,
 } from '../mediaLibrary';
 
-jest.mock('uuid');
-jest.mock('../entries');
-jest.mock('../');
+vi.mock('uuid');
+vi.mock('../entries');
+vi.mock('../');
 
 describe('mediaLibrary', () => {
   it('should remove media file by key', () => {

@@ -1,8 +1,9 @@
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'decap-cms-lib-util';
+import { vi } from 'vitest';
 
 import GiteaImplementation from '../implementation';
 
-jest.spyOn(console, 'error').mockImplementation(() => {});
+vi.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('gitea backend implementation', () => {
   const config = {
@@ -12,7 +13,7 @@ describe('gitea backend implementation', () => {
     },
   };
 
-  const createObjectURL = jest.fn();
+  const createObjectURL = vi.fn();
   global.URL = {
     createObjectURL,
   };
@@ -24,15 +25,15 @@ describe('gitea backend implementation', () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('persistMedia', () => {
-    const persistFiles = jest.fn();
+    const persistFiles = vi.fn();
     const mockAPI = {
       persistFiles,
     };
@@ -96,9 +97,9 @@ describe('gitea backend implementation', () => {
   });
 
   describe('entriesByFolder', () => {
-    const listFiles = jest.fn();
-    const readFile = jest.fn();
-    const readFileMetadata = jest.fn(() => Promise.resolve({ author: '', updatedOn: '' }));
+    const listFiles = vi.fn();
+    const readFile = vi.fn();
+    const readFileMetadata = vi.fn(() => Promise.resolve({ author: '', updatedOn: '' }));
 
     const mockAPI = {
       listFiles,
@@ -147,9 +148,9 @@ describe('gitea backend implementation', () => {
   });
 
   describe('traverseCursor', () => {
-    const listFiles = jest.fn();
-    const readFile = jest.fn((_path, id) => Promise.resolve(`${id}`));
-    const readFileMetadata = jest.fn(() => Promise.resolve({}));
+    const listFiles = vi.fn();
+    const readFile = vi.fn((_path, id) => Promise.resolve(`${id}`));
+    const readFileMetadata = vi.fn(() => Promise.resolve({}));
 
     const mockAPI = {
       listFiles,

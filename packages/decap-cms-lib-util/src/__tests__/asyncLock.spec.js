@@ -1,7 +1,9 @@
+import { vi, describe, it, expect } from 'vitest';
+
 import { asyncLock } from '../asyncLock';
 
-jest.useFakeTimers();
-jest.spyOn(console, 'warn').mockImplementation(() => {});
+vi.useFakeTimers();
+vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 describe('asyncLock', () => {
   it('should be able to acquire a new lock', async () => {
@@ -19,7 +21,7 @@ describe('asyncLock', () => {
     const promise = lock.acquire();
 
     // advance by default lock timeout
-    jest.advanceTimersByTime(15000);
+    vi.advanceTimersByTime(15000);
 
     const acquired = await promise;
 
@@ -36,7 +38,7 @@ describe('asyncLock', () => {
     setTimeout(() => lock.release(), 100);
 
     // advance to the time where the lock will be released
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
 
     const acquired = await promise;
 
@@ -50,7 +52,7 @@ describe('asyncLock', () => {
     const promise = lock.acquire(50);
 
     /// advance by lock timeout
-    jest.advanceTimersByTime(50);
+    vi.advanceTimersByTime(50);
 
     const acquired = await promise;
 
@@ -64,7 +66,7 @@ describe('asyncLock', () => {
     const promise = lock.acquire();
 
     // advance by default lock timeout
-    jest.advanceTimersByTime(15000);
+    vi.advanceTimersByTime(15000);
 
     let acquired = await promise;
 

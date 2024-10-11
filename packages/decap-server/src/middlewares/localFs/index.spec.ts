@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { getSchema } from '.';
 
+import { vi } from 'vitest';
 import type Joi from '@hapi/joi';
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
@@ -17,7 +18,7 @@ const defaultParams = {
 
 describe('localFsMiddleware', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getSchema', () => {

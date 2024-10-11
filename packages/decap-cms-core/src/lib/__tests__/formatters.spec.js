@@ -1,4 +1,5 @@
 import { List, Map, fromJS } from 'immutable';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 import {
   commitMessageFormatter,
@@ -9,8 +10,8 @@ import {
   folderFormatter,
 } from '../formatters';
 
-jest.spyOn(console, 'warn').mockImplementation(() => {});
-jest.mock('../../reducers/collections');
+vi.spyOn(console, 'warn').mockImplementation(() => {});
+vi.mock('../../reducers/collections');
 
 describe('formatters', () => {
   describe('commitMessageFormatter', () => {
@@ -21,7 +22,7 @@ describe('formatters', () => {
     };
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should return default commit message on create, label_singular', () => {
@@ -275,12 +276,12 @@ describe('formatters', () => {
 
   describe('slugFormatter', () => {
     const date = new Date('2020-01-01');
-    jest.spyOn(global, 'Date').mockImplementation(() => date);
+    vi.spyOn(globalThis, 'Date').mockImplementation(() => date);
 
     const { selectIdentifier } = require('../../reducers/collections');
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should format with default pattern', () => {
@@ -518,7 +519,7 @@ describe('formatters', () => {
     });
 
     it('should log error and ignore preview_path when date is missing', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      vi.spyOn(console, 'error').mockImplementation(() => {});
       expect(
         previewUrlFormatter(
           'https://www.example.com',

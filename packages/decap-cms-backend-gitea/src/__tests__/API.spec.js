@@ -1,17 +1,18 @@
+import { vi } from 'vitest';
 import { Base64 } from 'js-base64';
 
 import API from '../API';
 
-global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
+globalThis.fetch = vi.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('gitea API', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function mockAPI(api, responses) {
-    api.request = jest.fn().mockImplementation((path, options = {}) => {
+    api.request = vi.fn().mockImplementation((path, options = {}) => {
       const normalizedPath = path.indexOf('?') !== -1 ? path.slice(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
       return typeof response === 'function'
@@ -21,20 +22,20 @@ describe('gitea API', () => {
   }
 
   describe('request', () => {
-    const fetch = jest.fn();
+    const fetch = vi.fn();
     beforeEach(() => {
-      global.fetch = fetch;
+      globalThis.fetch = fetch;
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should fetch url with authorization header', async () => {
       const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
 
       fetch.mockResolvedValue({
-        text: jest.fn().mockResolvedValue('some response'),
+        text: vi.fn().mockResolvedValue('some response'),
         ok: true,
         status: 200,
         headers: { get: () => '' },
@@ -56,7 +57,7 @@ describe('gitea API', () => {
       const api = new API({ branch: 'gt-pages', repo: 'my-repo', token: 'token' });
 
       fetch.mockResolvedValue({
-        text: jest.fn().mockResolvedValue({ message: 'some error' }),
+        text: vi.fn().mockResolvedValue({ message: 'some error' }),
         ok: false,
         status: 404,
         headers: { get: () => '' },
@@ -75,13 +76,13 @@ describe('gitea API', () => {
     it('should allow overriding requestHeaders to return a promise ', async () => {
       const api = new API({ branch: 'gt-pages', repo: 'my-repo', token: 'token' });
 
-      api.requestHeaders = jest.fn().mockResolvedValue({
+      api.requestHeaders = vi.fn().mockResolvedValue({
         Authorization: 'promise-token',
         'Content-Type': 'application/json; charset=utf-8',
       });
 
       fetch.mockResolvedValue({
-        text: jest.fn().mockResolvedValue('some response'),
+        text: vi.fn().mockResolvedValue('some response'),
         ok: true,
         status: 200,
         headers: { get: () => '' },
@@ -285,7 +286,7 @@ describe('gitea API', () => {
           type: 'blob',
         },
       ];
-      api.request = jest.fn().mockResolvedValue({ tree });
+      api.request = vi.fn().mockResolvedValue({ tree });
 
       await expect(api.listFiles('posts', { depth: 1 })).resolves.toEqual([
         {
@@ -299,7 +300,7 @@ describe('gitea API', () => {
         params: {},
       });
 
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       await expect(api.listFiles('posts', { depth: 2 })).resolves.toEqual([
         {
           path: 'posts/post.md',
@@ -317,7 +318,7 @@ describe('gitea API', () => {
         params: { recursive: 1 },
       });
 
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       await expect(api.listFiles('posts', { depth: 3 })).resolves.toEqual([
         {
           path: 'posts/post.md',
@@ -365,7 +366,7 @@ describe('gitea API', () => {
           type: 'blob',
         },
       ];
-      api.request = jest.fn().mockResolvedValue({ tree });
+      api.request = vi.fn().mockResolvedValue({ tree });
 
       await expect(api.listFiles('media', {}, true)).resolves.toEqual([
         {

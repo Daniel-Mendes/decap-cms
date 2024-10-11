@@ -1,8 +1,9 @@
 import React from 'react';
 import { fromJS, List } from 'immutable';
 import { render, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 
-import { DecapCmsWidgetSelect } from '../';
+import { DecapCmsWidgetSelect } from '..';
 
 const SelectControl = DecapCmsWidgetSelect.controlComponent;
 
@@ -23,7 +24,7 @@ class SelectController extends React.Component {
     value: this.props.defaultValue,
   };
 
-  handleOnChange = jest.fn(value => {
+  handleOnChange = vi.fn(value => {
     this.setState({ value });
   });
 
@@ -41,9 +42,9 @@ class SelectController extends React.Component {
 
 function setup({ field, defaultValue }) {
   let renderArgs, ref;
-  const stateChangeSpy = jest.fn();
-  const setActiveSpy = jest.fn();
-  const setInactiveSpy = jest.fn();
+  const stateChangeSpy = vi.fn();
+  const setActiveSpy = vi.fn();
+  const setInactiveSpy = vi.fn();
 
   const helpers = render(
     <SelectController defaultValue={defaultValue} onStateChange={stateChangeSpy}>

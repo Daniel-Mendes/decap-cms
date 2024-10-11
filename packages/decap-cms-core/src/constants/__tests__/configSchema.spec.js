@@ -1,8 +1,9 @@
 import { merge } from 'lodash';
+import { vi } from 'vitest';
 
 import { validateConfig } from '../configSchema';
 
-jest.mock('../../lib/registry');
+vi.mock('../../lib/registry');
 
 describe('config', () => {
   /**
@@ -10,7 +11,7 @@ describe('config', () => {
    * log test failures and associated errors as expected.
    */
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   const { getWidgets } = require('../../lib/registry');

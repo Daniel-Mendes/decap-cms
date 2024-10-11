@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { v4 as uuid } from 'uuid';
 import uploadcare from 'uploadcare-widget';
 import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
@@ -20,22 +21,27 @@ let openDialogCallback;
 /**
  * Mock of the uploadcare widget object itself.
  */
-jest.mock('uploadcare-widget', () => ({
-  registerTab: jest.fn(),
-  openDialog: jest.fn(() => ({
-    done: jest.fn(cb => {
-      openDialogCallback = cb;
+vi.mock('uploadcare-widget', async importOriginal => {
+  const actual = await importOriginal();
+
+  return {
+    ...actual,
+    registerTab: vi.fn(),
+    openDialog: vi.fn(() => ({
+      done: vi.fn(cb => {
+        openDialogCallback = cb;
+      }),
+    })),
+    fileFrom: vi.fn((type, url) =>
+      Promise.resolve({
+        testFileUrl: url,
+      }),
+    ),
+    loadFileGroup: () => ({
+      done: cb => cb(),
     }),
-  })),
-  fileFrom: jest.fn((type, url) =>
-    Promise.resolve({
-      testFileUrl: url,
-    }),
-  ),
-  loadFileGroup: () => ({
-    done: cb => cb(),
-  }),
-}));
+  };
+});
 
 describe('uploadcare media library', () => {
   let handleInsert;
@@ -61,12 +67,12 @@ describe('uploadcare media library', () => {
     /**
      * Spy to serve as the Decap CMS insertion handler.
      */
-    handleInsert = jest.fn();
+    handleInsert = vi.fn();
   });
 
   it('exports an object with expected properties', () => {
     expect(uploadcareMediaLibrary).toMatchInlineSnapshot(`
-Object {
+{
   "init": [Function],
   "name": "uploadcare",
 }
@@ -81,14 +87,16 @@ Object {
         },
       };
       await uploadcareMediaLibrary.init({ options });
-      expect(window.UPLOADCARE_LIVE).toEqual(false);
-      expect(window.UPLOADCARE_MANUAL_START).toEqual(true);
-      expect(window.UPLOADCARE_PUBLIC_KEY).toEqual(TEST_PUBLIC_KEY);
+      expect(globalThis.UPLOADCARE_LIVE).toEqual(false);
+      expect(globalThis.UPLOADCARE_MANUAL_START).toEqual(true);
+      expect(globalThis.UPLOADCARE_PUBLIC_KEY).toEqual(TEST_PUBLIC_KEY);
     });
 
     it('registers the effects tab', async () => {
       await uploadcareMediaLibrary.init();
-      expect(uploadcare.registerTab).toHaveBeenCalledWith('preview', uploadcareTabEffects);
+
+      const spy = vi.spyOn(uploadcare, 'registerTab');
+      expect(spy).toHaveBeenCalledWith('preview', uploadcareTabEffects);
     });
   });
 

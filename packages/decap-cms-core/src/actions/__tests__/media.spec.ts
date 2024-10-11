@@ -2,6 +2,7 @@ import { Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { mocked } from 'jest-mock';
+import { vi } from 'vitest';
 
 import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import { selectMediaFilePath } from '../../reducers/entries';
@@ -17,8 +18,8 @@ const mockStore = configureMockStore<Partial<State>, ThunkDispatch<State, {}, An
 );
 const mockedSelectMediaFilePath = mocked(selectMediaFilePath);
 
-jest.mock('../../reducers/entries');
-jest.mock('../mediaLibrary');
+vi.mock('../../reducers/entries');
+vi.mock('../mediaLibrary');
 
 describe('media', () => {
   const emptyAsset = new AssetProxy({
@@ -31,10 +32,10 @@ describe('media', () => {
   describe('getAsset', () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    global.URL = { createObjectURL: jest.fn() };
+    global.URL = { createObjectURL: vi.fn() };
 
     beforeEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
 
     it('should return empty asset for null path', () => {
