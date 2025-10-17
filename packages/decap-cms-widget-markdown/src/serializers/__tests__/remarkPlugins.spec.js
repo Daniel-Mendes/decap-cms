@@ -70,116 +70,116 @@ describe('registered remark plugins', () => {
       plugins,
     );
     expect(result).toMatchInlineSnapshot(`
-Object {
-  "children": Array [
-    Object {
-      "children": Array [
-        Object {
-          "children": Array [],
-          "position": Position {
-            "end": Object {
-              "column": 16,
-              "line": 1,
-              "offset": 15,
-            },
-            "indent": Array [],
-            "start": Object {
-              "column": 1,
-              "line": 1,
-              "offset": 0,
-            },
-          },
-          "type": "text",
-          "value": "Some text with ",
-        },
-        Object {
-          "children": Array [
-            Object {
-              "children": Array [],
-              "position": Position {
-                "end": Object {
-                  "column": 23,
-                  "line": 1,
-                  "offset": 22,
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [],
+                "position": Position {
+                  "end": {
+                    "column": 16,
+                    "line": 1,
+                    "offset": 15,
+                  },
+                  "indent": [],
+                  "start": {
+                    "column": 1,
+                    "line": 1,
+                    "offset": 0,
+                  },
                 },
-                "indent": Array [],
-                "start": Object {
-                  "column": 17,
-                  "line": 1,
-                  "offset": 16,
-                },
+                "type": "text",
+                "value": "Some text with ",
               },
-              "type": "text",
-              "value": "a link",
+              {
+                "children": [
+                  {
+                    "children": [],
+                    "position": Position {
+                      "end": {
+                        "column": 23,
+                        "line": 1,
+                        "offset": 22,
+                      },
+                      "indent": [],
+                      "start": {
+                        "column": 17,
+                        "line": 1,
+                        "offset": 16,
+                      },
+                    },
+                    "type": "text",
+                    "value": "a link",
+                  },
+                ],
+                "position": Position {
+                  "end": {
+                    "column": 67,
+                    "line": 1,
+                    "offset": 66,
+                  },
+                  "indent": [],
+                  "start": {
+                    "column": 16,
+                    "line": 1,
+                    "offset": 15,
+                  },
+                },
+                "title": null,
+                "type": "link",
+                "url": "https://netlify.com",
+              },
+              {
+                "children": [],
+                "position": Position {
+                  "end": {
+                    "column": 74,
+                    "line": 1,
+                    "offset": 73,
+                  },
+                  "indent": [],
+                  "start": {
+                    "column": 67,
+                    "line": 1,
+                    "offset": 66,
+                  },
+                },
+                "type": "text",
+                "value": " in it.",
+              },
+            ],
+            "position": Position {
+              "end": {
+                "column": 74,
+                "line": 1,
+                "offset": 73,
+              },
+              "indent": [],
+              "start": {
+                "column": 1,
+                "line": 1,
+                "offset": 0,
+              },
             },
-          ],
-          "position": Position {
-            "end": Object {
-              "column": 67,
-              "line": 1,
-              "offset": 66,
-            },
-            "indent": Array [],
-            "start": Object {
-              "column": 16,
-              "line": 1,
-              "offset": 15,
-            },
+            "type": "paragraph",
           },
-          "title": null,
-          "type": "link",
-          "url": "https://netlify.com",
-        },
-        Object {
-          "children": Array [],
-          "position": Position {
-            "end": Object {
-              "column": 74,
-              "line": 1,
-              "offset": 73,
-            },
-            "indent": Array [],
-            "start": Object {
-              "column": 67,
-              "line": 1,
-              "offset": 66,
-            },
+        ],
+        "position": {
+          "end": {
+            "column": 74,
+            "line": 1,
+            "offset": 73,
           },
-          "type": "text",
-          "value": " in it.",
+          "start": {
+            "column": 1,
+            "line": 1,
+            "offset": 0,
+          },
         },
-      ],
-      "position": Position {
-        "end": Object {
-          "column": 74,
-          "line": 1,
-          "offset": 73,
-        },
-        "indent": Array [],
-        "start": Object {
-          "column": 1,
-          "line": 1,
-          "offset": 0,
-        },
-      },
-      "type": "paragraph",
-    },
-  ],
-  "position": Object {
-    "end": Object {
-      "column": 74,
-      "line": 1,
-      "offset": 73,
-    },
-    "start": Object {
-      "column": 1,
-      "line": 1,
-      "offset": 0,
-    },
-  },
-  "type": "root",
-}
-`);
+        "type": "root",
+      }
+    `);
   });
 
   it('should use remark serializer plugins when converting mdast to markdown', () => {

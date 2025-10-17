@@ -1,5 +1,6 @@
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
+import { describe, it, expect } from 'vitest';
 
 import remarkAllowHtmlEntities from '../remarkAllowHtmlEntities';
 

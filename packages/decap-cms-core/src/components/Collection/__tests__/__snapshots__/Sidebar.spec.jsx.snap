@@ -1,0 +1,122 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Sidebar > should render nested collection with filterTerm 1`] = `
+<DocumentFragment>
+  <aside
+    class="makeStyles-SidebarContainer-card exupcl73"
+  >
+    <h2
+      class="makeStyles-SidebarHeading exupcl72"
+    >
+      collection.sidebar.collections
+    </h2>
+    <collection-search
+      collections="OrderedMap { 0: Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } } }"
+      searchterm=""
+    />
+    <ul
+      class="makeStyles-SidebarNavList exupcl71"
+    >
+      <li>
+        <nested-collection
+          collection="Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } }"
+          data-testid="posts"
+          filterterm="dir1/dir2"
+        />
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;
+
+exports[`Sidebar > should render sidebar with a nested collection 1`] = `
+<DocumentFragment>
+  <aside
+    class="makeStyles-SidebarContainer-card exupcl73"
+  >
+    <h2
+      class="makeStyles-SidebarHeading exupcl72"
+    >
+      collection.sidebar.collections
+    </h2>
+    <collection-search
+      collections="OrderedMap { 0: Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } } }"
+      searchterm=""
+    />
+    <ul
+      class="makeStyles-SidebarNavList exupcl71"
+    >
+      <li>
+        <nested-collection
+          collection="Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } }"
+          data-testid="posts"
+        />
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;
+
+exports[`Sidebar > should render sidebar with a simple collection 1`] = `
+<DocumentFragment>
+  <aside
+    class="makeStyles-SidebarContainer-card exupcl73"
+  >
+    <h2
+      class="makeStyles-SidebarHeading exupcl72"
+    >
+      collection.sidebar.collections
+    </h2>
+    <collection-search
+      collections="OrderedMap { 0: Map { "name": "posts", "label": "Posts" } }"
+      searchterm=""
+    />
+    <ul
+      class="makeStyles-SidebarNavList exupcl71"
+    >
+      <li>
+        <a
+          class="makeStyles-SidebarNavLink-sidebarNavLinkActive-SidebarNavLink exupcl70"
+          data-testid="posts"
+          href="/collections/posts"
+        >
+          <mocked-icon
+            type="write"
+          />
+          Posts
+        </a>
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;
+
+exports[`Sidebar > should render sidebar without search 1`] = `
+<DocumentFragment>
+  <aside
+    class="makeStyles-SidebarContainer-card exupcl73"
+  >
+    <h2
+      class="makeStyles-SidebarHeading exupcl72"
+    >
+      collection.sidebar.collections
+    </h2>
+    <ul
+      class="makeStyles-SidebarNavList exupcl71"
+    >
+      <li>
+        <a
+          class="makeStyles-SidebarNavLink-sidebarNavLinkActive-SidebarNavLink exupcl70"
+          data-testid="posts"
+          href="/collections/posts"
+        >
+          <mocked-icon
+            type="write"
+          />
+          Posts
+        </a>
+      </li>
+    </ul>
+  </aside>
+</DocumentFragment>
+`;

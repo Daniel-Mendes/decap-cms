@@ -1,4 +1,5 @@
 import u from 'unist-builder';
+import { describe, it, expect } from 'vitest';
 
 import remarkAssertParents from '../remarkAssertParents';
 

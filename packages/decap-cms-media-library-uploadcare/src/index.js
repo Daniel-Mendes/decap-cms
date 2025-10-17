@@ -1,6 +1,6 @@
 import uploadcare from 'uploadcare-widget';
 import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
-import { Iterable } from 'immutable';
+import * as Immutable from 'immutable';
 
 window.UPLOADCARE_LIVE = false;
 window.UPLOADCARE_MANUAL_START = true;
@@ -55,7 +55,8 @@ function getFileGroup(files) {
  * because the value we're returning may be a promise that we created.
  */
 function getFiles(value) {
-  if (Array.isArray(value) || Iterable.isIterable(value)) {
+  // Check if value is an Immutable collection by checking for toJS method
+  if (Array.isArray(value) || (value && typeof value.toJS === 'function')) {
     const arr = Array.isArray(value) ? value : value.toJS();
     return isFileGroup(arr) ? getFileGroup(arr) : Promise.all(arr.map(val => getFile(val)));
   }

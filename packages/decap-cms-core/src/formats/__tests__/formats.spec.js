@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import { describe, test, it, expect, beforeEach } from 'vitest';
 
 import { extensionFormatters, resolveFormat } from '../formats';
 import { registerCustomFormat } from '../../lib/registry';

@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ListControl > should render empty list 1`] = `
+<DocumentFragment>
+  <input
+    class="classNameWrapper"
+    id="forID"
+    type="text"
+    value=""
+  />
+</DocumentFragment>
+`;
+
+exports[`ListControl > should render list with fields with default collapse ("true") and minimize_collapsed = "true" 1`] = `
+<DocumentFragment>
+  <div
+    class="classNameWrapper"
+    id="forID"
+  >
+    <div
+      class="makeStyles-TopBarContainer e1x08jhd3"
+    >
+      <div
+        class="makeStyles-ExpandButtonContainer-ExpandButtonContainer e1x08jhd2"
+      >
+        <button
+          class="makeStyles-ExpandButton-button e1x08jhd1"
+          data-testid="expand-button"
+        >
+          <span
+            class="ecf4jhm0 makeStyles-IconWrapper ecf4jhm1"
+          >
+            <svg
+              data-testid="mock-svg"
+            />
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="makeStyles-AddButton-button-widget e1x08jhd0"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="ecf4jhm0 makeStyles-IconWrapper ecf4jhm1"
+        >
+          <svg
+            data-testid="mock-svg"
+          />
+        </span>
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl > should render list with string array 1`] = `
+<DocumentFragment>
+  <input
+    class="classNameWrapper"
+    id="forID"
+    type="text"
+    value="item 1, item 2"
+  />
+</DocumentFragment>
+`;

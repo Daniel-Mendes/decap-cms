@@ -1,6 +1,7 @@
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
 import remarkToMarkdown from 'remark-stringify';
+import { describe, it, expect } from 'vitest';
 
 import remarkPaddedLinks from '../remarkPaddedLinks';
 

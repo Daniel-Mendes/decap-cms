@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import { describe, it, expect } from 'vitest';
 
 import { serializeValues, deserializeValues } from '../serializeEntryValues';
 

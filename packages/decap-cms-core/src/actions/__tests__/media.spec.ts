@@ -1,8 +1,7 @@
 import { Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { mocked } from 'jest-mock';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import { selectMediaFilePath } from '../../reducers/entries';
@@ -16,7 +15,7 @@ const middlewares = [thunk];
 const mockStore = configureMockStore<Partial<State>, ThunkDispatch<State, {}, AnyAction>>(
   middlewares,
 );
-const mockedSelectMediaFilePath = mocked(selectMediaFilePath);
+const mockedSelectMediaFilePath = vi.mocked(selectMediaFilePath);
 
 vi.mock('../../reducers/entries');
 vi.mock('../mediaLibrary');

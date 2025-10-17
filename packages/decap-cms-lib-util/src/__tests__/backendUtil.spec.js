@@ -1,7 +1,33 @@
 import { oneLine } from 'common-tags';
 import nock from 'nock';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+// Mock AbortController to work properly with nock in Vitest
+const mockAbortController = class AbortController {
+  constructor() {
+    this.signal = {
+      aborted: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    };
+  }
+
+  abort() {
+    this.signal.aborted = true;
+  }
+};
+
+vi.stubGlobal('AbortController', mockAbortController);
 
 import { parseLinkHeader, getAllResponses, getPathDepth, filterByExtension } from '../backendUtil';
+
+beforeEach(() => {
+  nock.cleanAll();
+});
+
+afterEach(() => {
+  nock.cleanAll();
+});
 
 describe('parseLinkHeader', () => {
   it('should return the right rel urls', () => {
@@ -64,13 +90,62 @@ describe('getAllResponses', () => {
   }
 
   it('should return all paged response', async () => {
-    interceptCall({ repeat: 3, data: generatePulls(70) });
+    // Mock fetch directly for this test since nock has issues with Vitest
+    const mockFetch = vi.fn();
+
+    // Mock the responses for 3 pages
+    const page1Data = generatePulls(30);
+    const page2Data = generatePulls(30).map((p, i) => ({ ...p, id: i + 31 }));
+    const page3Data = generatePulls(10).map((p, i) => ({ ...p, id: i + 61 }));
+
+    const responses = [
+      {
+        status: 200,
+        headers: new Map([
+          [
+            'Link',
+            '<https://api.github.com/pulls?page=2>; rel="next", <https://api.github.com/pulls?page=3>; rel="last"',
+          ],
+        ]),
+        json: () => Promise.resolve(page1Data),
+      },
+      {
+        status: 200,
+        headers: new Map([
+          [
+            'Link',
+            '<https://api.github.com/pulls?page=1>; rel="first", <https://api.github.com/pulls?page=3>; rel="next", <https://api.github.com/pulls?page=3>; rel="last"',
+          ],
+        ]),
+        json: () => Promise.resolve(page2Data),
+      },
+      {
+        status: 200,
+        headers: new Map([
+          [
+            'Link',
+            '<https://api.github.com/pulls?page=1>; rel="first", <https://api.github.com/pulls?page=2>; rel="prev"',
+          ],
+        ]),
+        json: () => Promise.resolve(page3Data),
+      },
+    ];
+
+    mockFetch
+      .mockResolvedValueOnce(responses[0])
+      .mockResolvedValueOnce(responses[1])
+      .mockResolvedValueOnce(responses[2]);
+
+    vi.stubGlobal('fetch', mockFetch);
+
     const res = await getAllResponses('https://api.github.com/pulls', {}, 'next', url => url);
     const pages = await Promise.all(res.map(res => res.json()));
 
     expect(pages[0]).toHaveLength(30);
     expect(pages[1]).toHaveLength(30);
     expect(pages[2]).toHaveLength(10);
+
+    vi.unstubAllGlobals();
   });
 });
 

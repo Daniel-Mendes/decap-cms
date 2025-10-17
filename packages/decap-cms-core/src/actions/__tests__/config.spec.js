@@ -1,6 +1,6 @@
 import { stripIndent } from 'common-tags';
-import yaml from 'js-yaml';
-import { vi } from 'vitest';
+import yaml from 'yaml';
+import { vi, describe, it, expect } from 'vitest';
 
 import {
   loadConfig,

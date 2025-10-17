@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 import { oneLine, stripIndent } from 'common-tags';
 import nock from 'nock';
 import { Cursor } from 'decap-cms-lib-util';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach, beforeAll, afterEach } from 'vitest';
 
 import Gitlab from '../implementation';
 import AuthenticationPage from '../AuthenticationPage';

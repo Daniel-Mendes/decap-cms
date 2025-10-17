@@ -1,5 +1,15 @@
-import { vi } from 'vitest';
+/**
+ * @vitest-environment jsdom
+ */
+
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { v4 as uuid } from 'uuid';
+
+// Mock window early to prevent errors during imports
+if (typeof window === 'undefined') {
+  global.window = {};
+}
+
 import uploadcare from 'uploadcare-widget';
 import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
 

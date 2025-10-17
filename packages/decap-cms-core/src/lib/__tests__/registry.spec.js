@@ -5,6 +5,7 @@ import {
   registerLocale,
   getLocale,
   registerEventListener,
+  removeEventListener,
   invokeEvent,
   getCustomFormats,
   registerCustomFormat,
@@ -17,6 +18,24 @@ describe('registry', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
+
+    // Clean up event handlers between tests
+    const events = [
+      'prePublish',
+      'postPublish',
+      'preUnpublish',
+      'postUnpublish',
+      'preSave',
+      'postSave',
+    ];
+
+    events.forEach(eventName => {
+      try {
+        removeEventListener({ name: eventName });
+      } catch (e) {
+        // Ignore errors if event doesn't exist
+      }
+    });
   });
 
   describe('registerLocale', () => {

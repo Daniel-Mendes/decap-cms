@@ -14,8 +14,12 @@ vi.mock('decap-cms-ui-default', async () => {
   };
 });
 
-vi.mock('../NestedCollection', () => 'nested-collection');
-vi.mock('../CollectionSearch', () => 'collection-search');
+vi.mock('../NestedCollection', () => ({
+  default: 'nested-collection',
+}));
+vi.mock('../CollectionSearch', () => ({
+  default: 'collection-search',
+}));
 vi.mock('../../../actions/collections');
 
 describe('Sidebar', () => {

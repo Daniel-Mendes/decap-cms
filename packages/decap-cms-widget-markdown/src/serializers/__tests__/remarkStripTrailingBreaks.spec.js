@@ -1,5 +1,6 @@
 import unified from 'unified';
 import u from 'unist-builder';
+import { describe, it, expect } from 'vitest';
 
 import remarkStripTrailingBreaks from '../remarkStripTrailingBreaks';
 
