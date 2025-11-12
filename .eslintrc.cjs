@@ -1,17 +1,27 @@
 const fs = require('fs');
+const path = require('path');
 
 const packages = fs
-  .readdirSync(`${__dirname}/packages`, { withFileTypes: true })
+  .readdirSync(path.join(__dirname, 'packages'), { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
   .map(dirent => dirent.name);
 
 module.exports = {
+  parser: '@typescript-eslint/parser', // handles both JS and TS
+  parserOptions: {
+    ecmaVersion: 2021,
+    sourceType: 'module', // enables ESM imports
+    ecmaFeatures: {
+      jsx: true, // for React
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:cypress/recommended',
-    'prettier',
     'plugin:import/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
   env: {
     es6: true,
@@ -26,10 +36,22 @@ module.exports = {
     DECAP_CMS_CORE_VERSION: false,
     CMS_ENV: false,
   },
+  plugins: ['@emotion', 'cypress', 'unicorn', '@typescript-eslint'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+    'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
+  },
   rules: {
-    'no-console': [0],
-    'react/prop-types': [0],
-    'import/no-named-as-default': 0,
+    'no-console': 'off',
+    'react/prop-types': 'off',
+    'import/no-named-as-default': 'off',
     'import/order': [
       'error',
       {
@@ -42,7 +64,7 @@ module.exports = {
     '@emotion/pkg-renaming': 'error',
     '@emotion/import-from-emotion': 'error',
     '@emotion/styled-import': 'error',
-    'require-atomic-updates': [0],
+    'require-atomic-updates': 'off',
     'object-shorthand': ['error', 'always'],
     'func-style': ['error', 'declaration'],
     'prefer-const': [
@@ -54,45 +76,16 @@ module.exports = {
     'unicorn/prefer-string-slice': 'error',
     'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
   },
-  plugins: ['@emotion', 'cypress', 'unicorn'],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
-    'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
-  },
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser',
-      extends: [
-        'eslint:recommended',
-        'plugin:react/recommended',
-        'plugin:cypress/recommended',
-        'plugin:@typescript-eslint/recommended',
-        'prettier',
-        'plugin:import/recommended',
-        'plugin:import/typescript',
-      ],
-      parserOptions: {
-        ecmaVersion: 2018,
-        sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
       rules: {
-        'no-duplicate-imports': [0], // handled by @typescript-eslint
-        '@typescript-eslint/ban-types': [0], // TODO enable in future
-        '@typescript-eslint/no-non-null-assertion': [0],
+        'no-duplicate-imports': 'off', // handled by TS
+        '@typescript-eslint/ban-types': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/consistent-type-imports': 'error',
-        '@typescript-eslint/explicit-function-return-type': [0],
-        '@typescript-eslint/explicit-module-boundary-types': [0],
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-duplicate-imports': 'error',
         '@typescript-eslint/no-use-before-define': [
           'error',
@@ -100,5 +93,12 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['*.js', '*.jsx'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off', // allow require in JS
+      },
+    },
   ],
+  ignorePatterns: ['scripts/**', 'dist/**', 'node_modules/**'], // ignore scripts to avoid ESM parse issues
 };
