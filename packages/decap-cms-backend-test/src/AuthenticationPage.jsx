@@ -18,18 +18,17 @@ const PageLogoIcon = styled(Icon)`
 
 const LoginButton = styled.button`
   ${buttons.button};
-  ${shadows.dropDeep};
   ${buttons.default};
   ${buttons.gray};
 
   padding: 0 30px;
-  margin-top: 0;
-  display: flex;
-  align-items: center;
-  position: relative;
+  display: block;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
 
-  ${Icon} {
-    margin-right: 18px;
+  svg {
+    margin-right: 4px;
   }
 `;
 

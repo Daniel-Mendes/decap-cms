@@ -3,7 +3,7 @@ import { basename, getBlobSHA } from 'decap-cms-lib-util';
 
 import { currentBackend } from '../backend';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
-import { selectIntegration } from '../reducers';
+import { selectIntegration } from '../reducers/integrations';
 import {
   selectMediaFilePath,
   selectMediaFilePublicPath,
@@ -140,7 +140,7 @@ export function loadMedia(
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, null, 'assetStore');
+    const integration = selectIntegration(state.integrations, null, 'assetStore');
     if (integration) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaLoading(page));
@@ -215,7 +215,7 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, null, 'assetStore');
+    const integration = selectIntegration(state.integrations, null, 'assetStore');
     const files: MediaFile[] = selectMediaFiles(state, field);
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.slug);
     const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
@@ -313,7 +313,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, null, 'assetStore');
+    const integration = selectIntegration(state.integrations, null, 'assetStore');
     if (integration) {
       const provider = getIntegrationProvider(state.integrations, backend.getToken, integration);
       dispatch(mediaDeleting());

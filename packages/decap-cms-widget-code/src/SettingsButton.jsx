@@ -16,7 +16,7 @@ const StyledSettingsButton = styled.button`
   line-height: 1;
   height: auto;
 
-  ${Icon} {
+  svg {
     position: relative;
     top: 1px;
   }

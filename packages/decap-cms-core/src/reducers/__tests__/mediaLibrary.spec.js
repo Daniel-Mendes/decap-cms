@@ -64,6 +64,7 @@ describe('mediaLibrary', () => {
     const state = {
       config: {},
       collections: fromJS({ posts: collection }),
+      integrations: fromJS({ providers: {}, hooks: {} }),
       entryDraft: fromJS({
         entry,
       }),
@@ -96,6 +97,7 @@ describe('mediaLibrary', () => {
     const state = {
       config: {},
       collections: fromJS({ posts: collection }),
+      integrations: fromJS({ providers: {}, hooks: {} }),
       entryDraft: fromJS({
         entry,
       }),
@@ -114,6 +116,7 @@ describe('mediaLibrary', () => {
     selectEditingDraft.mockReturnValue(false);
 
     const state = {
+      integrations: fromJS({ providers: {}, hooks: {} }),
       mediaLibrary: Map({ files: [{ id: 1 }] }),
     };
 
@@ -126,6 +129,7 @@ describe('mediaLibrary', () => {
     selectIntegration.mockReturnValue({});
 
     const state = {
+      integrations: fromJS({ providers: {}, hooks: {} }),
       mediaLibrary: Map({ files: [{ id: 1 }] }),
     };
 
@@ -138,6 +142,7 @@ describe('mediaLibrary', () => {
     selectEditingDraft.mockReturnValue(false);
 
     const state = {
+      integrations: fromJS({ providers: {}, hooks: {} }),
       mediaLibrary: Map({ files: [{ id: 1, path: 'path' }] }),
     };
 

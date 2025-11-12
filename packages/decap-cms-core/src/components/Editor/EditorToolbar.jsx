@@ -41,6 +41,20 @@ const styles = {
   `,
 };
 
+const TooltipContainer = styled.div`
+  position: relative;
+
+  &:hover .tooltip-text {
+    visibility: visible;
+    opacity: 0.9;
+  }
+`;
+
+const Tooltip = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
 const TooltipText = styled.div`
   visibility: hidden;
   width: 321px;
@@ -60,19 +74,6 @@ const TooltipText = styled.div`
   /* Fade in tooltip */
   opacity: 0;
   transition: opacity 0.3s;
-`;
-
-const Tooltip = styled.div`
-  position: relative;
-  display: inline-block;
-  &:hover + ${TooltipText} {
-    visibility: visible;
-    opacity: 0.9;
-  }
-`;
-
-const TooltipContainer = styled.div`
-  position: relative;
 `;
 
 const DropdownButton = styled(StyledDropdownButton)`
@@ -135,7 +136,7 @@ const ToolbarSectionMeta = styled.div`
 const ToolbarDropdown = styled(Dropdown)`
   ${styles.buttonMargin};
 
-  ${Icon} {
+  svg {
     color: ${colorsRaw.teal};
   }
 `;
@@ -211,11 +212,11 @@ const PreviewButtonContainer = styled.div`
   align-items: center;
 
   a,
-  ${Icon} {
+  svg {
     color: ${colorsRaw.blue};
   }
 
-  ${Icon} {
+  svg {
     position: relative;
     top: 1px;
   }
@@ -239,7 +240,7 @@ const PublishDropDownItem = styled(DropdownItem)`
 `;
 
 const StatusDropdownItem = styled(DropdownItem)`
-  ${Icon} {
+  svg {
     color: ${colors.infoText};
   }
 `;
@@ -352,7 +353,9 @@ export class EditorToolbar extends React.Component {
           <Icon type="info-circle" size="small" className="tooltip" />
         </Tooltip>
         {statusKey && (
-          <TooltipText>{t(`editor.editorToolbar.${statusToLocaleKey[statusKey]}`)}</TooltipText>
+          <TooltipText className="tooltip-text">
+            {t(`editor.editorToolbar.${statusToLocaleKey[statusKey]}`)}
+          </TooltipText>
         )}
       </TooltipContainer>
     );

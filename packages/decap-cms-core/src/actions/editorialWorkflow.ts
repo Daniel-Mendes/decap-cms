@@ -3,13 +3,8 @@ import { Map, List } from 'immutable';
 import { EDITORIAL_WORKFLOW_ERROR } from 'decap-cms-lib-util';
 
 import { currentBackend, slugFromCustomPath } from '../backend';
-import {
-  selectPublishedSlugs,
-  selectUnpublishedSlugs,
-  selectEntry,
-  selectUnpublishedEntry,
-} from '../reducers';
-import { selectEditingDraft } from '../reducers/entries';
+import { selectPublishedSlugs, selectEntry, selectEditingDraft } from '../reducers/entries';
+import { selectUnpublishedSlugs, selectUnpublishedEntry } from '../reducers/editorialWorkflow';
 import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
 import {
   loadEntry,
@@ -325,8 +320,11 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
-    const unpublishedSlugs = selectUnpublishedSlugs(state, collection.get('name'));
-    const publishedSlugs = selectPublishedSlugs(state, collection.get('name'));
+    const unpublishedSlugs = selectUnpublishedSlugs(
+      state.editorialWorkflow,
+      collection.get('name'),
+    );
+    const publishedSlugs = selectPublishedSlugs(state.entries, collection.get('name'));
     const usedSlugs = publishedSlugs.concat(unpublishedSlugs) as List<string>;
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
 
@@ -484,7 +482,7 @@ export function publishUnpublishedEntry(collectionName: string, slug: string) {
     const state = getState();
     const collections = state.collections;
     const backend = currentBackend(state.config);
-    const entry = selectUnpublishedEntry(state, collectionName, slug);
+    const entry = selectUnpublishedEntry(state.editorialWorkflow, collectionName, slug);
     dispatch(unpublishedEntryPublishRequest(collectionName, slug));
     try {
       await backend.publishUnpublishedEntry(entry);
@@ -526,7 +524,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const entry = selectEntry(state, collection.get('name'), slug);
+    const entry = selectEntry(state.entries, collection.get('name'), slug);
     const entryDraft = Map().set('entry', entry) as unknown as EntryDraft;
     dispatch(unpublishedEntryPersisting(collection, slug));
     return backend

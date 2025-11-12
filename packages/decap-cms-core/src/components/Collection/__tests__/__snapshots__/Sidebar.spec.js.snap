@@ -19,7 +19,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
   flex-direction: column;
 }
 
-.emotion-2 {
+.emotion-1 {
   font-size: 22px;
   font-weight: 600;
   line-height: 37px;
@@ -28,17 +28,17 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
   color: #313d3e;
 }
 
-.emotion-4 {
+.emotion-2 {
   margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
 
 <aside
-    class="emotion-0 emotion-1"
+    class="emotion-0"
   >
     <h2
-      class="emotion-2 emotion-3"
+      class="emotion-1"
     >
       collection.sidebar.collections
     </h2>
@@ -47,7 +47,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
       searchterm=""
     />
     <ul
-      class="emotion-4 emotion-5"
+      class="emotion-2"
     >
       <li>
         <nested-collection
@@ -80,7 +80,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
   flex-direction: column;
 }
 
-.emotion-2 {
+.emotion-1 {
   font-size: 22px;
   font-weight: 600;
   line-height: 37px;
@@ -89,17 +89,17 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
   color: #313d3e;
 }
 
-.emotion-4 {
+.emotion-2 {
   margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
 
 <aside
-    class="emotion-0 emotion-1"
+    class="emotion-0"
   >
     <h2
-      class="emotion-2 emotion-3"
+      class="emotion-1"
     >
       collection.sidebar.collections
     </h2>
@@ -108,7 +108,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
       searchterm=""
     />
     <ul
-      class="emotion-4 emotion-5"
+      class="emotion-2"
     >
       <li>
         <nested-collection
@@ -140,7 +140,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   flex-direction: column;
 }
 
-.emotion-2 {
+.emotion-1 {
   font-size: 22px;
   font-weight: 600;
   line-height: 37px;
@@ -149,13 +149,13 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   color: #313d3e;
 }
 
-.emotion-4 {
+.emotion-2 {
   margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
 
-.emotion-6 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -171,26 +171,26 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   z-index: -1;
 }
 
-.emotion-6 mocked-icon {
+.emotion-3 svg {
   margin-right: 4px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-6:hover,
-.emotion-6:active,
-.emotion-6.sidebar-active {
+.emotion-3:hover,
+.emotion-3:active,
+.emotion-3.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <aside
-    class="emotion-0 emotion-1"
+    class="emotion-0"
   >
     <h2
-      class="emotion-2 emotion-3"
+      class="emotion-1"
     >
       collection.sidebar.collections
     </h2>
@@ -199,11 +199,11 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
       searchterm=""
     />
     <ul
-      class="emotion-4 emotion-5"
+      class="emotion-2"
     >
       <li>
         <a
-          class="emotion-6 emotion-7"
+          class="emotion-3"
           data-testid="posts"
           href="/collections/posts"
         >
@@ -237,7 +237,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   flex-direction: column;
 }
 
-.emotion-2 {
+.emotion-1 {
   font-size: 22px;
   font-weight: 600;
   line-height: 37px;
@@ -246,13 +246,13 @@ exports[`Sidebar should render sidebar without search 1`] = `
   color: #313d3e;
 }
 
-.emotion-4 {
+.emotion-2 {
   margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
 
-.emotion-6 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -268,35 +268,35 @@ exports[`Sidebar should render sidebar without search 1`] = `
   z-index: -1;
 }
 
-.emotion-6 mocked-icon {
+.emotion-3 svg {
   margin-right: 4px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-6:hover,
-.emotion-6:active,
-.emotion-6.sidebar-active {
+.emotion-3:hover,
+.emotion-3:active,
+.emotion-3.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <aside
-    class="emotion-0 emotion-1"
+    class="emotion-0"
   >
     <h2
-      class="emotion-2 emotion-3"
+      class="emotion-1"
     >
       collection.sidebar.collections
     </h2>
     <ul
-      class="emotion-4 emotion-5"
+      class="emotion-2"
     >
       <li>
         <a
-          class="emotion-6 emotion-7"
+          class="emotion-3"
           data-testid="posts"
           href="/collections/posts"
         >

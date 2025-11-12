@@ -1,5 +1,9 @@
-module.exports = {
+export default {
   setupFilesAfterEnv: ['<rootDir>/setupTestFramework.js'],
+  transform: {
+    '^.+\\.(ts|js|tsx|jsx)$': '<rootDir>/scripts/jest-swc-transformer.cjs',
+    '^.+\\.svg$': '<rootDir>/__mocks__/svgrTransform.js',
+  },
   moduleNameMapper: {
     'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
     'decap-cms-lib-util': '<rootDir>/packages/decap-cms-lib-util/src/index.ts',

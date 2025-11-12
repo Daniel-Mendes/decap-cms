@@ -53,7 +53,7 @@ const SidebarNavLink = styled(NavLink)`
   border-left: 2px solid #fff;
   z-index: -1;
 
-  ${Icon} {
+  svg {
     margin-right: 4px;
     flex-shrink: 0;
   }

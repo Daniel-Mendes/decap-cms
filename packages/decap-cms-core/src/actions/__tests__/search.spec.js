@@ -8,13 +8,14 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 jest.mock('../../reducers');
+jest.mock('../../reducers/integrations');
 jest.mock('../../backend');
 jest.mock('../../integrations');
 
 describe('search', () => {
   describe('searchEntries', () => {
     const { currentBackend } = require('../../backend');
-    const { selectIntegration } = require('../../reducers');
+    const { selectIntegration } = require('../../reducers/integrations');
     const { getIntegrationProvider } = require('../../integrations');
 
     beforeEach(() => {
@@ -22,12 +23,14 @@ describe('search', () => {
     });
     it('should search entries in all collections using integration', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: {},
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
 
       selectIntegration.mockReturnValue('search_integration');
-      currentBackend.mockReturnValue({});
+      currentBackend.mockReturnValue({ getToken: jest.fn() });
       const response = { entries: [{ name: '1' }, { name: '' }], pagination: 1 };
       const integration = { search: jest.fn().mockResolvedValue(response) };
       getIntegrationProvider.mockReturnValue(integration);
@@ -58,12 +61,14 @@ describe('search', () => {
 
     it('should search entries in a subset of collections using integration', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: {},
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
 
       selectIntegration.mockReturnValue('search_integration');
-      currentBackend.mockReturnValue({});
+      currentBackend.mockReturnValue({ getToken: jest.fn() });
       const response = { entries: [{ name: '1' }, { name: '' }], pagination: 1 };
       const integration = { search: jest.fn().mockResolvedValue(response) };
       getIntegrationProvider.mockReturnValue(integration);
@@ -94,8 +99,10 @@ describe('search', () => {
 
     it('should search entries in all collections using backend', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: {},
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
 
       const response = { entries: [{ name: '1' }, { name: '' }], pagination: 1 };
@@ -132,8 +139,10 @@ describe('search', () => {
 
     it('should search entries in a subset of collections using backend', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: {},
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
 
       const response = { entries: [{ name: '1' }, { name: '' }], pagination: 1 };
@@ -167,8 +176,10 @@ describe('search', () => {
 
     it('should ignore identical search in all collections', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: { isFetching: true, term: 'find me', collections: ['posts', 'pages'] },
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
 
       await store.dispatch(searchEntries('find me'));
@@ -179,8 +190,10 @@ describe('search', () => {
 
     it('should ignore identical search in a subset of collections', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: { isFetching: true, term: 'find me', collections: ['pages'] },
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
 
       await store.dispatch(searchEntries('find me', ['pages']));
@@ -191,8 +204,10 @@ describe('search', () => {
 
     it('should not ignore same search term in different search collections', async () => {
       const store = mockStore({
+        config: {},
         collections: fromJS({ posts: { name: 'posts' }, pages: { name: 'pages' } }),
         search: { isFetching: true, term: 'find me', collections: ['pages'] },
+        integrations: fromJS({ providers: {}, hooks: {} }),
       });
       const backend = { search: jest.fn().mockResolvedValue({}) };
       currentBackend.mockReturnValue(backend);

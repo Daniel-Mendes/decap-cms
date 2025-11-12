@@ -44,7 +44,7 @@ const AddButton = styled.button`
   ${buttons.button}
   ${buttons.widget}
 
-  ${Icon} {
+  svg {
     margin-left: 6px;
   }
 `;

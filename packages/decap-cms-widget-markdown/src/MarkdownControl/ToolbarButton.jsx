@@ -17,10 +17,6 @@ const StyledToolbarButton = styled.button`
     cursor: auto;
     opacity: 0.5;
   }
-
-  ${Icon} {
-    display: block;
-  }
 `;
 
 function ToolbarButton({ type, label, icon, onClick, isActive, disabled }) {

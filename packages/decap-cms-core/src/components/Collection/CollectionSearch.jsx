@@ -9,7 +9,7 @@ const SearchContainer = styled.div`
   margin: 0 12px;
   position: relative;
 
-  ${Icon} {
+  svg {
     position: absolute;
     top: 0;
     left: 6px;

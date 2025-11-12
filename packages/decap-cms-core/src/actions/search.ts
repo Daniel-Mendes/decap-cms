@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
-import { selectIntegration } from '../reducers';
+import { selectIntegration } from '../reducers/integrations';
 
 import type { QueryRequest } from '../reducers/search';
 import type { State } from '../types/redux';
@@ -113,9 +113,9 @@ export function searchEntries(searchTerm: string, searchCollections: string[], p
     const backend = currentBackend(state.config);
     const allCollections = searchCollections || state.collections.keySeq().toArray();
     const collections = allCollections.filter(collection =>
-      selectIntegration(state, collection, 'search'),
+      selectIntegration(state.integrations, collection, 'search'),
     );
-    const integration = selectIntegration(state, collections[0], 'search');
+    const integration = selectIntegration(state.integrations, collections[0], 'search');
 
     // avoid duplicate searches
     if (
@@ -166,7 +166,7 @@ export function query(
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, collectionName, 'search');
+    const integration = selectIntegration(state.integrations, collectionName, 'search');
     const collection = state.collections.find(
       collection => collection.get('name') === collectionName,
     );

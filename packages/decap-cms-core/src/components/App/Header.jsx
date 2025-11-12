@@ -64,7 +64,7 @@ const AppHeaderButton = styled.button`
   padding: 16px 20px;
   align-items: center;
 
-  ${Icon} {
+  svg {
     margin-right: 4px;
     color: #b3b9c4;
   }
@@ -74,7 +74,7 @@ const AppHeaderButton = styled.button`
   &:focus-visible {
     ${styles.buttonActive};
 
-    ${Icon} {
+    svg {
       ${styles.buttonActive};
     }
   }
@@ -83,7 +83,7 @@ const AppHeaderButton = styled.button`
     &.${props.activeClassName} {
       ${styles.buttonActive};
 
-      ${Icon} {
+      svg {
         ${styles.buttonActive};
       }
     }

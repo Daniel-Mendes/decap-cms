@@ -1,5 +1,5 @@
 import React from 'react';
-import { create, act } from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import { padStart } from 'lodash';
 import { Map } from 'immutable';
 
@@ -40,14 +40,11 @@ Text with **bold** & _em_ elements
 `;
         const html = await markdownToHtml(value);
 
-        let root;
-        await act(async () => {
-          root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
-        });
+        const { asFragment } = render(
+          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
 
-        expect(root.toJSON()).toMatchSnapshot();
+        expect(asFragment()).toMatchSnapshot();
       });
     });
 
@@ -57,14 +54,11 @@ Text with **bold** & _em_ elements
           const value = padStart(' Title', heading + 7, '#');
           const html = await markdownToHtml(value);
 
-          let root;
-          await act(async () => {
-            root = create(
-              <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-            );
-          });
+          const { asFragment } = render(
+            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+          );
 
-          expect(root.toJSON()).toMatchSnapshot();
+          expect(asFragment()).toMatchSnapshot();
         });
       }
     });
@@ -84,39 +78,11 @@ Text with **bold** & _em_ elements
 `;
         const html = await markdownToHtml(value);
 
-        let root;
-        await act(async () => {
-          root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
-        });
+        const { asFragment } = render(
+          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
 
-        expect(root.toJSON()).toMatchInlineSnapshot(`
-.emotion-0 {
-  margin: 15px 2px;
-}
-
-<div
-  className="emotion-0 emotion-1"
-  dangerouslySetInnerHTML={
-    Object {
-      "__html": "<ol>
-<li>ol item 1</li>
-<li>ol item 2<ul>
-<li>Sublist 1</li>
-<li>Sublist 2</li>
-<li>Sublist 3<ol>
-<li>Sub-Sublist 1</li>
-<li>Sub-Sublist 2</li>
-<li>Sub-Sublist 3</li>
-</ol></li>
-</ul></li>
-<li>ol item 3</li>
-</ol>",
-    }
-  }
-/>
-`);
+        expect(asFragment()).toMatchSnapshot();
       });
     });
 
@@ -131,14 +97,11 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 `;
         const html = await markdownToHtml(value);
 
-        let root;
-        await act(async () => {
-          root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
-        });
+        const { asFragment } = render(
+          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
 
-        expect(root.toJSON()).toMatchSnapshot();
+        expect(asFragment()).toMatchSnapshot();
       });
     });
 
@@ -147,28 +110,22 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         const value = 'Use the `printf()` function.';
         const html = await markdownToHtml(value);
 
-        let root;
-        await act(async () => {
-          root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
-        });
+        const { asFragment } = render(
+          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
 
-        expect(root.toJSON()).toMatchSnapshot();
+        expect(asFragment()).toMatchSnapshot();
       });
 
       it('should render code 2', async () => {
         const value = '``There is a literal backtick (`) here.``';
         const html = await markdownToHtml(value);
 
-        let root;
-        await act(async () => {
-          root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
-        });
+        const { asFragment } = render(
+          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
 
-        expect(root.toJSON()).toMatchSnapshot();
+        expect(asFragment()).toMatchSnapshot();
       });
     });
 
@@ -191,14 +148,11 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 `;
         const html = await markdownToHtml(value);
 
-        let root;
-        await act(async () => {
-          root = create(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
-        });
+        const { asFragment } = render(
+          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        );
 
-        expect(root.toJSON()).toMatchSnapshot();
+        expect(asFragment()).toMatchSnapshot();
       });
     });
   });
@@ -208,14 +162,11 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       const value = '<p>Paragraph with <em>inline</em> element</p>';
       const html = await markdownToHtml(value);
 
-      let root;
-      await act(async () => {
-        root = create(
-          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-        );
-      });
+      const { asFragment } = render(
+        <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+      );
 
-      expect(root.toJSON()).toMatchSnapshot();
+      expect(asFragment()).toMatchSnapshot();
     });
   });
 
@@ -224,38 +175,32 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       const value = `<img src="foobar.png" onerror="alert('hello')">`;
       const field = Map({ sanitize_preview: true });
 
-      let root;
-      await act(async () => {
-        root = create(
-          <MarkdownPreview
-            value={value}
-            getAsset={jest.fn()}
-            resolveWidget={jest.fn()}
-            field={field}
-          />,
-        );
-      });
+      const { asFragment } = render(
+        <MarkdownPreview
+          value={value}
+          getAsset={jest.fn()}
+          resolveWidget={jest.fn()}
+          field={field}
+        />,
+      );
 
-      expect(root.toJSON()).toMatchSnapshot();
+      expect(asFragment()).toMatchSnapshot();
     });
 
     it('should not sanitize HTML', async () => {
       const value = `<img src="foobar.png" onerror="alert('hello')">`;
       const field = Map({ sanitize_preview: false });
 
-      let root;
-      await act(async () => {
-        root = create(
-          <MarkdownPreview
-            value={value}
-            getAsset={jest.fn()}
-            resolveWidget={jest.fn()}
-            field={field}
-          />,
-        );
-      });
+      const { asFragment } = render(
+        <MarkdownPreview
+          value={value}
+          getAsset={jest.fn()}
+          resolveWidget={jest.fn()}
+          field={field}
+        />,
+      );
 
-      expect(root.toJSON()).toMatchSnapshot();
+      expect(asFragment()).toMatchSnapshot();
     });
   });
 });

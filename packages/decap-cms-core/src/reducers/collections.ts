@@ -8,8 +8,6 @@ import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { getFormatExtensions } from '../formats/formats';
-import { selectMediaFolder } from './entries';
-import { summaryFormatter } from '../lib/formatters';
 
 import type {
   Collection,
@@ -159,6 +157,10 @@ export function selectFieldsWithMediaFolders(collection: Collection, slug: strin
 }
 
 export function selectMediaFolders(config: CmsConfig, collection: Collection, entry: EntryMap) {
+  // Use dynamic import to break circular dependency
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { selectMediaFolder } = require('./entries');
+
   const fields = selectFieldsWithMediaFolders(collection, entry.get('slug'));
   const folders = fields.map(f => selectMediaFolder(config, collection, entry, f));
   if (collection.has('files')) {
@@ -371,7 +373,12 @@ export function selectInferredField(collection: Collection, fieldName: string) {
 export function selectEntryCollectionTitle(collection: Collection, entry: EntryMap) {
   // prefer formatted summary over everything else
   const summaryTemplate = collection.get('summary');
-  if (summaryTemplate) return summaryFormatter(summaryTemplate, entry, collection);
+  if (summaryTemplate) {
+    // Use dynamic import to break circular dependency
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { summaryFormatter } = require('../lib/formatters');
+    return summaryFormatter(summaryTemplate, entry, collection);
+  }
 
   // if the collection is a file collection return the label of the entry
   if (collection.get('type') == FILES) {

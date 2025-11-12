@@ -23,7 +23,7 @@ const ViewControlsButton = styled.button`
     margin-right: 0;
   }
 
-  ${Icon} {
+  svg {
     display: block;
   }
 `;

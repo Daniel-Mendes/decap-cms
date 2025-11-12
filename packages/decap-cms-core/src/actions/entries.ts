@@ -4,7 +4,13 @@ import { Cursor } from 'decap-cms-lib-util';
 
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { selectFields, updateFieldByKey } from '../reducers/collections';
-import { selectIntegration, selectPublishedSlugs } from '../reducers';
+import { selectIntegration } from '../reducers/integrations';
+import {
+  selectPublishedSlugs,
+  selectIsFetching,
+  selectEntriesSortFields,
+  selectEntryByPath,
+} from '../reducers/entries';
 import { getIntegrationProvider } from '../integrations';
 import { currentBackend } from '../backend';
 import { serializeValues } from '../lib/serializeEntryValues';
@@ -15,7 +21,6 @@ import { addAssets, getAsset } from './media';
 import { SortDirection } from '../types/redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
@@ -160,7 +165,7 @@ export function entriesFailed(collection: Collection, error: Error) {
 
 export async function getAllEntries(state: State, collection: Collection) {
   const backend = currentBackend(state.config);
-  const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+  const integration = selectIntegration(state.integrations, collection.get('name'), 'listEntries');
   const provider: Backend = integration
     ? getIntegrationProvider(state.integrations, backend.getToken, integration)
     : backend;
@@ -581,7 +586,11 @@ export function loadEntries(collection: Collection, page = 0) {
     }
 
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+    const integration = selectIntegration(
+      state.integrations,
+      collection.get('name'),
+      'listEntries',
+    );
     const provider = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
       : backend;
@@ -881,7 +890,7 @@ export function persistEntry(collection: Collection) {
     const state = getState();
     const entryDraft = state.entryDraft;
     const fieldsErrors = entryDraft.get('fieldsErrors');
-    const usedSlugs = selectPublishedSlugs(state, collection.get('name'));
+    const usedSlugs = selectPublishedSlugs(state.entries, collection.get('name'));
 
     // Early return if draft contains validation errors
     if (!fieldsErrors.isEmpty()) {

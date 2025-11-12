@@ -51,7 +51,7 @@ const TreeNavLink = styled(NavLink)`
   padding-left: ${props => props.depth * 16 + 18}px;
   border-left: 2px solid #fff;
 
-  ${Icon} {
+  svg {
     margin-right: 4px;
     flex-shrink: 0;
   }

@@ -23,7 +23,7 @@ const LoginButton = styled.button`
   align-items: center;
   position: relative;
 
-  ${Icon} {
+  svg {
     margin-right: 18px;
   }
 `;
