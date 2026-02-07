@@ -202,6 +202,128 @@ const fr = {
         add: 'Ajouter %{item}',
         addType: 'Ajouter une entrée de type %{item}',
       },
+      map: {
+        controls: {
+          zoomIn: 'Zoomer',
+          zoomOut: 'Dézoomer',
+          locateMyPosition: {
+            title: 'Localiser ma position',
+            text: 'Localiser ma position',
+          },
+          locating: {
+            title: 'Localisation en cours',
+            text: 'Localisation en cours...',
+          },
+          stopLocating: {
+            title: 'Arrêter la localisation',
+            text: 'Arrêter la localisation',
+          },
+        },
+        draw: {
+          toolbar: {
+            actions: {
+              title: 'Annuler le tracé',
+              text: 'Annuler',
+            },
+            finish: {
+              title: 'Terminer le tracé',
+              text: 'Terminer',
+            },
+            undo: {
+              title: 'Supprimer le dernier point tracé',
+              text: 'Supprimer le dernier point',
+            },
+            buttons: {
+              polyline: 'Tracer une ligne',
+              polygon: 'Tracer un polygone',
+              rectangle: 'Tracer un rectangle',
+              circle: 'Tracer un cercle',
+              marker: 'Placer un point',
+              circlemarker: 'Placer un marqueur circulaire',
+            },
+          },
+          handlers: {
+            circle: {
+              tooltip: {
+                start: 'Cliquez et faites glisser pour tracer le cercle.',
+              },
+              radius: 'Rayon',
+            },
+            circlemarker: {
+              tooltip: {
+                start: 'Cliquez sur la carte pour placer le marqueur circulaire.',
+              },
+            },
+            marker: {
+              tooltip: {
+                start: 'Cliquez sur la carte pour placer le point.',
+              },
+            },
+            polygon: {
+              tooltip: {
+                start: 'Cliquez pour commencer à tracer.',
+                cont: 'Cliquez pour continuer à tracer.',
+                end: 'Cliquez sur le premier point pour fermer cette forme.',
+              },
+            },
+            polyline: {
+              error: '<strong>Erreur:</strong> la ligne ne peut pas se croiser elle-même!',
+              tooltip: {
+                start: 'Cliquez pour commencer à tracer.',
+                cont: 'Cliquez pour continuer à tracer.',
+                end: 'Cliquez sur le dernier point pour fermer cette forme.',
+              },
+            },
+            rectangle: {
+              tooltip: {
+                start: 'Cliquez et faites glisser pour tracer le rectangle.',
+              },
+            },
+            simpleshape: {
+              tooltip: {
+                end: 'Relâchez la souris pour terminer le tracé.',
+              },
+            },
+          },
+        },
+        edit: {
+          toolbar: {
+            actions: {
+              save: {
+                title: "Enregistrer les modifications de l'élément.",
+                text: 'Enregistrer',
+              },
+              cancel: {
+                title: 'Annuler les modifications.',
+                text: 'Annuler',
+              },
+              clearAll: {
+                title: "Supprimer l'élément.",
+                text: 'Supprimer',
+              },
+            },
+            buttons: {
+              edit: "Modifier l'élément",
+              editDisabled: 'Aucun élément à modifier.',
+              remove: "Supprimer l'élément",
+              removeDisabled: 'Aucun élément à supprimer.',
+            },
+          },
+          handlers: {
+            edit: {
+              tooltip: {
+                text: "Sélectionnez les poignées ou le marqueur pour modifier l'élément.",
+                subtext: 'Cliquez sur annuler pour rétablir les modifications.',
+              },
+            },
+            remove: {
+              tooltip: {
+                text: 'Cliquez sur un élément pour supprimer',
+              },
+            },
+          },
+        },
+      },
     },
   },
   mediaLibrary: {
@@ -214,7 +336,7 @@ const fr = {
       copied: 'Copié',
     },
     mediaLibrary: {
-      onDelete: 'Voulez-vous vraiment supprimer la ressource sélectionné ?',
+      onDelete: 'Voulez-vous vraiment supprimer la ressource sélectionnée ?',
       fileTooLarge:
         "Le fichier est trop volumineux.\nL'instance est configurée pour bloquer les envois de plus de %{size} kB.",
     },

@@ -259,6 +259,128 @@ const en = {
       select: {
         placeholder: 'Select %{label}...',
       },
+      map: {
+        controls: {
+          zoomIn: 'Zoom in',
+          zoomOut: 'Zoom out',
+          locateMyPosition: {
+            title: 'Locate my position',
+            text: 'Locate my position',
+          },
+          locating: {
+            title: 'Locating',
+            text: 'Locating...',
+          },
+          stopLocating: {
+            title: 'Stop locating',
+            text: 'Stop locating',
+          },
+        },
+        draw: {
+          toolbar: {
+            actions: {
+              title: 'Cancel drawing',
+              text: 'Cancel',
+            },
+            finish: {
+              title: 'Finish drawing',
+              text: 'Finish',
+            },
+            undo: {
+              title: 'Delete last drawn point',
+              text: 'Delete last point',
+            },
+            buttons: {
+              polyline: 'Draw a line',
+              polygon: 'Draw a polygon',
+              rectangle: 'Draw a rectangle',
+              circle: 'Draw a circle',
+              marker: 'Place a marker',
+              circlemarker: 'Place a circular marker',
+            },
+          },
+          handlers: {
+            circle: {
+              tooltip: {
+                start: 'Click and drag to draw the circle.',
+              },
+              radius: 'Radius',
+            },
+            circlemarker: {
+              tooltip: {
+                start: 'Click on the map to place the circular marker.',
+              },
+            },
+            marker: {
+              tooltip: {
+                start: 'Click on the map to place the marker.',
+              },
+            },
+            polygon: {
+              tooltip: {
+                start: 'Click to start drawing.',
+                cont: 'Click to continue drawing.',
+                end: 'Click on the first point to close this shape.',
+              },
+            },
+            polyline: {
+              error: '<strong>Error:</strong> the line cannot cross itself!',
+              tooltip: {
+                start: 'Click to start drawing.',
+                cont: 'Click to continue drawing.',
+                end: 'Click on the last point to finish this shape.',
+              },
+            },
+            rectangle: {
+              tooltip: {
+                start: 'Click and drag to draw the rectangle.',
+              },
+            },
+            simpleshape: {
+              tooltip: {
+                end: 'Release the mouse to finish drawing.',
+              },
+            },
+          },
+        },
+        edit: {
+          toolbar: {
+            actions: {
+              save: {
+                title: 'Save changes to the element.',
+                text: 'Save',
+              },
+              cancel: {
+                title: 'Cancel changes.',
+                text: 'Cancel',
+              },
+              clearAll: {
+                title: 'Delete the element.',
+                text: 'Delete',
+              },
+            },
+            buttons: {
+              edit: 'Edit element',
+              editDisabled: 'No element to edit.',
+              remove: 'Delete element',
+              removeDisabled: 'No element to delete.',
+            },
+          },
+          handlers: {
+            edit: {
+              tooltip: {
+                text: 'Select the handles or the marker to edit the element.',
+                subtext: 'Click cancel to revert changes.',
+              },
+            },
+            remove: {
+              tooltip: {
+                text: 'Click on an element to delete it.',
+              },
+            },
+          },
+        },
+      },
     },
   },
   mediaLibrary: {

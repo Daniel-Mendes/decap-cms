@@ -39,14 +39,25 @@ const IconButtonWrap = styled.button`
         ? color(theme.color.primary['900']).alpha(0.3).string()
         : color(theme.color.highEmphasis).alpha(0.1).string()};
   }
+  &:disabled {
+    color: ${({ theme }) => theme.color.disabled};
+    opacity: 0.6;
+    cursor: not-allowed;
+    &:hover,
+    &:focus,
+    &:active {
+      color: ${({ theme }) => theme.color.disabled};
+      opacity: 0.6;
+    }
+  }
   ${ButtonGroup} & {
     margin: 2px;
   }
 `;
 
-function IconButton({ icon, size, ...props }) {
+function IconButton({ icon, size, disabled = false, ...props }) {
   return (
-    <IconButtonWrap size={size} {...props}>
+    <IconButtonWrap size={size} disabled={disabled} {...props}>
       <Icon name={icon} size={size} />
     </IconButtonWrap>
   );

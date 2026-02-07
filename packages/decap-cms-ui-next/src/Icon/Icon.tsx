@@ -18,6 +18,7 @@ import Calendar from './icons/Calendar';
 import Check from './icons/Check';
 import ChevronDown from './icons/ChevronDown';
 import ChevronRight from './icons/ChevronRight';
+import Circle from './icons/Circle';
 import Clock from './icons/Clock';
 import Code from './icons/Code';
 import CodeBlock from './icons/CodeBlock';
@@ -64,15 +65,19 @@ import Maximize from './icons/Maximize';
 import Maximize2 from './icons/Maximize2';
 import Menu from './icons/Menu';
 import Minimize from './icons/Minimize';
+import Minus from './icons/Minus';
 import Moon from './icons/Moon';
 import MoreHorizontal from './icons/MoreHorizontal';
 import MoreVertical from './icons/MoreVertical';
 import Move from './icons/Move';
 import Music from './icons/Music';
+import Navigation from './icons/Navigation';
 import Netlify from './icons/Netlify';
 import NumberedList from './icons/NumberedList';
 import Package from './icons/Package';
 import Paperclip from './icons/Paperclip';
+import Path from './icons/Path';
+import Pentagon from './icons/Pentagon';
 import PieChart from './icons/PieChart';
 import Pin from './icons/Pin';
 import PlusCircle from './icons/PlusCircle';
@@ -88,6 +93,7 @@ import Settings from './icons/Settings';
 import Share2 from './icons/Share2';
 import ShoppingCart from './icons/ShoppingCart';
 import Sidebar from './icons/Sidebar';
+import Square from './icons/Square';
 import Star from './icons/Star';
 import Sun from './icons/Sun';
 import Trash2 from './icons/Trash2';
@@ -121,6 +127,7 @@ export const iconComponents = {
   check: Check,
   'chevron-down': ChevronDown,
   'chevron-right': ChevronRight,
+  circle: Circle,
   clock: Clock,
   code: Code,
   'code-block': CodeBlock,
@@ -167,15 +174,19 @@ export const iconComponents = {
   'maximize-2': Maximize2,
   menu: Menu,
   minimize: Minimize,
+  minus: Minus,
   moon: Moon,
   'more-horizontal': MoreHorizontal,
   'more-vertical': MoreVertical,
   move: Move,
   music: Music,
+  navigation: Navigation,
   netlify: Netlify,
   'numbered-list': NumberedList,
   package: Package,
   paperclip: Paperclip,
+  path: Path,
+  pentagon: Pentagon,
   'pie-chart': PieChart,
   pin: Pin,
   'plus-circle': PlusCircle,
@@ -191,6 +202,7 @@ export const iconComponents = {
   'share-2': Share2,
   'shopping-cart': ShoppingCart,
   sidebar: Sidebar,
+  square: Square,
   star: Star,
   sun: Sun,
   'trash-2': Trash2,
@@ -212,12 +224,14 @@ type IconProps = {
   name: IconName;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | (string & {});
   className?: string;
-};
+  color?: string;
+  style?: React.CSSProperties;
+} & React.SVGProps<SVGSVGElement>;
 
-function Icon({ name, ...props }: IconProps) {
+function Icon({ name, style, ...props }: IconProps) {
   const IconComponent = iconComponents[name] || iconComponents.x;
 
-  return <IconComponent {...props} />;
+  return <IconComponent style={style} {...props} />;
 }
 
 function SizedIcon({ size, className = '', ...props }: IconProps) {

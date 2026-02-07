@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 import { useLocalStorageState } from '../hooks';
 
@@ -17,7 +17,7 @@ export const UIContext = createContext({
   setBreadcrumbs: () => {},
 });
 
-export function UIProvider({ children }) {
+export function UIProvider({ children, value: overrideValue }) {
   const [darkMode, setDarkMode] = useLocalStorageState(
     'darkMode',
     window && window.matchMedia('(prefers-color-scheme: dark)').matches,
@@ -27,6 +27,17 @@ export function UIProvider({ children }) {
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [appBarStart, setAppBarStart] = useState(() => () => null);
   const [appBarEnd, setAppBarEnd] = useState(() => () => null);
+
+  // Allow external control of darkMode (e.g., from Storybook)
+  const effectiveDarkMode =
+    overrideValue?.darkMode !== undefined ? overrideValue.darkMode : darkMode;
+
+  // Sync external darkMode changes to localStorage
+  useEffect(() => {
+    if (overrideValue?.darkMode !== undefined && overrideValue.darkMode !== darkMode) {
+      setDarkMode(overrideValue.darkMode);
+    }
+  }, [overrideValue?.darkMode, darkMode, setDarkMode]);
 
   function renderAppBarStart(fn) {
     setAppBarStart(() => fn);
@@ -42,7 +53,7 @@ export function UIProvider({ children }) {
         renderAppBarStart,
         appBarEnd,
         renderAppBarEnd,
-        darkMode,
+        darkMode: effectiveDarkMode,
         setDarkMode,
         navCollapsed,
         setNavCollapsed,

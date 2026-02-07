@@ -116,15 +116,10 @@ class DateTimeControl extends React.Component {
     }
   };
 
-  onInputChange = e => {
-    const etv = e.target.value;
-    this.handleChange(etv);
-  };
-
   shortcuts({ t }) {
     return {
-      [t('editor.editorWidgets.datetime.now')]: this.handleChange(this.getNow()),
-      [t('editor.editorWidgets.datetime.clear')]: this.handleChange(''),
+      [t('editor.editorWidgets.datetime.now')]: () => this.handleChange(this.getNow()),
+      [t('editor.editorWidgets.datetime.clear')]: () => this.handleChange(''),
     };
   }
 
@@ -141,7 +136,7 @@ class DateTimeControl extends React.Component {
           type={inputType}
           format={inputFormat}
           value={value ? this.formatInputValue(value) : ''}
-          onChange={this.onInputChange}
+          onChange={this.handleChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           shortcuts={!isDisabled && this.shortcuts({ t })}
