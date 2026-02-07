@@ -12,6 +12,7 @@ import BarChart from './icons/BarChart';
 import Bell from './icons/Bell';
 import Bitbucket from './icons/Bitbucket';
 import Bold from './icons/Bold';
+import BookOpenText from './icons/BookOpenText';
 import Box from './icons/Box';
 import BulletedList from './icons/BulletedList';
 import Calendar from './icons/Calendar';
@@ -19,6 +20,7 @@ import Check from './icons/Check';
 import ChevronDown from './icons/ChevronDown';
 import ChevronRight from './icons/ChevronRight';
 import Circle from './icons/Circle';
+import CircleSlash from './icons/CircleSlash';
 import Clock from './icons/Clock';
 import Code from './icons/Code';
 import CodeBlock from './icons/CodeBlock';
@@ -121,6 +123,7 @@ export const iconComponents = {
   bell: Bell,
   bitbucket: Bitbucket,
   bold: Bold,
+  'book-open-text': BookOpenText,
   box: Box,
   'bulleted-list': BulletedList,
   calendar: Calendar,
@@ -128,6 +131,7 @@ export const iconComponents = {
   'chevron-down': ChevronDown,
   'chevron-right': ChevronRight,
   circle: Circle,
+  'circle-slash': CircleSlash,
   clock: Clock,
   code: Code,
   'code-block': CodeBlock,
