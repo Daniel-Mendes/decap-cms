@@ -1,6 +1,8 @@
-export const keys = ['xs', 'sm', 'md', 'lg', 'xl'];
+export const keys = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 
-const values = {
+type BreakpointKey = (typeof keys)[number];
+
+const values: Record<BreakpointKey, number> = {
   xs: 0,
   sm: 600,
   md: 960,
@@ -10,16 +12,16 @@ const values = {
 const unit = 'px';
 const step = 5;
 
-function up(key) {
+function up(key: BreakpointKey) {
   const value = typeof values[key] === 'number' ? values[key] : key;
   return `@media (min-width:${value}${unit})`;
 }
 
-function isUp(key) {
+function isUp(key: BreakpointKey) {
   return window.matchMedia(up(key).replace('@media ', '')).matches;
 }
 
-function down(key) {
+function down(key: BreakpointKey) {
   const endIndex = keys.indexOf(key) + 1;
   const upperbound = values[keys[endIndex]];
 
@@ -32,11 +34,11 @@ function down(key) {
   return `@media (max-width:${value - step / 100}${unit})`;
 }
 
-function isDown(key) {
+function isDown(key: BreakpointKey) {
   return window.matchMedia(down(key).replace('@media ', '')).matches;
 }
 
-function between(start, end) {
+function between(start: BreakpointKey, end: BreakpointKey) {
   const endIndex = keys.indexOf(end);
 
   if (endIndex === keys.length - 1) {
@@ -54,15 +56,15 @@ function between(start, end) {
   );
 }
 
-function isBetween(start, end) {
+function isBetween(start: BreakpointKey, end: BreakpointKey) {
   return window.matchMedia(between(start, end).replace('@media ', '')).matches;
 }
 
-function only(key) {
+function only(key: BreakpointKey) {
   return between(key, key);
 }
 
-function isOnly(key) {
+function isOnly(key: BreakpointKey) {
   return window.matchMedia(only(key).replace('@media ', '')).matches;
 }
 

@@ -25,6 +25,7 @@ const Menu = React.forwardRef(function Menu(props, ref) {
     anchorOrigin,
     transformOrigin,
     width,
+    style,
     ...other
   } = props;
   const firstValidItemRef = React.useRef(null);
@@ -58,6 +59,7 @@ const Menu = React.forwardRef(function Menu(props, ref) {
         rounded={isMobile ? false : 'lg'}
         className={className}
         width={width}
+        style={style}
       >
         {children}
       </MenuWrap>

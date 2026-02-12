@@ -5,6 +5,7 @@ import color from 'color';
 import Tooltip from '../Tooltip';
 import Icon from '../Icon';
 import { ButtonGroup } from '../Buttons';
+import { Kbd } from '../Kbd';
 import { useUIContext } from '../hooks';
 
 const NavMenuListItem = styled.li`
@@ -69,6 +70,12 @@ const NavMenuItemInside = styled.span`
   & ${ExternalLinkIcon} {
     margin-right: 0.5rem;
   }
+
+  & [data-slot='kbd'] {
+    margin-right: 0.5rem;
+    background-color: ${({ theme }) => theme.color.neutral['100']};
+    color: ${({ theme }) => theme.color.highEmphasis};
+  }
 `;
 const Label = styled.span`
   margin-left: 0.75rem;
@@ -86,7 +93,17 @@ export const NavItemContents = styled.span`
   width: 100%;
 `;
 
-function NavMenuItem({ icon, endIcon, children, className, href, active, onClick, ...props }) {
+function NavMenuItem({
+  icon,
+  endIcon,
+  shortcut,
+  children,
+  className,
+  href,
+  active,
+  onClick,
+  ...props
+}) {
   const { navCollapsed } = useUIContext();
 
   return (
@@ -112,6 +129,7 @@ function NavMenuItem({ icon, endIcon, children, className, href, active, onClick
               <Label collapsed={navCollapsed}>{children}</Label>
               {href && <ExternalLinkIcon />}
               {endIcon ? React.isValidElement(endIcon) ? endIcon : <Icon name={endIcon} /> : null}
+              {shortcut && <Kbd>{shortcut}</Kbd>}
             </NavItemContents>
           </NavMenuItemInside>
         </NavMenuLink>

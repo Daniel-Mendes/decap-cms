@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import React, { useState, useRef, cloneElement, createContext, useContext } from 'react';
 
 import { Menu, MenuItem, MenuSeparator } from '../Menu';
@@ -7,6 +8,8 @@ const DropdownContext = createContext({
   open: false,
   onOpenToggle: () => {},
 });
+
+const Trigger = styled.div``;
 
 function DropdownProvider({ children }) {
   const triggerRef = useRef(null);
@@ -50,17 +53,17 @@ function Dropdown({ children }) {
   );
 }
 
-function DropdownTrigger({ children }) {
+function DropdownTrigger({ children, ...props }) {
   const { triggerRef, onOpenToggle } = useDropdownContext();
 
   return (
-    <div ref={triggerRef} onClick={onOpenToggle}>
+    <Trigger ref={triggerRef} onClick={onOpenToggle} {...props} data-slot="trigger">
       {children}
-    </div>
+    </Trigger>
   );
 }
 
-function DropdownMenu({ anchorOrigin, transformOrigin, children }) {
+function DropdownMenu({ anchorOrigin, transformOrigin, children, ...props }) {
   const { triggerRef, open, onOpenToggle } = useDropdownContext();
 
   return (
@@ -70,6 +73,7 @@ function DropdownMenu({ anchorOrigin, transformOrigin, children }) {
       transformOrigin={transformOrigin}
       open={open}
       onClose={onOpenToggle}
+      {...props}
     >
       {children}
     </Menu>

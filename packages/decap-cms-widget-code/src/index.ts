@@ -1,4 +1,4 @@
-import controlComponent from './CodeControl';
+import controlComponent from './CodeField';
 import previewComponent from './CodePreview';
 import schema from './schema';
 
@@ -13,6 +13,10 @@ function Widget(opts = {}) {
     ...opts,
   };
 }
+
+export { controlComponent, previewComponent };
+export { default as CodeField } from './CodeField';
+export { default as CodePreview } from './CodePreview';
 
 export const DecapCmsWidgetCode = { Widget, controlComponent, previewComponent };
 export default DecapCmsWidgetCode;

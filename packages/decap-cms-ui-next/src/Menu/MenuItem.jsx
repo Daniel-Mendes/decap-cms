@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import color from 'color';
+import Color from 'color';
 
 import Icon from '../Icon';
 
@@ -27,14 +27,14 @@ export const MenuItemWrap = styled.div`
     ${({ theme, type }) =>
       type === 'danger'
         ? `
-      background-color: ${color(theme.color.danger['900']).alpha(0.2).string()};
+      background-color: ${Color(theme.color.danger['900']).alpha(0.2).string()};
       color: ${theme.color.danger[theme.darkMode ? '300' : '1400']};
     `
         : ``}
     ${({ theme, type }) =>
       type === 'success'
         ? `
-        background-color: ${color(theme.color.success['900']).alpha(0.2).string()};
+        background-color: ${Color(theme.color.success['900']).alpha(0.2).string()};
       color: ${theme.color.success[theme.darkMode ? '300' : '1400']};
     `
         : ``}

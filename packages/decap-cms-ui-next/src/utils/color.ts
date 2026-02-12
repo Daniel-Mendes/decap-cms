@@ -63,7 +63,7 @@ let colors = {
     1500: '#0B181C',
     1600: '#071113',
   },
-  green: getColorShades('#3bdab4'),
+  green: getColorShades('#00c951'),
   teal: getColorShades('#00ad9e'),
   blue: getColorShades('#5091f4'),
   purple: getColorShades('#7a5ce5'),

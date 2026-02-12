@@ -10,4 +10,3 @@ export {
   CommandSeparator,
   CommandShortcut,
 } from './Command';
-export { default } from './Command';

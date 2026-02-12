@@ -303,9 +303,21 @@ const StyledCommandItem = styled(CommandPrimitive.Item)`
   }
 `;
 
-export const CommandItem = React.forwardRef(({ className, children, ...props }, ref) => (
+const TextWrap = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`;
+
+const SelectedIcon = styled(Icon)`
+  margin-left: 0.75rem;
+  vertical-align: middle;
+`;
+
+export const CommandItem = React.forwardRef(({ className, children, selected, ...props }, ref) => (
   <StyledCommandItem ref={ref} className={className} {...props}>
-    {children}
+    <TextWrap>{children}</TextWrap>
+    {selected && <SelectedIcon name="check" />}
   </StyledCommandItem>
 ));
 
@@ -317,6 +329,7 @@ CommandItem.propTypes = {
   value: PropTypes.string,
   onSelect: PropTypes.func,
   disabled: PropTypes.bool,
+  selected: PropTypes.bool,
 };
 
 // Command Shortcut
@@ -341,5 +354,3 @@ CommandShortcut.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
 };
-
-export default Command;

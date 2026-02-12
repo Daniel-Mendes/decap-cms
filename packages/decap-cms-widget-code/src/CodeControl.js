@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { ClassNames } from '@emotion/react';
+import { ClassNames, useTheme } from '@emotion/react';
 import { Map } from 'immutable';
 import { uniq, isEqual, isEmpty } from 'lodash';
 import { v4 as uuid } from 'uuid';
@@ -11,8 +11,9 @@ import 'codemirror/keymap/vim';
 import 'codemirror/keymap/sublime';
 import 'codemirror/keymap/emacs';
 import codeMirrorStyles from 'codemirror/lib/codemirror.css';
-import materialTheme from 'codemirror/theme/material.css';
-
+import draculaTheme from 'codemirror/theme/dracula.css';
+// import alucardTheme from 'codemirror/theme/alucard.css';
+import { themes as decapCodeMirrorThemes, createCodeMirrorTheme } from './themes';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
 import languageData from '../data/languages.json';
@@ -53,7 +54,7 @@ function valueToOption(val) {
 
 const modes = languages.map(valueToOption);
 
-const themes = ['default', 'material'];
+const themes = ['decap-light', 'decap-dark', 'dracula' /*, 'alucard'*/];
 
 const settingsPersistKeys = {
   theme: 'cms.codemirror.theme',
@@ -260,6 +261,12 @@ export default class CodeControl extends React.Component {
     const langInfo = this.getLanguageByName(lang);
     const mode = langInfo?.mimeType || langInfo?.mode;
 
+    const decapLightTheme = createCodeMirrorTheme(
+      'decap-light',
+      decapCodeMirrorThemes.light(theme),
+    );
+    const decapDarkTheme = createCodeMirrorTheme('decap-dark', decapCodeMirrorThemes.dark(theme));
+
     return (
       <ClassNames>
         {({ css, cx }) => (
@@ -268,7 +275,9 @@ export default class CodeControl extends React.Component {
               classNameWrapper,
               css`
                 ${codeMirrorStyles};
-                ${materialTheme};
+                ${decapLightTheme};
+                ${decapDarkTheme};
+                ${draculaTheme};
                 ${styleString};
               `,
             )}
