@@ -19,7 +19,7 @@
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "peerDependencies": {
     "decap-cms-lib-widgets": "^3.0.0",
@@ -30,7 +30,5 @@
     "react": "^18.2.0",
     "react-immutable-proptypes": "^2.1.0"
   },
-  "dependencies": {
-    "react-select": "^4.0.0"
-  }
+  "dependencies": {}
 }
