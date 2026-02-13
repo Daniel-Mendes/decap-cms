@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownTrigger,
+  useDropdownContext,
 } from 'decap-cms-ui-next';
 
 interface LanguageOption {
@@ -25,24 +26,49 @@ interface LanguageSelectorProps {
   width?: number;
 }
 
-const LanguageItem = styled(CommandItem)`
+const StyledLanguageItem = styled(CommandItem)`
   &[data-selected='true'] {
     background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
     color: ${({ theme }) => theme.color.highEmphasis};
   }
 `;
 
-export default function LanguageSelector({
-  value,
-  onChange,
-  options,
-  placeholder = 'Select language',
-}: LanguageSelectorProps) {
+function LanguageItem({ value, onSelect, children, ...props }: any) {
+  const { onOpenToggle } = useDropdownContext();
+
+  function handleSelect() {
+    onSelect(value);
+    onOpenToggle();
+  }
+
+  return (
+    <StyledLanguageItem onSelect={handleSelect} {...props}>
+      {children}
+    </StyledLanguageItem>
+  );
+}
+
+function LanguageInput({ placeholder }: { placeholder?: string }) {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const { open } = useDropdownContext();
+
+  useEffect(() => {
+    if (open && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [open]);
+
+  return <CommandInput ref={inputRef} placeholder={placeholder} />;
+}
+
+export default function LanguageSelector({ value, onChange, options }: LanguageSelectorProps) {
+  const selectedValue = options.find(o => o.value === value);
+
   return (
     <Dropdown>
       <DropdownTrigger style={{ display: 'flex', justifyContent: 'end' }}>
         <Button size="sm" variant="soft" type="neutral" transparent>
-          {options.find(o => o.value === value)?.label ?? placeholder}
+          {selectedValue.label}
         </Button>
       </DropdownTrigger>
 
@@ -52,7 +78,7 @@ export default function LanguageSelector({
         style={{ padding: 0 }}
       >
         <Command>
-          <CommandInput placeholder="Search language…" />
+          <LanguageInput placeholder="Search language…" />
 
           <CommandList>
             {options.map(option => (

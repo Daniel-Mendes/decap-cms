@@ -4,4 +4,5 @@ export {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  useDropdownContext,
 } from './Dropdown';

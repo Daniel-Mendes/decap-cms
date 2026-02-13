@@ -82,6 +82,10 @@ function createTheme({ variant, settings, styles }: Options): Extension {
         {
           backgroundColor: settings.selection,
         },
+      '.cm-foldPlaceholder': {
+        backgroundColor: 'transparent',
+        border: `1px solid ${settings.foreground}`,
+      },
       '.cm-activeLine': {
         backgroundColor: settings.lineHighlight,
       },

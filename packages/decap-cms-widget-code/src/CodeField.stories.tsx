@@ -13,7 +13,20 @@ export default {
   title: 'Fields/CodeField',
   component: CodeField,
   argTypes: {
-    value: { control: 'object' },
+    value: {
+      control: { type: 'object' },
+      table: {
+        type: { summary: 'Map' },
+        defaultValue: { summary: 'Map({ code: "", lang: "" })' },
+      },
+    },
+    field: {
+      control: { type: 'object' },
+      table: {
+        type: { summary: 'Map' },
+        defaultValue: { summary: 'Map({ output_code_only: false })' },
+      },
+    },
   },
   args: {
     value: Map({

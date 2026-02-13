@@ -11,10 +11,54 @@ export function useEditorTheme() {
   const lightEditorTheme = createTheme({
     variant: 'light',
     settings: {
-      fontFamily: theme.fonts.mono,
+      fontFamily: lightTheme.fonts.mono,
       background: 'transparent',
+      foreground: lightTheme.color.neutral[900],
+      caret: lightTheme.color.neutral[700],
+      selection: Color(lightTheme.color.pink[700]).alpha(0.1).string(),
+      gutterBackground: 'transparent',
+      gutterForeground: lightTheme.color.neutral[500],
+      lineHighlight: Color(lightTheme.color.neutral[500]).alpha(0.1).string(),
     },
-    styles: [],
+    styles: [
+      {
+        tag: [t.meta, t.comment],
+        color: lightTheme.color.neutral[500],
+      },
+      {
+        tag: [t.string, t.special(t.brace)],
+        color: lightTheme.color.yellow[900],
+      },
+      {
+        tag: [t.number, t.self, t.bool, t.null, t.definition(t.variableName)],
+        color: lightTheme.color.purple[900],
+      },
+      {
+        tag: [t.keyword, t.operator, t.definitionKeyword],
+        color: lightTheme.color.pink[900],
+      },
+      {
+        tag: [t.typeName],
+        color: lightTheme.color.blue[900],
+      },
+      {
+        tag: [t.propertyName],
+        color: lightTheme.color.orange[900],
+      },
+      {
+        tag: t.definition(t.typeName),
+        color: lightTheme.color.neutral[100],
+      },
+      {
+        tag: [
+          t.className,
+          t.definition(t.propertyName),
+          t.function(t.variableName),
+          t.attributeName,
+        ],
+        color: lightTheme.color.green[900],
+      },
+    ],
   });
 
   const darkEditorTheme = createTheme({
@@ -56,7 +100,7 @@ export function useEditorTheme() {
       },
       {
         tag: t.definition(t.typeName),
-        color: '#f8f8f2',
+        color: darkTheme.color.neutral[100],
       },
       {
         tag: [

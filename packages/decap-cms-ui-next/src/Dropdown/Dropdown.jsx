@@ -15,10 +15,7 @@ function DropdownProvider({ children }) {
   const triggerRef = useRef(null);
   const [open, setOpen] = useState(false);
 
-  function onOpenToggle(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
+  function onOpenToggle() {
     setOpen(!open);
   }
 
@@ -29,7 +26,7 @@ function DropdownProvider({ children }) {
   );
 }
 
-function useDropdownContext() {
+export function useDropdownContext() {
   const context = useContext(DropdownContext);
 
   if (!context) {
@@ -63,6 +60,8 @@ function DropdownTrigger({ children, ...props }) {
   );
 }
 
+DropdownTrigger.displayName = 'DropdownTrigger';
+
 function DropdownMenu({ anchorOrigin, transformOrigin, children, ...props }) {
   const { triggerRef, open, onOpenToggle } = useDropdownContext();
 
@@ -79,6 +78,8 @@ function DropdownMenu({ anchorOrigin, transformOrigin, children, ...props }) {
     </Menu>
   );
 }
+
+DropdownMenu.displayName = 'DropdownMenu';
 
 export {
   Dropdown,

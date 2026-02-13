@@ -8,7 +8,8 @@ import { languages } from '@codemirror/language-data';
 
 import { useEditorTheme } from './themes/theme';
 import LanguageSelector from './LanguageSelector';
-import { LanguageDescription } from '@codemirror/language';
+
+import type { LanguageDescription } from '@codemirror/language';
 
 interface CodeFieldProps {
   field: Map<string, unknown>;
@@ -43,7 +44,9 @@ export default function CodeField({
 
   const keys = getFieldKeys();
   const [lang, setLang] = useState(getDefaultLanguage() || '');
+
   const langCompartment = useRef(new Compartment()).current;
+  const themeCompartment = useRef(new Compartment()).current;
 
   const allowLanguageSelection =
     !field.has('allow_language_selection') || field.get('allow_language_selection');
@@ -55,9 +58,13 @@ export default function CodeField({
       alias: lang.alias,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
+  languagesOptions.unshift({ value: 'plaintext', label: 'Plain Text' });
 
   function getDefaultLanguage() {
-    const lang = (valueIsMap() && value && value.get(keys.lang)) || field.get('default_language');
+    const lang =
+      (valueIsMap() && value && value.get(keys.lang)) ||
+      field.get('default_language') ||
+      'plaintext';
 
     return lang;
   }
@@ -70,6 +77,14 @@ export default function CodeField({
 
   async function loadLanguage(lang: string) {
     if (!viewRef.current) return;
+
+    if (lang === 'plaintext') {
+      // Clear language highlighting
+      viewRef.current.dispatch({
+        effects: langCompartment.reconfigure([]),
+      });
+      return;
+    }
 
     const languageData = findLanguage(lang);
     if (!languageData) return;
@@ -106,7 +121,12 @@ export default function CodeField({
 
     const state = EditorState.create({
       doc,
-      extensions: [basicSetup, editorTheme, updateListener, langCompartment.of([])],
+      extensions: [
+        basicSetup,
+        themeCompartment.of(editorTheme),
+        updateListener,
+        langCompartment.of([]),
+      ],
     });
 
     const view = new EditorView({
@@ -145,9 +165,18 @@ export default function CodeField({
     }
   }, [value, field, isEditorComponent]);
 
+  // Lazy load language support when language changes
   useEffect(() => {
     loadLanguage(lang);
   }, [lang]);
+
+  // Update theme when it changes
+  useEffect(() => {
+    if (!viewRef.current) return;
+    viewRef.current.dispatch({
+      effects: themeCompartment.reconfigure(editorTheme),
+    });
+  }, [editorTheme]);
 
   function getFieldKeys() {
     const defaults = { code: 'code', lang: 'lang' };
@@ -187,11 +216,12 @@ export default function CodeField({
     if (!valueIsMap()) {
       return value;
     }
-    const { lang } = getFieldKeys();
+
+    const { lang: langKey } = getFieldKeys();
     if (value?.set) {
-      return value.set(lang, newLang);
+      return value.set(langKey, newLang);
     }
-    return { ...(value ?? {}), [lang]: newLang };
+    return { ...(value ?? {}), [langKey]: newLang };
   }
 
   return (
@@ -202,7 +232,8 @@ export default function CodeField({
           options={languagesOptions}
           onChange={newLang => {
             setLang(newLang);
-            onChange(writeLangValue(newLang));
+            const updatedValue = writeLangValue(newLang);
+            onChange(updatedValue);
           }}
         />
       )}
